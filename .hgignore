@@ -1,0 +1,7 @@
+syntax: glob
+ipch/chb-3b770ed/chb-d648f053.ipch
+chb.vcxproj.user
+chb.sdf
+chb.opensdf
+chb.suo
+Release/
