@@ -9,6 +9,9 @@
   <ItemGroup>
     <ClInclude Include="source\Auth\BigNumber.h" />
     <ClInclude Include="source\Auth\bn.h" />
+    <ClInclude Include="source\Auth\e_os2.h" />
+    <ClInclude Include="source\Auth\opensslconf.h" />
+    <ClInclude Include="source\Auth\ossl_typ.h" />
     <ClInclude Include="source\Auth\sha.h" />
     <ClInclude Include="source\Auth\Sha1.h" />
     <ClInclude Include="source\base_defs.h" />

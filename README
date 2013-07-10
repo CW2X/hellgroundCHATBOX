@@ -1,0 +1,8 @@
+project chb - chatbox client for World of Warcraft:The Burning Crusade 2.4.3
+
+based on WoW:TBC 2.4.3 server code from MaNGOS, Trinity and Hellground projets
+(http://www.mangosproject.org/ ; http://www.trinitycore.org/ ; http://www.hellground.net)
+includes parts of code from openSSL project (http://www.openssl.org/)
+This product includes cryptographic software written by
+ Eric Young (eay@cryptsoft.com)
+This product includes software written by Tim Hudson (tjh@cryptsoft.com)

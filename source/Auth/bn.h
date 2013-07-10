@@ -69,28 +69,121 @@
  *
  */
 
-#include <stdio.h>
+#ifndef HEADER_BN_H
+#define HEADER_BN_H
 
-typedef struct bignum_st BIGNUM;
-typedef struct bignum_ctx BN_CTX;
-typedef struct bn_blinding_st BN_BLINDING;
-typedef struct bn_mont_ctx_st BN_MONT_CTX;
-typedef struct bn_recp_ctx_st BN_RECP_CTX;
-typedef struct bn_gencb_st BN_GENCB;
+#include "e_os2.h"
+#ifndef OPENSSL_NO_FP_API
+#include <stdio.h> /* FILE */
+#endif
+#include "ossl_typ.h"
 
+#ifdef  __cplusplus
 extern "C" {
+#endif
+
+/* These preprocessor symbols control various aspects of the bignum headers and
+ * library code. They're not defined by any "normal" configuration, as they are
+ * intended for development and testing purposes. NB: defining all three can be
+ * useful for debugging application code as well as openssl itself.
+ *
+ * BN_DEBUG - turn on various debugging alterations to the bignum code
+ * BN_DEBUG_RAND - uses random poisoning of unused words to trip up
+ * mismanagement of bignum internals. You must also define BN_DEBUG.
+ */
+/* #define BN_DEBUG */
+/* #define BN_DEBUG_RAND */
 
 #define BN_MUL_COMBA
 #define BN_SQR_COMBA
 #define BN_RECURSION
 
+/* This next option uses the C libraries (2 word)/(1 word) function.
+ * If it is not defined, I use my C version (which is slower).
+ * The reason for this flag is that when the particular C compiler
+ * library routine is used, and the library is linked with a different
+ * compiler, the library is missing.  This mostly happens when the
+ * library is built with gcc and then linked using normal cc.  This would
+ * be a common occurrence because gcc normally produces code that is
+ * 2 times faster than system compilers for the big number stuff.
+ * For machines with only one compiler (or shared libraries), this should
+ * be on.  Again this in only really a problem on machines
+ * using "long long's", are 32bit, and are not using my assembler code. */
+#if defined(OPENSSL_SYS_MSDOS) || defined(OPENSSL_SYS_WINDOWS) || \
+    defined(OPENSSL_SYS_WIN32) || defined(linux)
+# ifndef BN_DIV2W
+#  define BN_DIV2W
+# endif
+#endif
+
+/* assuming long is 64bit - this is the DEC Alpha
+ * unsigned long long is only 64 bits :-(, don't define
+ * BN_LLONG for the DEC Alpha */
+#ifdef SIXTY_FOUR_BIT_LONG
+#define BN_ULLONG   unsigned long long
+#define BN_ULONG    unsigned long
+#define BN_LONG     long
+#define BN_BITS     128
+#define BN_BYTES    8
+#define BN_BITS2    64
+#define BN_BITS4    32
+#define BN_MASK     (0xffffffffffffffffffffffffffffffffLL)
+#define BN_MASK2    (0xffffffffffffffffL)
+#define BN_MASK2l   (0xffffffffL)
+#define BN_MASK2h   (0xffffffff00000000L)
+#define BN_MASK2h1  (0xffffffff80000000L)
+#define BN_TBIT     (0x8000000000000000L)
+#define BN_DEC_CONV (10000000000000000000UL)
+#define BN_DEC_FMT1 "%lu"
+#define BN_DEC_FMT2 "%019lu"
+#define BN_DEC_NUM  19
+#endif
+
+/* This is where the long long data type is 64 bits, but long is 32.
+ * For machines where there are 64bit registers, this is the mode to use.
+ * IRIX, on R4000 and above should use this mode, along with the relevant
+ * assembler code :-).  Do NOT define BN_LLONG.
+ */
+#ifdef SIXTY_FOUR_BIT
+#undef BN_LLONG
+#undef BN_ULLONG
+#define BN_ULONG    unsigned long long
+#define BN_LONG     long long
+#define BN_BITS     128
+#define BN_BYTES    8
+#define BN_BITS2    64
+#define BN_BITS4    32
+#define BN_MASK2    (0xffffffffffffffffLL)
+#define BN_MASK2l   (0xffffffffL)
+#define BN_MASK2h   (0xffffffff00000000LL)
+#define BN_MASK2h1  (0xffffffff80000000LL)
+#define BN_TBIT     (0x8000000000000000LL)
+#define BN_DEC_CONV (10000000000000000000ULL)
+#define BN_DEC_FMT1 "%llu"
+#define BN_DEC_FMT2 "%019llu"
+#define BN_DEC_NUM  19
+#endif
+
+#ifdef THIRTY_TWO_BIT
+#ifdef BN_LLONG
+# if defined(OPENSSL_SYS_WIN32) && !defined(__GNUC__)
+#  define BN_ULLONG unsigned __int64
+# else
+#  define BN_ULLONG unsigned long long
+# endif
+#endif
 #define BN_ULONG    unsigned long
 #define BN_LONG     long
 #define BN_BITS     64
 #define BN_BYTES    4
 #define BN_BITS2    32
 #define BN_BITS4    16
+#ifdef OPENSSL_SYS_WIN32
+/* VC++ doesn't like the LL suffix */
+#define BN_MASK     (0xffffffffffffffffL)
+#else
 #define BN_MASK     (0xffffffffffffffffLL)
+#endif
 #define BN_MASK2    (0xffffffffL)
 #define BN_MASK2l   (0xffff)
 #define BN_MASK2h1  (0xffff8000L)
@@ -100,6 +193,53 @@ extern "C" {
 #define BN_DEC_FMT1 "%lu"
 #define BN_DEC_FMT2 "%09lu"
 #define BN_DEC_NUM  9
+#endif
+
+#ifdef SIXTEEN_BIT
+#ifndef BN_DIV2W
+#define BN_DIV2W
+#endif
+#define BN_ULLONG   unsigned long
+#define BN_ULONG    unsigned short
+#define BN_LONG     short
+#define BN_BITS     32
+#define BN_BYTES    2
+#define BN_BITS2    16
+#define BN_BITS4    8
+#define BN_MASK     (0xffffffff)
+#define BN_MASK2    (0xffff)
+#define BN_MASK2l   (0xff)
+#define BN_MASK2h1  (0xff80)
+#define BN_MASK2h   (0xff00)
+#define BN_TBIT     (0x8000)
+#define BN_DEC_CONV (100000)
+#define BN_DEC_FMT1 "%u"
+#define BN_DEC_FMT2 "%05u"
+#define BN_DEC_NUM  5
+#endif
+
+#ifdef EIGHT_BIT
+#ifndef BN_DIV2W
+#define BN_DIV2W
+#endif
+#define BN_ULLONG   unsigned short
+#define BN_ULONG    unsigned char
+#define BN_LONG     char
+#define BN_BITS     16
+#define BN_BYTES    1
+#define BN_BITS2    8
+#define BN_BITS4    4
+#define BN_MASK     (0xffff)
+#define BN_MASK2    (0xff)
+#define BN_MASK2l   (0xf)
+#define BN_MASK2h1  (0xf8)
+#define BN_MASK2h   (0xf0)
+#define BN_TBIT     (0x80)
+#define BN_DEC_CONV (100)
+#define BN_DEC_FMT1 "%u"
+#define BN_DEC_FMT2 "%02u"
+#define BN_DEC_NUM  2
+#endif
 
 #define BN_DEFAULT_BITS 1280
 
@@ -107,11 +247,14 @@ extern "C" {
 #define BN_FLG_STATIC_DATA  0x02
 #define BN_FLG_EXP_CONSTTIME    0x04 /* avoid leaking exponent information through timings
                                       * (BN_mod_exp_mont() will call BN_mod_exp_mont_consttime) */
-
+#ifndef OPENSSL_NO_DEPRECATED
 #define BN_FLG_FREE     0x8000  /* used for debuging */
+#endif
 #define BN_set_flags(b,n)   ((b)->flags|=(n))
 #define BN_get_flags(b,n)   ((b)->flags&(n))
 
+/* get a clone of a BIGNUM with changed flags, for *temporary* use only
+ * (the two BIGNUMs cannot not be used in parallel!) */
 #define BN_with_flags(dest,b,n)  ((dest)->d=(b)->d, \
                                   (dest)->top=(b)->top, \
                                   (dest)->dmax=(b)->dmax, \
@@ -121,15 +264,28 @@ extern "C" {
                                                  |  BN_FLG_STATIC_DATA \
                                                  |  (n)))
 
+/* Already declared in ossl_typ.h */
+#if 0
+typedef struct bignum_st BIGNUM;
+/* Used for temp variables (declaration hidden in bn_lcl.h) */
+typedef struct bignum_ctx BN_CTX;
+typedef struct bn_blinding_st BN_BLINDING;
+typedef struct bn_mont_ctx_st BN_MONT_CTX;
+typedef struct bn_recp_ctx_st BN_RECP_CTX;
+typedef struct bn_gencb_st BN_GENCB;
+#endif
+
 struct bignum_st
     {
     BN_ULONG *d;    /* Pointer to an array of 'BN_BITS2' bit chunks. */
     int top;    /* Index of last used d +1. */
+    /* The next are internal book keeping for bn_expand. */
     int dmax;   /* Size of the d array. */
     int neg;    /* one if the number is negative */
     int flags;
     };
 
+/* Used for montgomery multiplication */
 struct bn_mont_ctx_st
     {
     int ri;        /* number of bits in R */
@@ -141,6 +297,9 @@ struct bn_mont_ctx_st
     int flags;
     };
 
+/* Used for reciprocal division/mod functions
+ * It cannot be shared between threads
+ */
 struct bn_recp_ctx_st
     {
     BIGNUM N;   /* the divisor */
@@ -150,6 +309,7 @@ struct bn_recp_ctx_st
     int flags;
     };
 
+/* Used for slow "generation" functions. */
 struct bn_gencb_st
     {
     unsigned int ver;   /* To handle binary (in)compatibility */
@@ -162,22 +322,29 @@ struct bn_gencb_st
         int (*cb_2)(int, int, BN_GENCB *);
         } cb;
     };
-
+/* Wrapper function to make using BN_GENCB easier,  */
 int BN_GENCB_call(BN_GENCB *cb, int a, int b);
-
+/* Macro to populate a BN_GENCB structure with an "old"-style callback */
 #define BN_GENCB_set_old(gencb, callback, cb_arg) { \
         BN_GENCB *tmp_gencb = (gencb); \
         tmp_gencb->ver = 1; \
         tmp_gencb->arg = (cb_arg); \
         tmp_gencb->cb.cb_1 = (callback); }
-
+/* Macro to populate a BN_GENCB structure with a "new"-style callback */
 #define BN_GENCB_set(gencb, callback, cb_arg) { \
         BN_GENCB *tmp_gencb = (gencb); \
         tmp_gencb->ver = 2; \
         tmp_gencb->arg = (cb_arg); \
         tmp_gencb->cb.cb_2 = (callback); }
 
-#define BN_prime_checks 0
+#define BN_prime_checks 0 /* default: select number of iterations
+                 based on the size of the number */
+
+/* number of Miller-Rabin iterations for an error rate  of less than 2^-80
+ * for random 'b'-bit input, b >= 100 (taken from table 4.4 in the Handbook
+ * of Applied Cryptography [Menezes, van Oorschot, Vanstone; CRC Press 1996];
+ * original paper: Damgaard, Landrock, Pomerance: Average case error estimates
+ * for the strong probable prime test. -- Math. Comp. 61 (1993) 177-194) */
 #define BN_prime_checks_for_size(b) ((b) >= 1300 ?  2 : \
                                 (b) >=  850 ?  3 : \
                                 (b) >=  650 ?  4 : \
@@ -208,14 +375,18 @@ int BN_GENCB_call(BN_GENCB *cb, int a, int b);
         _tmp_bn->top = 0; \
         _tmp_bn->neg = 0; \
     } while(0)
-
+#ifdef OPENSSL_NO_DEPRECATED
+#define BN_zero(a)  BN_zero_ex(a)
+#else
 #define BN_zero(a)  (BN_set_word((a),0))
-
+#endif
 
 const BIGNUM *BN_value_one(void);
 char *  BN_options(void);
 BN_CTX *BN_CTX_new(void);
+#ifndef OPENSSL_NO_DEPRECATED
 void    BN_CTX_init(BN_CTX *c);
+#endif
 void    BN_CTX_free(BN_CTX *c);
 void    BN_CTX_start(BN_CTX *ctx);
 BIGNUM *BN_CTX_get(BN_CTX *ctx);
@@ -241,7 +412,15 @@ int BN_uadd(BIGNUM *r, const BIGNUM *a, const BIGNUM *b);
 int BN_add(BIGNUM *r, const BIGNUM *a, const BIGNUM *b);
 int BN_mul(BIGNUM *r, const BIGNUM *a, const BIGNUM *b, BN_CTX *ctx);
 int BN_sqr(BIGNUM *r, const BIGNUM *a,BN_CTX *ctx);
+/** BN_set_negative sets sign of a BIGNUM
+ * \param  b  pointer to the BIGNUM object
+ * \param  n  0 if the BIGNUM b should be positive and a value != 0 otherwise
+ */
 void    BN_set_negative(BIGNUM *b, int n);
+/** BN_is_negative returns 1 if the BIGNUM is negative
+ * \param  a  pointer to the BIGNUM object
+ * \return 1 if a < 0 and 0 otherwise
+ */
 #define BN_is_negative(a) ((a)->neg != 0)
 
 int BN_div(BIGNUM *dv, BIGNUM *rem, const BIGNUM *m, const BIGNUM *d,
@@ -290,8 +469,14 @@ int BN_mod_exp_simple(BIGNUM *r, const BIGNUM *a, const BIGNUM *p,
     const BIGNUM *m,BN_CTX *ctx);
 
 int BN_mask_bits(BIGNUM *a,int n);
+#ifndef OPENSSL_NO_FP_API
 int BN_print_fp(FILE *fp, const BIGNUM *a);
+#endif
+#ifdef HEADER_BIO_H
+int BN_print(BIO *fp, const BIGNUM *a);
+#else
 int BN_print(void *fp, const BIGNUM *a);
+#endif
 int BN_reciprocal(BIGNUM *r, const BIGNUM *m, int len, BN_CTX *ctx);
 int BN_rshift(BIGNUM *r, const BIGNUM *a, int n);
 int BN_rshift1(BIGNUM *r, const BIGNUM *a);
@@ -312,6 +497,7 @@ BIGNUM *BN_mod_sqrt(BIGNUM *ret,
     const BIGNUM *a, const BIGNUM *n,BN_CTX *ctx);
 
 /* Deprecated versions */
+#ifndef OPENSSL_NO_DEPRECATED
 BIGNUM *BN_generate_prime(BIGNUM *ret,int bits,int safe,
     const BIGNUM *add, const BIGNUM *rem,
     void (*callback)(int,int,void *),void *cb_arg);
@@ -321,6 +507,7 @@ int BN_is_prime(const BIGNUM *p,int nchecks,
 int BN_is_prime_fasttest(const BIGNUM *p,int nchecks,
     void (*callback)(int,int,void *),BN_CTX *ctx,void *cb_arg,
     int do_trial_division);
+#endif /* !defined(OPENSSL_NO_DEPRECATED) */
 
 /* Newer versions */
 int BN_generate_prime_ex(BIGNUM *ret,int bits,int safe, const BIGNUM *add,
@@ -364,9 +551,10 @@ BN_BLINDING *BN_BLINDING_create_param(BN_BLINDING *b,
               const BIGNUM *m, BN_CTX *ctx, BN_MONT_CTX *m_ctx),
     BN_MONT_CTX *m_ctx);
 
+#ifndef OPENSSL_NO_DEPRECATED
 void BN_set_params(int mul,int high,int low,int mont);
 int BN_get_params(int which); /* 0, mul, 1 high, 2 low, 3 mont */
-
+#endif
 
 void    BN_RECP_CTX_init(BN_RECP_CTX *recp);
 BN_RECP_CTX *BN_RECP_CTX_new(void);
@@ -378,6 +566,15 @@ int BN_mod_exp_recp(BIGNUM *r, const BIGNUM *a, const BIGNUM *p,
     const BIGNUM *m, BN_CTX *ctx);
 int BN_div_recp(BIGNUM *dv, BIGNUM *rem, const BIGNUM *m,
     BN_RECP_CTX *recp, BN_CTX *ctx);
+
+/* Functions for arithmetic over binary polynomials represented by BIGNUMs.
+ *
+ * The BIGNUM::neg property of BIGNUMs representing binary polynomials is
+ * ignored.
+ *
+ * Note that input arguments are not const so that their bit arrays can
+ * be expanded to the appropriate size if needed.
+ */
 
 int BN_GF2m_add(BIGNUM *r, const BIGNUM *a, const BIGNUM *b); /*r = a + b*/
 #define BN_GF2m_sub(r, a, b) BN_GF2m_add(r, a, b)
@@ -397,7 +594,11 @@ int BN_GF2m_mod_sqrt(BIGNUM *r, const BIGNUM *a, const BIGNUM *p,
 int BN_GF2m_mod_solve_quad(BIGNUM *r, const BIGNUM *a, const BIGNUM *p,
     BN_CTX *ctx); /* r^2 + r = a mod p */
 #define BN_GF2m_cmp(a, b) BN_ucmp((a), (b))
-
+/* Some functions allow for representation of the irreducible polynomials
+ * as an unsigned int[], say p.  The irreducible f(t) is then of the form:
+ *     t^p[0] + t^p[1] + ... + t^p[k]
+ * where m = p[0] > p[1] > ... > p[k] = 0.
+ */
 int BN_GF2m_mod_arr(BIGNUM *r, const BIGNUM *a, const unsigned int p[]);
     /* r = a mod p */
 int BN_GF2m_mod_mul_arr(BIGNUM *r, const BIGNUM *a, const BIGNUM *b,
@@ -417,6 +618,8 @@ int BN_GF2m_mod_solve_quad_arr(BIGNUM *r, const BIGNUM *a,
 int BN_GF2m_poly2arr(const BIGNUM *a, unsigned int p[], int max);
 int BN_GF2m_arr2poly(const unsigned int p[], BIGNUM *a);
 
+/* faster mod functions for the 'NIST primes'
+ * 0 <= a < p^2 */
 int BN_nist_mod_192(BIGNUM *r, const BIGNUM *a, const BIGNUM *p, BN_CTX *ctx);
 int BN_nist_mod_224(BIGNUM *r, const BIGNUM *a, const BIGNUM *p, BN_CTX *ctx);
 int BN_nist_mod_256(BIGNUM *r, const BIGNUM *a, const BIGNUM *p, BN_CTX *ctx);
@@ -435,11 +638,90 @@ const BIGNUM *BN_get0_nist_prime_521(void);
     (a):bn_expand2((a),(bits+BN_BITS2-1)/BN_BITS2))
 #define bn_wexpand(a,words) (((words) <= (a)->dmax)?(a):bn_expand2((a),(words)))
 BIGNUM *bn_expand2(BIGNUM *a, int words);
+#ifndef OPENSSL_NO_DEPRECATED
 BIGNUM *bn_dup_expand(const BIGNUM *a, int words); /* unused */
+#endif
+
+/* Bignum consistency macros
+ * There is one "API" macro, bn_fix_top(), for stripping leading zeroes from
+ * bignum data after direct manipulations on the data. There is also an
+ * "internal" macro, bn_check_top(), for verifying that there are no leading
+ * zeroes. Unfortunately, some auditing is required due to the fact that
+ * bn_fix_top() has become an overabused duct-tape because bignum data is
+ * occasionally passed around in an inconsistent state. So the following
+ * changes have been made to sort this out;
+ * - bn_fix_top()s implementation has been moved to bn_correct_top()
+ * - if BN_DEBUG isn't defined, bn_fix_top() maps to bn_correct_top(), and
+ *   bn_check_top() is as before.
+ * - if BN_DEBUG *is* defined;
+ *   - bn_check_top() tries to pollute unused words even if the bignum 'top' is
+ *     consistent. (ed: only if BN_DEBUG_RAND is defined)
+ *   - bn_fix_top() maps to bn_check_top() rather than "fixing" anything.
+ * The idea is to have debug builds flag up inconsistent bignums when they
+ * occur. If that occurs in a bn_fix_top(), we examine the code in question; if
+ * the use of bn_fix_top() was appropriate (ie. it follows directly after code
+ * that manipulates the bignum) it is converted to bn_correct_top(), and if it
+ * was not appropriate, we convert it permanently to bn_check_top() and track
+ * down the cause of the bug. Eventually, no internal code should be using the
+ * bn_fix_top() macro. External applications and libraries should try this with
+ * their own code too, both in terms of building against the openssl headers
+ * with BN_DEBUG defined *and* linking with a version of OpenSSL built with it
+ * defined. This not only improves external code, it provides more test
+ * coverage for openssl's own code.
+ */
+
+#ifdef BN_DEBUG
+
+/* We only need assert() when debugging */
+#include <assert.h>
+
+#ifdef BN_DEBUG_RAND
+/* To avoid "make update" cvs wars due to BN_DEBUG, use some tricks */
+#ifndef RAND_pseudo_bytes
+int RAND_pseudo_bytes(unsigned char *buf,int num);
+#define BN_DEBUG_TRIX
+#endif
+#define bn_pollute(a) \
+    do { \
+        const BIGNUM *_bnum1 = (a); \
+        if(_bnum1->top < _bnum1->dmax) { \
+            unsigned char _tmp_char; \
+            /* We cast away const without the compiler knowing, any \
+             * *genuinely* constant variables that aren't mutable \
+             * wouldn't be constructed with top!=dmax. */ \
+            BN_ULONG *_not_const; \
+            memcpy(&_not_const, &_bnum1->d, sizeof(BN_ULONG*)); \
+            RAND_pseudo_bytes(&_tmp_char, 1); \
+            memset((unsigned char *)(_not_const + _bnum1->top), _tmp_char, \
+                (_bnum1->dmax - _bnum1->top) * sizeof(BN_ULONG)); \
+        } \
+    } while(0)
+#ifdef BN_DEBUG_TRIX
+#undef RAND_pseudo_bytes
+#endif
+#else
+#define bn_pollute(a)
+#endif
+#define bn_check_top(a) \
+    do { \
+        const BIGNUM *_bnum2 = (a); \
+        if (_bnum2 != NULL) { \
+            assert((_bnum2->top == 0) || \
+                (_bnum2->d[_bnum2->top - 1] != 0)); \
+            bn_pollute(_bnum2); \
+        } \
+    } while(0)
+
+#define bn_fix_top(a)       bn_check_top(a)
+
+#else /* !BN_DEBUG */
 
 #define bn_pollute(a)
 #define bn_check_top(a)
 #define bn_fix_top(a)       bn_correct_top(a)
+
+#endif
+
 #define bn_correct_top(a) \
         { \
         BN_ULONG *ftl; \
@@ -472,8 +754,15 @@ BIGNUM *get_rfc3526_prime_8192(BIGNUM *bn);
 
 int BN_bntest_rand(BIGNUM *rnd, int bits, int top,int bottom);
 
+/* BEGIN ERROR CODES */
+/* The following lines are auto generated by the script mkerr.pl. Any changes
+ * made after this point may be overwritten when the script is next run.
+ */
 void ERR_load_BN_strings(void);
 
+/* Error codes for the BN functions. */
+
+/* Function codes. */
 #define BN_F_BNRAND                  127
 #define BN_F_BN_BLINDING_CONVERT_EX          100
 #define BN_F_BN_BLINDING_CREATE_PARAM            128
@@ -532,5 +821,8 @@ void ERR_load_BN_strings(void);
 #define BN_R_TOO_MANY_ITERATIONS             113
 #define BN_R_TOO_MANY_TEMPORARY_VARIABLES        109
 
+#ifdef  __cplusplus
 }
+#endif
+#endif
 

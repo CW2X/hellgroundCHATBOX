@@ -2,6 +2,7 @@
 #include "Auth\BigNumber.h"
 #include "Auth\bn.h"
 #include "Auth\Sha1.h"
+#include <string>
 
 enum eAuthCmd
 {
@@ -52,6 +53,22 @@ struct AUTH_LOGON_PROOF_D
 union AUTH_LOGON_CHALLENGE_U { AUTH_LOGON_CHALLENGE_D data;char c [66];};
 union AUTH_LOGON_PROOF_U { AUTH_LOGON_PROOF_D data;char c [75];};
 
+struct RealmInfo
+{
+    uint8 icon;
+    uint8 lock;
+    uint8 flag;
+    std::string name;
+    std::string address;
+    float population;
+    uint8 AmountOfCharacters;
+    uint8 timezone;
+    uint8 version1;
+    uint8 version2;
+    uint8 version3;
+    uint16 build;
+};
+
 class AuthProcessor
 {
 public:
@@ -65,8 +82,11 @@ public:
     //more SEND
     bool recv_logon_challenge(char buffer[BUFFER_SIZE],uint8 datalength);
     bool recv_logon_proof(char buffer[BUFFER_SIZE],uint8 datalength);
+    bool recv_realm_list(char buffer[BUFFER_SIZE],uint8 datalength);
     //more RECV
 private:
     BigNumber A,B,a,g,N,K,s,unk3,v,x,M,M2; // magic variables
+    uint8 realms;
+    RealmInfo realmdata[4];
 };
 

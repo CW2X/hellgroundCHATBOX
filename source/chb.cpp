@@ -14,11 +14,9 @@ int main( void )
     char recvbuf[ BUFFER_SIZE ];
     int IsError;
     
-    printf("initializing connection \n");
     if(!startup_connection())
         return 1;
     
-    printf("sending initial call \n");
     if (!sProcessor.send_logon_challenge())
         return 1;
 
@@ -44,6 +42,7 @@ int main( void )
 
 bool startup_connection()
 {
+    printf("initializing connection \n");
     WSADATA wsa_data;
     struct addrinfo *result = NULL,*ptr = NULL,hints;
     int IsError;
@@ -103,6 +102,6 @@ int send_packet(char buffer[BUFFER_SIZE],uint8 datalength)
         WSACleanup();
     }
     else
-        printf("Bytes Sent: %ld\n", IsError);
+        printf("Bytes sent: %ld\n", IsError);
     return IsError;
 }

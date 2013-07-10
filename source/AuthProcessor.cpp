@@ -1,5 +1,4 @@
 #include "AuthProcessor.h"
-#include <string>
 
 bool AuthProcessor::handle_incoming(char buffer[BUFFER_SIZE],uint8 datalength)
 {
@@ -15,6 +14,12 @@ bool AuthProcessor::handle_incoming(char buffer[BUFFER_SIZE],uint8 datalength)
         {
             if (recv_logon_proof(buffer,datalength))
                 return send_realm_list();
+            else return false;
+        }
+    case CMD_REALM_LIST:
+        {
+            if (recv_realm_list(buffer,datalength))
+                return true;
             else return false;
         }
     default:
@@ -125,6 +130,7 @@ void AuthProcessor::MagicVoid(const std::string& rI)
 
 bool AuthProcessor::send_logon_challenge()
 {
+    printf("sending logon challenge\n");
     std::string username = MAIN_LOGIN;
     AUTH_LOGON_CHALLENGE_U sLC;
 
@@ -190,6 +196,7 @@ bool AuthProcessor::recv_logon_challenge(char buffer[BUFFER_SIZE],uint8 dataleng
 
 bool AuthProcessor::send_logon_proof()
 {
+    printf("sending logon proof\n");
     AUTH_LOGON_PROOF_U sLP;
 
     // beggining of magic
@@ -238,5 +245,58 @@ bool AuthProcessor::recv_logon_proof(char buffer[BUFFER_SIZE],uint8 datalength)
 
 bool AuthProcessor::send_realm_list()
 {
-    return false;
+    printf("sending realm list\n");
+    char c[5] = {0x10,0x00,0x00,0x00,0x00};
+    if (send_packet(c,5) == -1)
+        return false;
+    return true;
+}
+
+bool AuthProcessor::recv_realm_list(char buffer[BUFFER_SIZE],uint8 datalength)
+{
+    if((uint8)buffer[1] != datalength - 3)
+    {printf("realm list invalid packet size\n");return false;}
+    if((uint8)buffer[2] || (uint8)buffer[3] || (uint8)buffer[4] || (uint8)buffer[5] || (uint8)buffer[6] || (uint8)buffer[datalength-1] || (uint8)buffer[datalength-2] != 0x10)
+    {printf("realm list: invalid response from server\n");return false;}
+
+    realms = (uint8)buffer[7];
+    printf("received %i realm info\n",realms);
+    if (realms>4)
+    {printf("too many realms\n");return false;}
+    uint8 pos = 9;
+    for(uint8 i=0;i<realms;i++)
+    {
+        realmdata[i].icon = (uint8)buffer[pos];
+        realmdata[i].lock = (uint8)buffer[pos+1];
+        realmdata[i].flag = (uint8)buffer[pos+2];
+        pos +=3;
+        while ((uint8)buffer[pos])
+        {
+            realmdata[i].name.append(1,buffer[pos]);
+            pos++;
+        }
+        pos++;
+        while ((uint8)buffer[pos])
+        {
+            realmdata[i].address.append(1,buffer[pos]);
+            pos++;
+        }
+        // realmdata[i].population = ? float on pos+1 ... pos+4
+        realmdata[i].AmountOfCharacters = (uint8)buffer[pos+5];
+        realmdata[i].timezone = (uint8)buffer[pos+6];
+        pos += 8;
+        if (realmdata[i].flag & 0x04)
+        {
+            realmdata[i].version1 = (uint8)buffer[pos];
+            realmdata[i].version2 = (uint8)buffer[pos+1];
+            realmdata[i].version3 = (uint8)buffer[pos+2];
+            realmdata[i].build    = ((uint8)buffer[pos+4] *256 + (uint8)buffer[pos+3]);
+            pos += 5;
+        }
+
+        printf("%u | %u | %u | %s(%u.%u.%u %u) | %s | %u\n",realmdata[i].icon,realmdata[i].lock,realmdata[i].flag,
+            realmdata[i].name.c_str(),realmdata[i].version1,realmdata[i].version2,realmdata[i].version3,
+            realmdata[i].build,realmdata[i].address.c_str(),realmdata[i].AmountOfCharacters);
+    }
+    return true;
 }

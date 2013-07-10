@@ -15,6 +15,15 @@
     <ClInclude Include="source\Auth\sha.h">
       <Filter>Auth</Filter>
     </ClInclude>
+    <ClInclude Include="source\Auth\e_os2.h">
+      <Filter>Auth</Filter>
+    </ClInclude>
+    <ClInclude Include="source\Auth\ossl_typ.h">
+      <Filter>Auth</Filter>
+    </ClInclude>
+    <ClInclude Include="source\Auth\opensslconf.h">
+      <Filter>Auth</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\chb.cpp" />
