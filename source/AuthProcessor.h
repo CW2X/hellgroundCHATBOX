@@ -3,6 +3,7 @@
 #include "Auth\bn.h"
 #include "Auth\Sha1.h"
 #include <string>
+#include "BaseSocket.h"
 
 enum eAuthCmd
 {
@@ -60,6 +61,7 @@ struct RealmInfo
     uint8 flag;
     std::string name;
     std::string address;
+    std::string port;
     float population;
     uint8 AmountOfCharacters;
     uint8 timezone;
@@ -69,22 +71,26 @@ struct RealmInfo
     uint16 build;
 };
 
-class AuthProcessor
+class AuthProcessor : public BaseSocket
 {
 public:
-    bool handle_incoming(char buffer[BUFFER_SIZE],uint8 datalength);
+    AuthProcessor();
+    bool send_logon_challenge(); // initialize 
+    bool Update();
     
+    bool RealmListReady;
+    PCSTR GetRealmAdress(uint8 i) {return realmdata[i].address.c_str();};
+    PCSTR GetRealmPort(uint8 i) {return realmdata[i].port.c_str();};
+private:
     void MagicVoid(const std::string& rI);
 
-    bool send_logon_challenge();
+    bool handle_incoming(char buffer[BUFFER_SIZE],uint8 datalength);
     bool send_logon_proof();
     bool send_realm_list();
-    //more SEND
     bool recv_logon_challenge(char buffer[BUFFER_SIZE],uint8 datalength);
     bool recv_logon_proof(char buffer[BUFFER_SIZE],uint8 datalength);
     bool recv_realm_list(char buffer[BUFFER_SIZE],uint8 datalength);
-    //more RECV
-private:
+    
     BigNumber A,B,a,g,N,K,s,unk3,v,x,M,M2; // magic variables
     uint8 realms;
     RealmInfo realmdata[4];

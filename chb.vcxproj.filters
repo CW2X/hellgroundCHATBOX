@@ -24,6 +24,8 @@
     <ClInclude Include="source\Auth\opensslconf.h">
       <Filter>Auth</Filter>
     </ClInclude>
+    <ClInclude Include="source\MainSocket.h" />
+    <ClInclude Include="source\BaseSocket.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\chb.cpp" />
@@ -34,6 +36,8 @@
     <ClCompile Include="source\Auth\Sha1.cpp">
       <Filter>Auth</Filter>
     </ClCompile>
+    <ClCompile Include="source\MainSocket.cpp" />
+    <ClCompile Include="source\BaseSocket.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Auth">

@@ -1,4 +1,6 @@
-#define TARGET_ADDRESS "25.105.135.246"//"logon.hellground.net"
+#include <stdio.h>
+
+#define REALMLIST_ADDRESS "25.105.135.246"//"logon.hellground.net"
 #define MAIN_LOGIN "user2"//"emerytura125"
 #define MAIN_PASSWORD "f318ad75bf6d4f5b219984dc565bd072b43bba8f"//"4f3c709b69dd490932bdd5bde14a0dbcc0027529"
 #define AUTH_PORT "3724"
@@ -12,4 +14,3 @@ typedef signed char      int8;
 typedef signed short     int16;
 typedef signed int       int32;
 typedef signed __int64   int64;
-int send_packet(char buffer[BUFFER_SIZE],uint8 datalength);

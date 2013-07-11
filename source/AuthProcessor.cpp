@@ -1,5 +1,12 @@
 #include "AuthProcessor.h"
 
+AuthProcessor::AuthProcessor()
+{
+    ServerAdress = REALMLIST_ADDRESS;
+    ServerPort = AUTH_PORT;
+    RealmListReady = false;
+}
+
 bool AuthProcessor::handle_incoming(char buffer[BUFFER_SIZE],uint8 datalength)
 {
     switch(buffer[0])
@@ -151,9 +158,7 @@ bool AuthProcessor::send_logon_challenge()
     for(uint8 i=0; i<username.size();i++)
         sLC.data.I[i]=(uint8)*(username.substr(i,1).c_str());
 
-    if(send_packet(sLC.c,username.length()+34) == -1)
-        return false;
-    return true;
+    return send_packet(sLC.c,username.length()+34);
 }
 
 bool AuthProcessor::recv_logon_challenge(char buffer[BUFFER_SIZE],uint8 datalength)
@@ -212,9 +217,7 @@ bool AuthProcessor::send_logon_proof()
     sLP.data.number_of_keys = 0;
     sLP.data.securityFlags  = 0;
     
-    if (send_packet(sLP.c,sizeof(sLP)) == -1)
-        return false;
-    return true;
+    return send_packet(sLP.c,sizeof(sLP));
 }
 
 bool AuthProcessor::recv_logon_proof(char buffer[BUFFER_SIZE],uint8 datalength)
@@ -247,9 +250,7 @@ bool AuthProcessor::send_realm_list()
 {
     printf("sending realm list\n");
     char c[5] = {0x10,0x00,0x00,0x00,0x00};
-    if (send_packet(c,5) == -1)
-        return false;
-    return true;
+    return send_packet(c,5);
 }
 
 bool AuthProcessor::recv_realm_list(char buffer[BUFFER_SIZE],uint8 datalength)
@@ -276,9 +277,15 @@ bool AuthProcessor::recv_realm_list(char buffer[BUFFER_SIZE],uint8 datalength)
             pos++;
         }
         pos++;
-        while ((uint8)buffer[pos])
+        while ((uint8)buffer[pos]!= 58)
         {
             realmdata[i].address.append(1,buffer[pos]);
+            pos++;
+        }
+        pos++;
+        while ((uint8)buffer[pos])
+        {
+            realmdata[i].port.append(1,buffer[pos]);
             pos++;
         }
         // realmdata[i].population = ? float on pos+1 ... pos+4
@@ -294,9 +301,21 @@ bool AuthProcessor::recv_realm_list(char buffer[BUFFER_SIZE],uint8 datalength)
             pos += 5;
         }
 
-        printf("%u | %u | %u | %s(%u.%u.%u %u) | %s | %u\n",realmdata[i].icon,realmdata[i].lock,realmdata[i].flag,
+        printf("%u | %u | %u | %s(%u.%u.%u %u) | %s:%s | %u\n",realmdata[i].icon,realmdata[i].lock,realmdata[i].flag,
             realmdata[i].name.c_str(),realmdata[i].version1,realmdata[i].version2,realmdata[i].version3,
-            realmdata[i].build,realmdata[i].address.c_str(),realmdata[i].AmountOfCharacters);
+            realmdata[i].build,realmdata[i].address.c_str(),realmdata[i].port.c_str(),realmdata[i].AmountOfCharacters);
     }
+    if (realms > 0)
+        RealmListReady = true;
     return true;
+}
+
+bool AuthProcessor::Update()
+{
+    char recvbuff[BUFFER_SIZE];
+    uint8 datalength;
+
+    if (!recv_packet(recvbuff,&datalength))
+        return false;
+    return handle_incoming(recvbuff,datalength);
 }
