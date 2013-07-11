@@ -8,6 +8,8 @@
  * the Free Software Foundation; either version 2 of the License, or
  * (at your option) any later version.
  */
+#ifndef _AUTH_SHA1_H
+#define _AUTH_SHA1_H
 
 #include "..\base_defs.h"
 #include "sha.h"
@@ -37,4 +39,6 @@ class Sha1Hash
         SHA_CTX mC;
         uint8 mDigest[SHA_DIGEST_LENGTH];
 };
+
+#endif
 

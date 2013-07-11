@@ -1,5 +1,4 @@
 #include "base_defs.h"
-#include "Auth\BigNumber.h"
 #include "Auth\bn.h"
 #include "Auth\Sha1.h"
 #include "BaseSocket.h"
@@ -80,6 +79,7 @@ public:
     bool RealmListReady;
     PCSTR GetRealmAdress(uint8 i) {return realmdata[i].address.c_str();};
     PCSTR GetRealmPort(uint8 i) {return realmdata[i].port.c_str();};
+    uint8* GetKey() {return K.AsByteArray();};
 private:
     void MagicVoid(const std::string& rI);
 

@@ -137,7 +137,6 @@ void AuthProcessor::MagicVoid(const std::string& rI)
 
 bool AuthProcessor::send_logon_challenge()
 {
-    printf("sending logon challenge\n");
     std::string username = MAIN_LOGIN;
     AUTH_LOGON_CHALLENGE_U sLC;
 
@@ -156,7 +155,7 @@ bool AuthProcessor::send_logon_challenge()
     sLC.data.ip             = 0xF6876919;
     sLC.data.I_len          = username.size();
     for(uint8 i=0; i<username.size();i++)
-        sLC.data.I[i]=(uint8)*(username.substr(i,1).c_str());
+        sLC.data.I[i]=(uint8)(username.c_str()[i]);
 
     return send_packet(sLC.c,username.length()+34);
 }
@@ -172,7 +171,6 @@ bool AuthProcessor::recv_logon_challenge(char buffer[BUFFER_SIZE],uint8 dataleng
                 printf("logon challenge: invalid response from server\n");
                 return false;
             }
-            printf("received proper logon challenge response\n");
             
             uint8 local[32];
             for(int i = 0; i<32;i++)
@@ -201,7 +199,6 @@ bool AuthProcessor::recv_logon_challenge(char buffer[BUFFER_SIZE],uint8 dataleng
 
 bool AuthProcessor::send_logon_proof()
 {
-    printf("sending logon proof\n");
     AUTH_LOGON_PROOF_U sLP;
 
     // beggining of magic
@@ -236,8 +233,6 @@ bool AuthProcessor::recv_logon_proof(char buffer[BUFFER_SIZE],uint8 datalength)
             if ((uint8)buffer[i+2] != (uint8)M2.AsByteArray()[i])
                 {printf("logon proof: invalid M2 key\n");return false;}
         
-
-        printf("received proper logon proof response\n");
         return true;
     }
     else
@@ -248,7 +243,6 @@ bool AuthProcessor::recv_logon_proof(char buffer[BUFFER_SIZE],uint8 datalength)
 
 bool AuthProcessor::send_realm_list()
 {
-    printf("sending realm list\n");
     char c[5] = {0x10,0x00,0x00,0x00,0x00};
     return send_packet(c,5);
 }

@@ -66,8 +66,6 @@ bool BaseSocket::send_packet(char buffer[BUFFER_SIZE],uint8 datalength)
         closesocket(MySocket);
         WSACleanup();
     }
-    else
-        printf("Bytes sent: %ld\n", IsError);
     return (IsError != -1);
 }
 
@@ -83,9 +81,7 @@ bool BaseSocket::recv_packet(char* buffer, uint8* datalength)
     if (select(MySocket+1,&recvset,NULL,NULL,& tv) == 1)
     {
         int IsError = recv(MySocket, buffer, BUFFER_SIZE, 0);
-        if ( IsError > 0 )
-            printf("Bytes received: %d\n", IsError);
-        else if (IsError <0)
+        if (IsError <0)
         {
             printf("recv failed with error: %d\n", WSAGetLastError());
             return false;
