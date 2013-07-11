@@ -8,12 +8,12 @@ public:
     bool Update();
     void SetKey(uint8 * key) {K.SetBinary(key,40);};
 
-    bool send_auth();
 private:
     void prepare_packet(uint8* packet) {m_crypt.EncryptSend(packet,6);};
+    bool recv_auth_challenge(char buffer[BUFFER_SIZE],uint8 datalength);
+    bool send_auth_session();
 
     AuthCrypt m_crypt;
     BigNumber K;
-    bool isAuthed;
     uint32 serverSeed,clientSeed;
 };

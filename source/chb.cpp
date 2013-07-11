@@ -18,7 +18,7 @@ int main( void )
         if (!sAProcessor.Update())
             break;
         
-        if (sAProcessor.RealmListReady)
+        if (sAProcessor.IsAuthed)
         {
             if(!sMainSocket.IsConnected)
             {

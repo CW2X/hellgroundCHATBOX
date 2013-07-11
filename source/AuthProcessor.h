@@ -76,7 +76,6 @@ public:
     bool send_logon_challenge(); // initialize 
     bool Update();
     
-    bool RealmListReady;
     PCSTR GetRealmAdress(uint8 i) {return realmdata[i].address.c_str();};
     PCSTR GetRealmPort(uint8 i) {return realmdata[i].port.c_str();};
     uint8* GetKey() {return K.AsByteArray();};

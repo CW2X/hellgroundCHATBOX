@@ -4,7 +4,7 @@ AuthProcessor::AuthProcessor()
 {
     ServerAdress = REALMLIST_ADDRESS;
     ServerPort = AUTH_PORT;
-    RealmListReady = false;
+    IsAuthed = false;
 }
 
 bool AuthProcessor::handle_incoming(char buffer[BUFFER_SIZE],uint8 datalength)
@@ -300,7 +300,7 @@ bool AuthProcessor::recv_realm_list(char buffer[BUFFER_SIZE],uint8 datalength)
             realmdata[i].build,realmdata[i].address.c_str(),realmdata[i].port.c_str(),realmdata[i].AmountOfCharacters);
     }
     if (realms > 0)
-        RealmListReady = true;
+        IsAuthed = true;
     return true;
 }
 

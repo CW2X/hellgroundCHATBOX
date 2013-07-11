@@ -3,6 +3,7 @@
 BaseSocket::BaseSocket()
 {
     IsConnected = false;
+    IsAuthed    = false;
 }
 
 bool BaseSocket::open_socket()

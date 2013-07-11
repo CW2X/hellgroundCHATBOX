@@ -17,6 +17,7 @@ public:
     PCSTR ServerAdress;
     PCSTR ServerPort;
     bool IsConnected;
+    bool IsAuthed;
 private:
     WSADATA wsa_data;
     int MySocket;
