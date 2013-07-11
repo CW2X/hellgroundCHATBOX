@@ -3,10 +3,9 @@
 bool MainSocket::Update()
 {
     if(!IsConnected)
-    {
+        return open_socket();
 
-        open_socket();
-    }
-    //else
-    return true;
+    char buf[6] = {0x35,0x00,0x00,0x00,0x00,0x00};
+    send_packet(buf,6);
+    return false;
 }

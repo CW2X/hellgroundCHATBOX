@@ -26,6 +26,45 @@
     </ClInclude>
     <ClInclude Include="source\MainSocket.h" />
     <ClInclude Include="source\BaseSocket.h" />
+    <ClInclude Include="source\Auth\Hmac.h">
+      <Filter>Auth</Filter>
+    </ClInclude>
+    <ClInclude Include="source\Auth\AuthCrypt.h">
+      <Filter>Auth</Filter>
+    </ClInclude>
+    <ClInclude Include="source\Auth\hmac(OpenSSL).h">
+      <Filter>Auth</Filter>
+    </ClInclude>
+    <ClInclude Include="source\Auth\evp.h">
+      <Filter>Auth</Filter>
+    </ClInclude>
+    <ClInclude Include="source\Auth\bio.h">
+      <Filter>Auth</Filter>
+    </ClInclude>
+    <ClInclude Include="source\Auth\objects.h">
+      <Filter>Auth</Filter>
+    </ClInclude>
+    <ClInclude Include="source\Auth\symhacks.h">
+      <Filter>Auth</Filter>
+    </ClInclude>
+    <ClInclude Include="source\Auth\stack.h">
+      <Filter>Auth</Filter>
+    </ClInclude>
+    <ClInclude Include="source\Auth\opensslv.h">
+      <Filter>Auth</Filter>
+    </ClInclude>
+    <ClInclude Include="source\Auth\safestack.h">
+      <Filter>Auth</Filter>
+    </ClInclude>
+    <ClInclude Include="source\Auth\crypto.h">
+      <Filter>Auth</Filter>
+    </ClInclude>
+    <ClInclude Include="source\Auth\asn1.h">
+      <Filter>Auth</Filter>
+    </ClInclude>
+    <ClInclude Include="source\Auth\obj_mac.h">
+      <Filter>Auth</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\chb.cpp" />
@@ -38,6 +77,12 @@
     </ClCompile>
     <ClCompile Include="source\MainSocket.cpp" />
     <ClCompile Include="source\BaseSocket.cpp" />
+    <ClCompile Include="source\Auth\Hmac.cpp">
+      <Filter>Auth</Filter>
+    </ClCompile>
+    <ClCompile Include="source\Auth\AuthCrypt.cpp">
+      <Filter>Auth</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Auth">

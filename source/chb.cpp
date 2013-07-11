@@ -4,10 +4,9 @@
 
 AuthProcessor   sAProcessor;
 MainSocket      sMainSocket;
+
 int main( void )
-
 {
-
     if(!sAProcessor.open_socket())
         return 1;
     
@@ -18,6 +17,7 @@ int main( void )
     {
         if (!sAProcessor.Update())
             break;
+        
         if (sAProcessor.RealmListReady)
         {
             if(!sMainSocket.IsConnected)

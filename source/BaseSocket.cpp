@@ -73,17 +73,27 @@ bool BaseSocket::send_packet(char buffer[BUFFER_SIZE],uint8 datalength)
 
 bool BaseSocket::recv_packet(char* buffer, uint8* datalength)
 {
-    int IsError;
+    fd_set recvset;
+    timeval tv;
 
-    IsError = recv(MySocket, buffer, BUFFER_SIZE, 0);
-    if ( IsError > 0 )
-        printf("Bytes received: %d\n", IsError);
-    else if (IsError <0)
+    FD_ZERO(&recvset);
+    FD_SET(MySocket,&recvset);
+    tv.tv_sec  = 0;
+    tv.tv_usec = 0;
+    if (select(MySocket+1,&recvset,NULL,NULL,& tv) == 1)
     {
-        printf("recv failed with error: %d\n", WSAGetLastError());
-        return false;
+        int IsError = recv(MySocket, buffer, BUFFER_SIZE, 0);
+        if ( IsError > 0 )
+            printf("Bytes received: %d\n", IsError);
+        else if (IsError <0)
+        {
+            printf("recv failed with error: %d\n", WSAGetLastError());
+            return false;
+        }
+        *datalength = (uint8)IsError;
+        return true;
     }
-    *datalength = (uint8)IsError;
+    *datalength = 0;
     return true;
 }
 

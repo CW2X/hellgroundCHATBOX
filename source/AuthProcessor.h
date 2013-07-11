@@ -2,7 +2,6 @@
 #include "Auth\BigNumber.h"
 #include "Auth\bn.h"
 #include "Auth\Sha1.h"
-#include <string>
 #include "BaseSocket.h"
 
 enum eAuthCmd

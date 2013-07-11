@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <string>
 
 #define REALMLIST_ADDRESS "25.105.135.246"//"logon.hellground.net"
 #define MAIN_LOGIN "user2"//"emerytura125"
