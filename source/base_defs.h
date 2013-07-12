@@ -1,3 +1,6 @@
+#ifndef BASE_DEFINES
+#define BASE_DEFINES
+
 #include <stdio.h>
 #include <string>
 
@@ -15,3 +18,19 @@ typedef signed char      int8;
 typedef signed short     int16;
 typedef signed int       int32;
 typedef signed __int64   int64;
+
+struct inc_pack
+{
+    uint16  size;               //this is just size of data
+    uint16  cmd;
+    uint8   data[BUFFER_SIZE];
+};
+
+struct out_pack
+{
+    uint16  size;               //this is just size of data
+    uint32  cmd;
+    uint8   data[BUFFER_SIZE];
+
+};
+#endif

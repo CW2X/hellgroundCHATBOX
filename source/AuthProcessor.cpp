@@ -306,6 +306,13 @@ bool AuthProcessor::recv_realm_list(char buffer[BUFFER_SIZE],uint8 datalength)
 
 bool AuthProcessor::Update()
 {
+    if(!IsConnected)
+    {
+        if(!open_socket())
+            return false;
+        return send_logon_challenge();
+    }
+
     char recvbuff[BUFFER_SIZE];
     uint8 datalength;
     

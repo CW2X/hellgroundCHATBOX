@@ -9,15 +9,15 @@ class BaseSocket
 {
 public:
     BaseSocket();
-    bool open_socket();
-    void close_socket();
-    bool send_packet(char buffer[BUFFER_SIZE],uint8 datalength);
-    bool recv_packet(char * buffer,uint8* datalength);
-
-    PCSTR ServerAdress;
-    PCSTR ServerPort;
     bool IsConnected;
     bool IsAuthed;
+    PCSTR ServerAdress;
+    PCSTR ServerPort;
+protected:
+    bool open_socket();
+    void close_socket(); // for now never used
+    bool send_packet(char buffer[BUFFER_SIZE],uint8 datalength);
+    bool recv_packet(char * buffer,uint8* datalength);
 private:
     WSADATA wsa_data;
     int MySocket;

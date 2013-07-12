@@ -73,7 +73,6 @@ class AuthProcessor : public BaseSocket
 {
 public:
     AuthProcessor();
-    bool send_logon_challenge(); // initialize 
     bool Update();
     
     PCSTR GetRealmAdress(uint8 i) {return realmdata[i].address.c_str();};
@@ -83,6 +82,7 @@ private:
     void MagicVoid(const std::string& rI);
 
     bool handle_incoming(char buffer[BUFFER_SIZE],uint8 datalength);
+    bool send_logon_challenge(); // initialize 
     bool send_logon_proof();
     bool send_realm_list();
     bool recv_logon_challenge(char buffer[BUFFER_SIZE],uint8 datalength);
@@ -93,4 +93,3 @@ private:
     uint8 realms;
     RealmInfo realmdata[4];
 };
-
