@@ -74,6 +74,7 @@ bool BaseSocket::recv_packet(char* buffer, uint16* datalength)
 {
     fd_set recvset;
     timeval tv;
+    int IsError = 0;
 
     FD_ZERO(&recvset);
     FD_SET(MySocket,&recvset);
@@ -81,7 +82,10 @@ bool BaseSocket::recv_packet(char* buffer, uint16* datalength)
     tv.tv_usec = 0;
     if (select(MySocket+1,&recvset,NULL,NULL,& tv) == 1)
     {
-        int IsError = recv(MySocket, buffer, BUFFER_SIZE, 0);
+        if (*datalength == 0)
+            IsError = recv(MySocket, buffer, BUFFER_SIZE, 0);
+        else
+            IsError = recv(MySocket, buffer, *datalength, 0);
         if (IsError <0)
         {
             printf("recv failed with error: %d\n", WSAGetLastError());
@@ -90,6 +94,7 @@ bool BaseSocket::recv_packet(char* buffer, uint16* datalength)
         *datalength = (uint16)IsError;
         return true;
     }
+
     *datalength = 0;
     return true;
 }

@@ -8,7 +8,6 @@ int main( void )
     MainSocket      sMainSocket;
     Session         sSession;
 
-    sSession.send = false;
     inc_pack InPacket;
     out_pack OuPacket;
     while(1)

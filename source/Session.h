@@ -17,8 +17,11 @@ class Session
 {
 public:
     bool Update(inc_pack* InPack,out_pack* OuPack);
-    bool send;
-    bool handle_char_enum(inc_pack* InPack);
-    bool handle_auth_response(inc_pack* InPack,out_pack* OuPack);
+    
     CharacterData characters[8];
+
+private:
+    bool handle_char_enum(inc_pack* InPack,out_pack* OuPack);
+    bool handle_auth_response(inc_pack* InPack,out_pack* OuPack);
+    bool send_cmsg_login(out_pack* OuPack);
 };

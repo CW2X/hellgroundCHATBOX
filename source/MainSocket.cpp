@@ -14,28 +14,34 @@ bool MainSocket::Update(inc_pack* packet)
     }
     if(!IsAuthed)
     {
+        datalength = 0;
         if (!recv_packet(recvbuff,&datalength))
             return false;
         if (datalength>0 && recv_auth_challenge(recvbuff,datalength))
             return send_auth_session();
         return true;
     }
+    datalength = 4;
     if (!recv_packet(recvbuff,&datalength))
         return false;
     if (datalength == 0)
         return true;
     decrypt_header((uint8*)recvbuff);
-    
-    if (datalength != MAKE_UINT16(recvbuff[0],recvbuff[1]) + 2)
-    {
-        printf("wrong packet size, recived %u, size in header %u",datalength,MAKE_UINT16(recvbuff[0],recvbuff[1]) + 2);
-        return false;
-    }
+
     packet->size = MAKE_UINT16(recvbuff[0],recvbuff[1]) - 2;
     packet->cmd  = MAKE_UINT16(recvbuff[3],recvbuff[2]);
+    datalength = packet->size;
+    if (!recv_packet(recvbuff,&datalength))
+        return false;
+
+    if (datalength != packet->size)
+    {
+        printf("wrong packet size, recived %u, size in header %u, opcode 0x%04X\n",datalength,packet->size,packet->cmd);
+        return false;
+    }
+    
     for (uint16 i=0;i<packet->size;i++)
-        packet->data[i]=recvbuff[i+4];
-    printf("size %u cmd 0x%04X\n",packet->size,packet->cmd);
+        packet->data[i]=recvbuff[i];
     return true;
 }
 
