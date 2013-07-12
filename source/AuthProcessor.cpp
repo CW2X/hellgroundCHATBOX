@@ -4,7 +4,6 @@ AuthProcessor::AuthProcessor()
 {
     ServerAdress = REALMLIST_ADDRESS;
     ServerPort = AUTH_PORT;
-    IsAuthed = false;
 }
 
 bool AuthProcessor::handle_incoming(char buffer[BUFFER_SIZE],uint8 datalength)
@@ -291,7 +290,7 @@ bool AuthProcessor::recv_realm_list(char buffer[BUFFER_SIZE],uint8 datalength)
             realmdata[i].version1 = (uint8)buffer[pos];
             realmdata[i].version2 = (uint8)buffer[pos+1];
             realmdata[i].version3 = (uint8)buffer[pos+2];
-            realmdata[i].build    = ((uint8)buffer[pos+4] *256 + (uint8)buffer[pos+3]);
+            realmdata[i].build    = MAKE_UINT16(buffer[pos+4],buffer[pos+3]);
             pos += 5;
         }
 

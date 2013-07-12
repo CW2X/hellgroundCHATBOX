@@ -26,13 +26,15 @@ bool MainSocket::Update(inc_pack* packet)
         return true;
     decrypt_header((uint8*)recvbuff);
     
-    if (datalength != (uint8)recvbuff[1] + 256*(uint8)recvbuff[0] + 2)
+    if (datalength != MAKE_UINT16(recvbuff[0],recvbuff[1]) + 2)
     {
-        printf("wrong packet size, recived %u, size in header %u",datalength,(uint16)recvbuff[1] + 256*(uint16)recvbuff[0] + 2);
+        printf("wrong packet size, recived %u, size in header %u",datalength,MAKE_UINT16(recvbuff[0],recvbuff[1]) + 2);
         return false;
     }
-    packet->size = (uint8)recvbuff[1] - 2;
-    packet->cmd  = (uint8)recvbuff[2] + 256*(uint8)recvbuff[3];
+    packet->size = MAKE_UINT16(recvbuff[0],recvbuff[1]) - 2;
+    packet->cmd  = MAKE_UINT16(recvbuff[3],recvbuff[2]);
+    for (uint16 i=0;i<packet->size;i++)
+        packet->data[i]=recvbuff[i+4];
     printf("size %u cmd 0x%04X\n",packet->size,packet->cmd);
     return true;
 }
@@ -41,7 +43,7 @@ bool MainSocket::recv_auth_challenge(char buffer[BUFFER_SIZE],uint16 datalength)
 {
     if( (uint8)buffer[2] != 0xEC || (uint8)buffer[3] != 0x01 || datalength != 8)
         return false;
-    serverSeed = (uint8)buffer[4] + 256*((uint8)buffer[5] + 256*((uint8)buffer[6] + 256*(uint8)buffer[7]));
+    serverSeed = MAKE_UINT32(buffer[7],buffer[6],buffer[5],buffer[4]);
     return true;
 }
 

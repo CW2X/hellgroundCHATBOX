@@ -81,7 +81,6 @@ bool BaseSocket::recv_packet(char* buffer, uint16* datalength)
     tv.tv_usec = 0;
     if (select(MySocket+1,&recvset,NULL,NULL,& tv) == 1)
     {
-        printf("read ready!\n");
         int IsError = recv(MySocket, buffer, BUFFER_SIZE, 0);
         if (IsError <0)
         {
