@@ -3,8 +3,8 @@
 bool MainSocket::Update(inc_pack* packet)
 {
     char recvbuff[BUFFER_SIZE];
-    uint8 datalength;
-    packet->size = (uint16)0;
+    uint16 datalength;
+    packet->cmd = (uint16)0;
 
     if(!IsConnected)
     {
@@ -17,7 +17,7 @@ bool MainSocket::Update(inc_pack* packet)
         if (!recv_packet(recvbuff,&datalength))
             return false;
         if (datalength>0 && recv_auth_challenge(recvbuff,datalength))
-                return send_auth_session();
+            return send_auth_session();
         return true;
     }
     if (!recv_packet(recvbuff,&datalength))
@@ -25,13 +25,10 @@ bool MainSocket::Update(inc_pack* packet)
     if (datalength == 0)
         return true;
     decrypt_header((uint8*)recvbuff);
-    printf("decrypted data: \n");
-    for (uint8 i=0;i<datalength;i++)
-        printf("%u |",(uint8)recvbuff[i]);
-    printf("EOT|\n");
-    if (datalength != (uint8)recvbuff[1] +2)
+    
+    if (datalength != (uint8)recvbuff[1] + 256*(uint8)recvbuff[0] + 2)
     {
-        printf("wrong packet size, recived %u, size in header %u",datalength,(uint8)recvbuff[1] +2);
+        printf("wrong packet size, recived %u, size in header %u",datalength,(uint16)recvbuff[1] + 256*(uint16)recvbuff[0] + 2);
         return false;
     }
     packet->size = (uint8)recvbuff[1] - 2;
@@ -40,7 +37,7 @@ bool MainSocket::Update(inc_pack* packet)
     return true;
 }
 
-bool MainSocket::recv_auth_challenge(char buffer[BUFFER_SIZE],uint8 datalength)
+bool MainSocket::recv_auth_challenge(char buffer[BUFFER_SIZE],uint16 datalength)
 {
     if( (uint8)buffer[2] != 0xEC || (uint8)buffer[3] != 0x01 || datalength != 8)
         return false;
@@ -88,7 +85,7 @@ bool MainSocket::send_out_pack(out_pack* packet)
     uint8 buffer[BUFFER_SIZE];
 
     buffer[0] = 0x00; buffer[4] = 0x00; buffer[5] = 0x00;
-    buffer[1] = (uint8)(packet->size + 6);
+    buffer[1] = (uint8)(packet->size + 4);//size send in header is counted without uint16 size
     buffer[2] = (uint8)(packet->cmd % 256);
     buffer[3] = (uint8)((packet->cmd - buffer[2])/256);
 

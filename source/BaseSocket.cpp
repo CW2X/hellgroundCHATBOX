@@ -59,7 +59,7 @@ bool BaseSocket::open_socket()
     return true;
 }
 
-bool BaseSocket::send_packet(char buffer[BUFFER_SIZE],uint8 datalength)
+bool BaseSocket::send_packet(char buffer[BUFFER_SIZE],uint16 datalength)
 {
     int IsError = send( MySocket,buffer, datalength, 0 );
     if (IsError == SOCKET_ERROR) {
@@ -70,7 +70,7 @@ bool BaseSocket::send_packet(char buffer[BUFFER_SIZE],uint8 datalength)
     return (IsError != -1);
 }
 
-bool BaseSocket::recv_packet(char* buffer, uint8* datalength)
+bool BaseSocket::recv_packet(char* buffer, uint16* datalength)
 {
     fd_set recvset;
     timeval tv;
@@ -81,13 +81,14 @@ bool BaseSocket::recv_packet(char* buffer, uint8* datalength)
     tv.tv_usec = 0;
     if (select(MySocket+1,&recvset,NULL,NULL,& tv) == 1)
     {
+        printf("read ready!\n");
         int IsError = recv(MySocket, buffer, BUFFER_SIZE, 0);
         if (IsError <0)
         {
             printf("recv failed with error: %d\n", WSAGetLastError());
             return false;
         }
-        *datalength = (uint8)IsError;
+        *datalength = (uint16)IsError;
         return true;
     }
     *datalength = 0;

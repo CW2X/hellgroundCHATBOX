@@ -11,7 +11,7 @@ public:
 private:
     void encrypt_header(uint8* header) {m_crypt.EncryptSend(header,6);};
     void decrypt_header(uint8* header) {m_crypt.DecryptRecv(header,4);};
-    bool recv_auth_challenge(char buffer[BUFFER_SIZE],uint8 datalength);
+    bool recv_auth_challenge(char buffer[BUFFER_SIZE],uint16 datalength);
     bool send_auth_session();
 
     AuthCrypt m_crypt;

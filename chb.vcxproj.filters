@@ -2,7 +2,6 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <ClInclude Include="source\base_defs.h" />
-    <ClInclude Include="source\AuthProcessor.h" />
     <ClInclude Include="source\Auth\BigNumber.h">
       <Filter>Auth</Filter>
     </ClInclude>
@@ -24,8 +23,6 @@
     <ClInclude Include="source\Auth\opensslconf.h">
       <Filter>Auth</Filter>
     </ClInclude>
-    <ClInclude Include="source\MainSocket.h" />
-    <ClInclude Include="source\BaseSocket.h" />
     <ClInclude Include="source\Auth\Hmac.h">
       <Filter>Auth</Filter>
     </ClInclude>
@@ -65,28 +62,48 @@
     <ClInclude Include="source\Auth\obj_mac.h">
       <Filter>Auth</Filter>
     </ClInclude>
+    <ClInclude Include="source\Session.h" />
+    <ClInclude Include="source\MainSocket.h">
+      <Filter>Sockets</Filter>
+    </ClInclude>
+    <ClInclude Include="source\BaseSocket.h">
+      <Filter>Sockets</Filter>
+    </ClInclude>
+    <ClInclude Include="source\AuthProcessor.h">
+      <Filter>Sockets</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\chb.cpp" />
-    <ClCompile Include="source\AuthProcessor.cpp" />
     <ClCompile Include="source\Auth\BigNumber.cpp">
       <Filter>Auth</Filter>
     </ClCompile>
     <ClCompile Include="source\Auth\Sha1.cpp">
       <Filter>Auth</Filter>
     </ClCompile>
-    <ClCompile Include="source\MainSocket.cpp" />
-    <ClCompile Include="source\BaseSocket.cpp" />
     <ClCompile Include="source\Auth\Hmac.cpp">
       <Filter>Auth</Filter>
     </ClCompile>
     <ClCompile Include="source\Auth\AuthCrypt.cpp">
       <Filter>Auth</Filter>
     </ClCompile>
+    <ClCompile Include="source\Session.cpp" />
+    <ClCompile Include="source\MainSocket.cpp">
+      <Filter>Sockets</Filter>
+    </ClCompile>
+    <ClCompile Include="source\BaseSocket.cpp">
+      <Filter>Sockets</Filter>
+    </ClCompile>
+    <ClCompile Include="source\AuthProcessor.cpp">
+      <Filter>Sockets</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Auth">
       <UniqueIdentifier>{5e482eb5-dffe-45e6-b6bc-a651148f9877}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Sockets">
+      <UniqueIdentifier>{9aa08d67-51b6-44e6-b132-2abc1ec51dd3}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

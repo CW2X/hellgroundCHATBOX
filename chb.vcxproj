@@ -31,6 +31,7 @@
     <ClInclude Include="source\base_defs.h" />
     <ClInclude Include="source\AuthProcessor.h" />
     <ClInclude Include="source\MainSocket.h" />
+    <ClInclude Include="source\Session.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\Auth\AuthCrypt.cpp" />
@@ -41,6 +42,7 @@
     <ClCompile Include="source\chb.cpp" />
     <ClCompile Include="source\AuthProcessor.cpp" />
     <ClCompile Include="source\MainSocket.cpp" />
+    <ClCompile Include="source\Session.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{1C6DD9ED-5323-4C2A-AD34-7F983E41154C}</ProjectGuid>

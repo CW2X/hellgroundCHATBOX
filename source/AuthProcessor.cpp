@@ -314,11 +314,11 @@ bool AuthProcessor::Update()
     }
 
     char recvbuff[BUFFER_SIZE];
-    uint8 datalength;
+    uint16 datalength;
     
     if (!recv_packet(recvbuff,&datalength))
         return false;
     if (datalength>0)
-        return handle_incoming(recvbuff,datalength);
+        return handle_incoming(recvbuff,(uint8)datalength);
     return true;
 }
