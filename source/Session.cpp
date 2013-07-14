@@ -5,10 +5,13 @@ bool Session::Update(inc_pack* InPack,out_pack* OuPack)
     switch(InPack->cmd)
     {
     case 0: break;
-    case 0x003B: return handle_char_enum(InPack,OuPack);
-    case 0x0096: return handle_chat_message(InPack,OuPack);//SMSG_MESSAGECHAT
-    case 0x01EE: return handle_auth_response(InPack,OuPack);
-    case 0x0236: return handle_login_verify(InPack,OuPack);
+    case 0x003B: return handle_char_enum(InPack,OuPack);        //SMSG_CHAR_ENUM
+    case 0x0096: return handle_chat_message(InPack,OuPack);     //SMSG_MESSAGECHAT
+    case 0x01EE: return handle_auth_response(InPack,OuPack);    //SMSG_AUTH_RESPONSE
+    case 0x0236: return handle_login_verify(InPack,OuPack);     //SMSG_LOGIN_VERIFY_WORLD
+    case 0x0800: {InPack->cmd = 0 ; break;}                     //CL thread: initialize
+    case 0x0801: return handle_Cl(InPack,OuPack);               //CL thread: command
+    //case 0x0802: return send_chat_message(InPack,OuPack)      //CL thread: message
         //opcodes to be taken care of ... possibly
     case 0x0067: //SMSG_CONTACT_LIST
     case 0x0099: //SMSG_CHANNEL_NOTIFY
@@ -176,4 +179,12 @@ char* Session::ChatLanguages(uint32 lang)
     case 0xFFFFFFFF: return "ADDO";
     default: return "UNKN";
     }
+}
+
+bool Session::handle_Cl(inc_pack* InPack,out_pack* OuPack)
+{
+    for(uint8 i=0;i<InPack->size;i++)
+        printf("%c",InPack->data[i]);
+    printf("\n");
+    return true;
 }

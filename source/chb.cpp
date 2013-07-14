@@ -1,15 +1,34 @@
 #include "AuthProcessor.h"
 #include "MainSocket.h"
 #include "Session.h"
+#include <iostream>
+#include <process.h>
+
+inc_pack ClPacket;
+
+void __cdecl ClRun(void * args)
+{
+    std::string instr;
+    uint16 i=0;
+
+    std::cin >> instr;
+    while(instr[i] && instr[i] != '\n')
+        ClPacket.data[i] = instr[i++];
+    ClPacket.size = i;
+    ClPacket.cmd  = 0x0800;
+    _endthread();
+}
 
 int main( void )
 {
     AuthProcessor   sAProcessor;
     MainSocket      sMainSocket;
     Session         sSession;
+    ClPacket.cmd = 0x0801;
 
     inc_pack InPacket;
     out_pack OuPacket;
+
     while(1)
     {
         if (!sAProcessor.IsAuthed)
@@ -31,14 +50,23 @@ int main( void )
             
             if(sMainSocket.IsAuthed)
             {
-                // here we have incoming data (if any) in [InPacket] struct
                 OuPacket.cmd = 0;
                 if (!sSession.Update(&InPacket,&OuPacket))
                     return 1;
-                // here we have outgoing data (if any) in [OuPacket] struct
                 
                 if(OuPacket.cmd != 0 && !sMainSocket.send_out_pack(&OuPacket))
                     return 1;
+
+                if (ClPacket.cmd != 0)
+                {
+                    OuPacket.cmd = 0;
+                    if(!sSession.Update(&ClPacket,&OuPacket))
+                        return 1;
+                    if(OuPacket.cmd != 0 && !sMainSocket.send_out_pack(&OuPacket))
+                        return 1;
+                    ClPacket.cmd = 0;
+                    _beginthread(ClRun,0,NULL);
+                }
             }
         }
     }

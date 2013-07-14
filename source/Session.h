@@ -38,6 +38,7 @@ private:
     bool handle_chat_message(inc_pack* InPack,out_pack* OuPack);
     bool handle_auth_response(inc_pack* InPack,out_pack* OuPack);
     bool handle_login_verify(inc_pack* InPack,out_pack* OuPack);
+    bool handle_Cl(inc_pack* InPack,out_pack* OuPack);
 
     bool send_cmsg_login(out_pack* OuPack);
     bool send_cmsg_join_channel(out_pack* OuPack,std::string name);
