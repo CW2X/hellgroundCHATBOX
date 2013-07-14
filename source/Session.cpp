@@ -11,7 +11,7 @@ bool Session::Update(inc_pack* InPack,out_pack* OuPack)
     case 0x0236: return handle_login_verify(InPack,OuPack);     //SMSG_LOGIN_VERIFY_WORLD
     case 0x0800: {InPack->cmd = 0 ; break;}                     //CL thread: initialize
     case 0x0801: return handle_Cl(InPack,OuPack);               //CL thread: command
-    //case 0x0802: return send_chat_message(InPack,OuPack)      //CL thread: message
+    case 0x0802: return send_chat_message(InPack,OuPack);       //CL thread: message
         //opcodes to be taken care of ... possibly
     case 0x0067: //SMSG_CONTACT_LIST
     case 0x0099: //SMSG_CHANNEL_NOTIFY
@@ -64,6 +64,11 @@ bool Session::Update(inc_pack* InPack,out_pack* OuPack)
 
 bool Session::handle_auth_response(inc_pack* InPack,out_pack* OuPack)
 {
+    if (InPack->data[0] != 0x0C)
+    {
+        printf("auth response received error: %u\n",InPack->data[0]);
+        return false;
+    }
     OuPack->cmd  = 0x0037;
     OuPack->size = 0;
     return true;
@@ -186,5 +191,33 @@ bool Session::handle_Cl(inc_pack* InPack,out_pack* OuPack)
     for(uint8 i=0;i<InPack->size;i++)
         printf("%c",InPack->data[i]);
     printf("\n");
+    return true;
+}
+
+bool Session::send_chat_message(inc_pack* InPack,out_pack* OuPack)
+{
+    uint32 mtype = 17;//CHAT_MSG_CHANNEL
+    uint32 lang  =  7;//Common
+
+    OuPack->cmd = 0x0095;
+    OuPack->data[0] = uint8(mtype & 0x000000FF);
+    OuPack->data[1] = uint8(mtype & 0x0000FF00);
+    OuPack->data[2] = uint8(mtype & 0x00FF0000);
+    OuPack->data[3] = uint8(mtype & 0xFF000000);
+    OuPack->data[4] = uint8(lang & 0x000000FF);
+    OuPack->data[5] = uint8(lang & 0x0000FF00);
+    OuPack->data[6] = uint8(lang & 0x00FF0000);
+    OuPack->data[7] = uint8(lang & 0xFF000000);
+    OuPack->data[8] = (uint8)'w';
+    OuPack->data[9] = (uint8)'o';
+    OuPack->data[10] = (uint8)'r';
+    OuPack->data[11] = (uint8)'l';
+    OuPack->data[12] = (uint8)'d';
+    OuPack->data[13] = 0x00;
+
+    for(uint8 i=0;i<InPack->size;i++)
+        OuPack->data[14+i] = InPack->data[i]; 
+    OuPack->data[14+InPack->size] = 0x00; 
+    OuPack->size = 15+InPack->size; 
     return true;
 }

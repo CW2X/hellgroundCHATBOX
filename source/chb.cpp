@@ -8,14 +8,14 @@ inc_pack ClPacket;
 
 void __cdecl ClRun(void * args)
 {
-    std::string instr;
+    char instr[256];
     uint16 i=0;
 
-    std::cin >> instr;
+    std::cin.getline(instr,256);
     while(instr[i] && instr[i] != '\n')
         ClPacket.data[i] = instr[i++];
     ClPacket.size = i;
-    ClPacket.cmd  = 0x0800;
+    ClPacket.cmd  = (ClPacket.data[0] == '/') ? 0x0801 : 0x0802 ;
     _endthread();
 }
 

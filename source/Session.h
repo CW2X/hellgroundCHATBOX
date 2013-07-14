@@ -42,6 +42,7 @@ private:
 
     bool send_cmsg_login(out_pack* OuPack);
     bool send_cmsg_join_channel(out_pack* OuPack,std::string name);
+    bool send_chat_message(inc_pack* InPack,out_pack* OuPack);
 
     char* ChatLanguages(uint32 lang);
 };
