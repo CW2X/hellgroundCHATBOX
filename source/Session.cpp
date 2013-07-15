@@ -22,43 +22,6 @@ bool Session::Update(inc_pack* InPack,out_pack* OuPack)
     case 0x033D: //SMSG_MOTD
     case 0x03F1: //SMSG_USERLIST_UPDATE
         break;
-        //ignored opcodes:
-    case 0x0042: //SMSG_LOGIN_SETTIMESPEED
-    case 0x00A9: //SMSG_UPDATE_OBJECT
-    case 0x00AA: //SMSG_DESTROY_OBJECT
-    case 0x00DD: //SMSG_MONSTER_MOVE
-    case 0x00E2: //SMSG_FORCE_RUN_SPEED_CHANGE
-    case 0x00E6: //SMSG_FORCE_SWIM_SPEED_CHANGE
-    case 0x00E8: //SMSG_FORCE_MOVE_ROOT
-    case 0x00EA: //SMSG_FORCE_MOVE_UNROOT
-    case 0x00FD: //SMSG_TUTORIAL_FLAGS
-    case 0x0122: //SMSG_INITIALIZE_FACTIONS
-    case 0x0127: //SMSG_SET_PROFICIENCY
-    case 0x0129: //SMSG_ACTION_BUTTONS
-    case 0x012A: //SMSG_INITIAL_SPELLS
-    case 0x0131: //SMSG_SPELL_START
-    case 0x0132: //SMSG_SPELL_GO
-    case 0x0137: //SMSG_UPDATE_AURA_DURATION
-    case 0x013C: //SMSG_AI_REACTION
-    case 0x0143: //SMSG_ATTACKSTART
-    case 0x0144: //SMSG_ATTACKSTOP
-    case 0x014A: //SMSG_ATTACKERSTATEUPDATE
-    case 0x0155: //SMSG_BINDPOINTUPDATE
-    case 0x01F6: //SMSG_COMPRESSED_UPDATE_OBJECT
-    case 0x0209: //SMSG_ACCOUNT_DATA_TIMES
-    case 0x021E: //SMSG_SET_REST_START
-    case 0x0250: //SMSG_SPELLNONMELEEDAMAGELOG
-    case 0x02C2: //SMSG_INIT_WORLD_STATES
-    case 0x02F4: //SMSG_WEATHER
-    case 0x0329: //MSG_SET_DUNGEON_DIFFICULTY
-    case 0x030D: //SMSG_SPLINE_MOVE_SET_RUN_MODE
-    case 0x0381: //SMSG_FORCE_FLIGHT_SPEED_CHANGE
-    case 0x0390: //SMSG_TIME_SYNC_REQ
-    case 0x03A4: //SMSG_SET_EXTRA_AURA_INFO
-    case 0x03C8: //SMSG_FEATURE_SYSTEM_STATUS
-    case 0x041D: //SMSG_SEND_UNLEARN_SPELLS
-    
-        break;
     default:
         {
             printf("received unhandled opcode: 0x%.4X size: %u\n",InPack->cmd,InPack->size);
@@ -199,6 +162,8 @@ bool Session::send_chat_message(std::string data,out_pack* OuPack)
     uint32 mtype = 17;//CHAT_MSG_CHANNEL
     uint32 lang  =  7;//Common
     uint8 point  =  8;
+    if (activechannel > nofchannels)
+        return true;
 
     OuPack->cmd = 0x0095;
     OuPack->data[0] = uint8(mtype & 0x000000FF);

@@ -59,7 +59,7 @@ bool BaseSocket::open_socket()
     return true;
 }
 
-bool BaseSocket::send_packet(char buffer[BUFFER_SIZE],uint16 datalength)
+bool BaseSocket::send_packet(char buffer[BUFFER_SIZE_OUT],uint16 datalength)
 {
     int IsError = send( MySocket,buffer, datalength, 0 );
     if (IsError == SOCKET_ERROR) {
@@ -83,7 +83,7 @@ bool BaseSocket::recv_packet(char* buffer, uint16* datalength)
     if (select(MySocket+1,&recvset,NULL,NULL,& tv) == 1)
     {
         if (*datalength == 0)
-            IsError = recv(MySocket, buffer, BUFFER_SIZE, 0);
+            IsError = recv(MySocket, buffer, BUFFER_SIZE_IN, 0);
         else
             IsError = recv(MySocket, buffer, *datalength, 0);
         if (IsError <0)

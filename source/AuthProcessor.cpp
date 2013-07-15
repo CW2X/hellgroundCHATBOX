@@ -6,7 +6,7 @@ AuthProcessor::AuthProcessor()
     ServerPort = AUTH_PORT;
 }
 
-bool AuthProcessor::handle_incoming(char buffer[BUFFER_SIZE],uint8 datalength)
+bool AuthProcessor::handle_incoming(char buffer[BUFFER_SIZE_IN],uint8 datalength)
 {
     switch(buffer[0])
     {
@@ -159,7 +159,7 @@ bool AuthProcessor::send_logon_challenge()
     return send_packet(sLC.c,username.length()+34);
 }
 
-bool AuthProcessor::recv_logon_challenge(char buffer[BUFFER_SIZE],uint8 datalength)
+bool AuthProcessor::recv_logon_challenge(char buffer[BUFFER_SIZE_IN],uint8 datalength)
 {
     switch (buffer[2])
     {
@@ -216,7 +216,7 @@ bool AuthProcessor::send_logon_proof()
     return send_packet(sLP.c,sizeof(sLP));
 }
 
-bool AuthProcessor::recv_logon_proof(char buffer[BUFFER_SIZE],uint8 datalength)
+bool AuthProcessor::recv_logon_proof(char buffer[BUFFER_SIZE_IN],uint8 datalength)
 {
     if(buffer[1] == 0x04)
         printf("invalid password\n");
@@ -246,7 +246,7 @@ bool AuthProcessor::send_realm_list()
     return send_packet(c,5);
 }
 
-bool AuthProcessor::recv_realm_list(char buffer[BUFFER_SIZE],uint8 datalength)
+bool AuthProcessor::recv_realm_list(char buffer[BUFFER_SIZE_IN],uint8 datalength)
 {
     if((uint8)buffer[1] != datalength - 3)
     {printf("realm list invalid packet size\n");return false;}
@@ -312,7 +312,7 @@ bool AuthProcessor::Update()
         return send_logon_challenge();
     }
 
-    char recvbuff[BUFFER_SIZE];
+    char recvbuff[BUFFER_SIZE_IN];
     uint16 datalength;
     datalength = 0;
     

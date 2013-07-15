@@ -26,7 +26,7 @@ bool Session::handle_Cl(cli_pack* InPack,out_pack* OuPack)
     cmd[InPack->data.size()-1] =0x00;}
 
     if(*cmd >'0' && *cmd <='9')
-    {activechannel = *cmd - 30; return true;}
+    {activechannel = *cmd - 48;return true;}
     switch(*cmd)
     {
     case 'c':

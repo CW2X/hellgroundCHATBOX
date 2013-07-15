@@ -81,13 +81,13 @@ public:
 private:
     void MagicVoid(const std::string& rI);
 
-    bool handle_incoming(char buffer[BUFFER_SIZE],uint8 datalength);
+    bool handle_incoming(char buffer[BUFFER_SIZE_IN],uint8 datalength);
     bool send_logon_challenge(); // initialize 
     bool send_logon_proof();
     bool send_realm_list();
-    bool recv_logon_challenge(char buffer[BUFFER_SIZE],uint8 datalength);
-    bool recv_logon_proof(char buffer[BUFFER_SIZE],uint8 datalength);
-    bool recv_realm_list(char buffer[BUFFER_SIZE],uint8 datalength);
+    bool recv_logon_challenge(char buffer[BUFFER_SIZE_IN],uint8 datalength);
+    bool recv_logon_proof(char buffer[BUFFER_SIZE_IN],uint8 datalength);
+    bool recv_realm_list(char buffer[BUFFER_SIZE_IN],uint8 datalength);
     
     BigNumber A,B,a,g,N,K,s,unk3,v,x,M,M2; // magic variables
     uint8 realms;
