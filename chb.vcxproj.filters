@@ -97,6 +97,7 @@
     <ClCompile Include="source\AuthProcessor.cpp">
       <Filter>Sockets</Filter>
     </ClCompile>
+    <ClCompile Include="source\Session-CL.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Auth">

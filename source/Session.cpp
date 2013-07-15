@@ -1,5 +1,11 @@
 #include "Session.h"
 
+Session::Session()
+{
+    nofchannels = 0;
+    activechannel = 1;
+}
+
 bool Session::Update(inc_pack* InPack,out_pack* OuPack)
 {
     switch(InPack->cmd)
@@ -9,9 +15,6 @@ bool Session::Update(inc_pack* InPack,out_pack* OuPack)
     case 0x0096: return handle_chat_message(InPack,OuPack);     //SMSG_MESSAGECHAT
     case 0x01EE: return handle_auth_response(InPack,OuPack);    //SMSG_AUTH_RESPONSE
     case 0x0236: return handle_login_verify(InPack,OuPack);     //SMSG_LOGIN_VERIFY_WORLD
-    case 0x0800: {InPack->cmd = 0 ; break;}                     //CL thread: initialize
-    case 0x0801: return handle_Cl(InPack,OuPack);               //CL thread: command
-    case 0x0802: return send_chat_message(InPack,OuPack);       //CL thread: message
         //opcodes to be taken care of ... possibly
     case 0x0067: //SMSG_CONTACT_LIST
     case 0x0099: //SMSG_CHANNEL_NOTIFY
@@ -26,11 +29,14 @@ bool Session::Update(inc_pack* InPack,out_pack* OuPack)
     case 0x00DD: //SMSG_MONSTER_MOVE
     case 0x00E2: //SMSG_FORCE_RUN_SPEED_CHANGE
     case 0x00E6: //SMSG_FORCE_SWIM_SPEED_CHANGE
+    case 0x00E8: //SMSG_FORCE_MOVE_ROOT
+    case 0x00EA: //SMSG_FORCE_MOVE_UNROOT
     case 0x00FD: //SMSG_TUTORIAL_FLAGS
     case 0x0122: //SMSG_INITIALIZE_FACTIONS
     case 0x0127: //SMSG_SET_PROFICIENCY
     case 0x0129: //SMSG_ACTION_BUTTONS
     case 0x012A: //SMSG_INITIAL_SPELLS
+    case 0x0131: //SMSG_SPELL_START
     case 0x0132: //SMSG_SPELL_GO
     case 0x0137: //SMSG_UPDATE_AURA_DURATION
     case 0x013C: //SMSG_AI_REACTION
@@ -41,6 +47,7 @@ bool Session::Update(inc_pack* InPack,out_pack* OuPack)
     case 0x01F6: //SMSG_COMPRESSED_UPDATE_OBJECT
     case 0x0209: //SMSG_ACCOUNT_DATA_TIMES
     case 0x021E: //SMSG_SET_REST_START
+    case 0x0250: //SMSG_SPELLNONMELEEDAMAGELOG
     case 0x02C2: //SMSG_INIT_WORLD_STATES
     case 0x02F4: //SMSG_WEATHER
     case 0x0329: //MSG_SET_DUNGEON_DIFFICULTY
@@ -69,8 +76,7 @@ bool Session::handle_auth_response(inc_pack* InPack,out_pack* OuPack)
         printf("auth response received error: %u\n",InPack->data[0]);
         return false;
     }
-    OuPack->cmd  = 0x0037;
-    OuPack->size = 0;
+    printf("authorization succesful\n");
     return true;
 }
 
@@ -128,6 +134,8 @@ bool Session::send_cmsg_join_channel(out_pack* OuPack,std::string name)
     for(uint8 i=0;i<name.size();i++)
         OuPack->data[6+i] = (uint8)(name.c_str()[i]);
     OuPack->data[name.size()+6] = 0x00; OuPack->data[name.size()+7] = 0x00;
+    channels[nofchannels++] = name;
+    printf("Joining channel %s [%u]\n",name.c_str(),nofchannels);
     return true;
 }
 
@@ -186,18 +194,11 @@ char* Session::ChatLanguages(uint32 lang)
     }
 }
 
-bool Session::handle_Cl(inc_pack* InPack,out_pack* OuPack)
-{
-    for(uint8 i=0;i<InPack->size;i++)
-        printf("%c",InPack->data[i]);
-    printf("\n");
-    return true;
-}
-
-bool Session::send_chat_message(inc_pack* InPack,out_pack* OuPack)
+bool Session::send_chat_message(std::string data,out_pack* OuPack)
 {
     uint32 mtype = 17;//CHAT_MSG_CHANNEL
     uint32 lang  =  7;//Common
+    uint8 point  =  8;
 
     OuPack->cmd = 0x0095;
     OuPack->data[0] = uint8(mtype & 0x000000FF);
@@ -208,16 +209,25 @@ bool Session::send_chat_message(inc_pack* InPack,out_pack* OuPack)
     OuPack->data[5] = uint8(lang & 0x0000FF00);
     OuPack->data[6] = uint8(lang & 0x00FF0000);
     OuPack->data[7] = uint8(lang & 0xFF000000);
-    OuPack->data[8] = (uint8)'w';
-    OuPack->data[9] = (uint8)'o';
-    OuPack->data[10] = (uint8)'r';
-    OuPack->data[11] = (uint8)'l';
-    OuPack->data[12] = (uint8)'d';
-    OuPack->data[13] = 0x00;
+    while(channels[activechannel-1].c_str()[point-8] != 0x00)
+    { 
+        OuPack->data[point] = (uint8)(channels[activechannel-1].c_str()[point-8]);
+        point++;
+    }
+    OuPack->data[point] = 0x00; 
+    point++;
+    
+    for(uint8 i=0; i<data.size(); i++)
+        OuPack->data[point+i] = data.c_str()[i]; 
+    OuPack->data[point + data.size()] = 0x00; 
+    OuPack->size = point + 1 + data.size(); 
+    return true;
+}
 
-    for(uint8 i=0;i<InPack->size;i++)
-        OuPack->data[14+i] = InPack->data[i]; 
-    OuPack->data[14+InPack->size] = 0x00; 
-    OuPack->size = 15+InPack->size; 
+bool Session::send_char_enum(out_pack* OuPack)
+{
+    printf("requesting character list\n");
+    OuPack->cmd  = 0x0037;
+    OuPack->size = 0;
     return true;
 }

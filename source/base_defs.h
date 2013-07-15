@@ -36,4 +36,12 @@ struct out_pack
     uint8   data[BUFFER_SIZE];
 
 };
+
+struct cli_pack
+{
+    uint16      size;
+    uint8       type;
+    std::string data;
+};
+
 #endif

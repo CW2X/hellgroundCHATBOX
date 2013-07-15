@@ -29,20 +29,24 @@ static char* ChatTagIdentifiers[]   = {"    ","AFK|","DND|","DND|","[GM]","[GM]"
 class Session
 {
 public:
+    Session();
     bool Update(inc_pack* InPack,out_pack* OuPack);
-    
-    CharacterData characters[8];
-
+    bool ClUpdate(cli_pack* InPack,out_pack* OuPack);
+   
 private:
     bool handle_char_enum(inc_pack* InPack,out_pack* OuPack);
     bool handle_chat_message(inc_pack* InPack,out_pack* OuPack);
     bool handle_auth_response(inc_pack* InPack,out_pack* OuPack);
     bool handle_login_verify(inc_pack* InPack,out_pack* OuPack);
-    bool handle_Cl(inc_pack* InPack,out_pack* OuPack);
+    bool handle_Cl(cli_pack* InPack,out_pack* OuPack);
 
     bool send_cmsg_login(out_pack* OuPack);
     bool send_cmsg_join_channel(out_pack* OuPack,std::string name);
-    bool send_chat_message(inc_pack* InPack,out_pack* OuPack);
+    bool send_chat_message(std::string data, out_pack* OuPack);
+    bool send_char_enum(out_pack* OuPack);
 
     char* ChatLanguages(uint32 lang);
+    CharacterData characters[8];
+    std::string channels[9];
+    uint8 nofchannels,activechannel;
 };

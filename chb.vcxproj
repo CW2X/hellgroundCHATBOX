@@ -42,6 +42,7 @@
     <ClCompile Include="source\chb.cpp" />
     <ClCompile Include="source\AuthProcessor.cpp" />
     <ClCompile Include="source\MainSocket.cpp" />
+    <ClCompile Include="source\Session-CL.cpp" />
     <ClCompile Include="source\Session.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
