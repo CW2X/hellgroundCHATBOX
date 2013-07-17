@@ -3,7 +3,8 @@
 
 Session::Session()
 {
-    nofchannels = 0;
+    for(uint8 i=0;i<9;i++)
+        channelson[i] = false;
     activechannel = 1;
     cinredirect = 0;
 }
@@ -13,16 +14,17 @@ bool Session::Update(inc_pack* InPack,out_pack* OuPack)
     switch(InPack->cmd)
     {
     case 0: break;
-    case 0x003B: return handle_char_enum(InPack,OuPack);        //SMSG_CHAR_ENUM
-    case 0x0096: return handle_chat_message(InPack,OuPack);     //SMSG_MESSAGECHAT
-    case 0x01EE: return handle_auth_response(InPack,OuPack);    //SMSG_AUTH_RESPONSE
-    case 0x0236: return handle_login_verify(InPack,OuPack);     //SMSG_LOGIN_VERIFY_WORLD
+    case 0x003B: return handle_smsg_char_enum(InPack,OuPack);           //SMSG_CHAR_ENUM
+    case 0x0096: return handle_smsg_messagechat(InPack,OuPack);         //SMSG_MESSAGECHAT
+    case 0x01EE: return handle_smsg_auth_response(InPack,OuPack);       //SMSG_AUTH_RESPONSE
+    case 0x0236: return handle_smsg_login_verify_world(InPack,OuPack);  //SMSG_LOGIN_VERIFY_WORLD
         //opcodes to be taken care of ... possibly
     case 0x0067: //SMSG_CONTACT_LIST
     case 0x0099: //SMSG_CHANNEL_NOTIFY
     case 0x0103: //SMSG_EMOTE
     case 0x01CB: //SMSG_NOTIFICATION
     case 0x033D: //SMSG_MOTD
+    case 0x03EF: //SMSG_USERLIST_ADD
     case 0x03F1: //SMSG_USERLIST_UPDATE
         break;
     default:
@@ -35,7 +37,7 @@ bool Session::Update(inc_pack* InPack,out_pack* OuPack)
     return true;
 }
 
-bool Session::handle_auth_response(inc_pack* InPack,out_pack* OuPack)
+bool Session::handle_smsg_auth_response(inc_pack* InPack,out_pack* OuPack)
 {
     if (InPack->data[0] != 0x0C)
     {
@@ -46,7 +48,7 @@ bool Session::handle_auth_response(inc_pack* InPack,out_pack* OuPack)
     return true;
 }
 
-bool Session::handle_char_enum(inc_pack* InPack,out_pack* OuPack)
+bool Session::handle_smsg_char_enum(inc_pack* InPack,out_pack* OuPack)
 {
     // data: |number of characters|char 1|char2|...
     // character struct: |guid(8)|name|0|race(1)|class(1)|gender(1)|look(5)|level(1)|zone(4)|map(4)|xyz floats(12)|
@@ -90,7 +92,7 @@ bool Session::send_cmsg_login(out_pack* OuPack,uint8 i)
     return true;
 }
 
-bool Session::handle_login_verify(inc_pack* InPack,out_pack* OuPack)
+bool Session::handle_smsg_login_verify_world(inc_pack* InPack,out_pack* OuPack)
 {
     printf("player logged in\n\n");
     return send_cmsg_join_channel(OuPack,"world");
@@ -99,19 +101,54 @@ bool Session::handle_login_verify(inc_pack* InPack,out_pack* OuPack)
 
 bool Session::send_cmsg_join_channel(out_pack* OuPack,std::string name)
 {
+    uint8 channelid = 9;
+    for (uint8 i=9;i>0;i--)
+    {
+        if(channelson[i-1] == false)
+            channelid = i-1;
+    }
+
+    if (channelid == 9)
+    {
+        printf("too many chanels, leave one to join next");
+        return true;
+    }
+
     OuPack->cmd  = 0x097;
     OuPack->size = 8 + name.size();
-    OuPack->data[0] = 0x00; OuPack->data[1] = 0x00; OuPack->data[2] = 0x00; OuPack->data[3] = 0x00;
-    OuPack->data[4] = 0x00; OuPack->data[5] = 0x00;
+    OuPack->data[0] = channelid;
+    OuPack->data[1] = 0x00; OuPack->data[2] = 0x00; OuPack->data[3] = 0x00; OuPack->data[4] = 0x00; OuPack->data[5] = 0x00;
     for(uint8 i=0;i<name.size();i++)
         OuPack->data[6+i] = (uint8)(name.c_str()[i]);
     OuPack->data[name.size()+6] = 0x00; OuPack->data[name.size()+7] = 0x00;
-    channels[nofchannels++] = name;
-    printf("Joining channel %s [%u]\n",name.c_str(),nofchannels);
+    channels[channelid] = name;
+    channelson[channelid] = true;
+    printf("Joining channel %s [%u]\n",name.c_str(),channelid+1);
     return true;
 }
 
-bool Session::handle_chat_message(inc_pack* InPack,out_pack* OuPack)
+bool Session::send_cmsg_leave_channel(out_pack* OuPack,uint8 no)
+{
+    if (!no || no > 9)
+    {
+        printf("usage: /leave channel number\n");
+        return true;
+    }
+    if (channelson[no-1] == false)
+        return true;
+    printf("leaving channel %s [%u]\n",channels[no-1].c_str(),no);
+    OuPack->cmd = 0x0098;
+    OuPack->size = 5 + channels[no-1].size();
+    OuPack->data[0] = 0x00; OuPack->data[1] = 0x00; OuPack->data[2] = 0x00; OuPack->data[3] = 0x00;
+    for(uint8 i=0;i<channels[no-1].size();i++)
+        OuPack->data[4+i] = (uint8)(channels[no-1].c_str()[i]);
+    OuPack->data[channels[no-1].size()+4] = 0x00;
+    channels[no-1] = "";
+    channelson[no-1] = false;
+    return true;
+}
+
+bool Session::handle_smsg_messagechat(inc_pack* InPack,out_pack* OuPack)
 {
     ChatMessage mes;
     uint8       pos;
@@ -166,12 +203,12 @@ char* Session::ChatLanguages(uint32 lang)
     }
 }
 
-bool Session::send_chat_message(std::string data,out_pack* OuPack)
+bool Session::send_cmsg_messagechat(std::string data,out_pack* OuPack)
 {
     uint32 mtype = 17;//CHAT_MSG_CHANNEL
     uint32 lang  =  7;//Common
     uint8 point  =  8;
-    if (activechannel > nofchannels)
+    if (!channelson[activechannel-1])
         return true;
 
     OuPack->cmd = 0x0095;
@@ -198,7 +235,7 @@ bool Session::send_chat_message(std::string data,out_pack* OuPack)
     return true;
 }
 
-bool Session::send_char_enum(out_pack* OuPack)
+bool Session::send_cmsg_char_enum(out_pack* OuPack)
 {
     printf("requesting character list\n");
     OuPack->cmd  = 0x0037;

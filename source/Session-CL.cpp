@@ -8,7 +8,7 @@ bool Session::ClUpdate(cli_pack* InPack,out_pack* OuPack)
     case 0x02:
         {
             if (cinredirect == 0)
-                return send_chat_message(InPack->data,OuPack);
+                return send_cmsg_messagechat(InPack->data,OuPack);
             else if (cinredirect == 1)
                 return send_cmsg_login(OuPack,(uint8)InPack->data.c_str()[0]);
         }
@@ -18,26 +18,37 @@ bool Session::ClUpdate(cli_pack* InPack,out_pack* OuPack)
 
 bool Session::handle_Cl(cli_pack* InPack,out_pack* OuPack)
 {
-    if(InPack->data[0] = 0x00)
+    if(InPack->data[0] == 0x00 || InPack->data[1] == 0x00)
         return true;
 
-    char            cmd[256];
-    std::size_t     pos = InPack->data.find(' ');
+    std::string     cmd,args;
+    uint8           space=0;
 
-    if (pos!=std::string::npos)
-        {InPack->data.copy(cmd,pos-1,1);
-    cmd[pos-1]= 0x00;}
-    else
-        {InPack->data.copy(cmd,InPack->data.size()-1,1);
-    cmd[InPack->data.size()-1] =0x00;}
-
-    if(*cmd >'0' && *cmd <='9')
-    {activechannel = *cmd - 48;return true;}
-    switch(*cmd)
+    while(InPack->data.size() > space && InPack->data.c_str()[space] != ' ')
+        space++;
+    
+    cmd = InPack->data.substr(1,space-1);
+    if(InPack->data.size() > space)
+        args = InPack->data.substr(space+1,InPack->data.size() - space +1);
+    if(cmd[0] >'0' && cmd[0] <='9' && cmd.size() ==1)
+    {activechannel = (uint8)cmd[0] - 48;return true;}
+    if (cmd == "c")
+        return send_cmsg_char_enum(OuPack);
+    if (cmd == "join")
     {
-    case 'c':
-        return send_char_enum(OuPack);
+        if(args != "")
+            return send_cmsg_join_channel(OuPack,args);
+        printf("wrong channel name\n");
+        return true;
     }
+    if (cmd == "leave")
+    {
+        if(args != "")
+            return send_cmsg_leave_channel(OuPack, (uint8)args.c_str()[0]-48);
+        printf("usage: /leave channel number\n");
+        return true;
+    }
+    
     printf("unknown command: ");
     for(uint8 i=1;i<InPack->size;i++)
         printf("%c",InPack->data[i]);

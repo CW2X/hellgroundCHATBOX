@@ -7,7 +7,7 @@
 #define REALMLIST_ADDRESS "25.105.135.246"//"logon.hellground.net"
 #define AUTH_PORT "3724"
 #define FAKE_OS 'CHA'
-#define BUFFER_SIZE_IN  2048
+#define BUFFER_SIZE_IN  3072
 #define BUFFER_SIZE_OUT 256
 
 typedef unsigned char    uint8;
