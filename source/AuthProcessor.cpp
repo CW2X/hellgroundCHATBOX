@@ -1,4 +1,5 @@
 #include "AuthProcessor.h"
+#include <iostream>
 
 AuthProcessor::AuthProcessor()
 {
@@ -42,21 +43,20 @@ bool AuthProcessor::handle_incoming(char buffer[BUFFER_SIZE_IN],uint8 datalength
     return false;
 }
 
-void AuthProcessor::MagicVoid(const std::string& rI)
+void AuthProcessor::MagicVoid()
 {
-    BigNumber I;
-    I.SetHexStr(rI.c_str());
-
-    uint8 mDigest[SHA_DIGEST_LENGTH];
-    memset(mDigest, 0, SHA_DIGEST_LENGTH);
-    if (I.GetNumBytes() <= SHA_DIGEST_LENGTH)
-        memcpy(mDigest, I.AsByteArray(), I.GetNumBytes());
-
-    std::reverse(mDigest, mDigest + SHA_DIGEST_LENGTH);
-
     Sha1Hash sha;
+    sha.UpdateData(username);
+    sha.UpdateData(":");
+    sha.UpdateData(password);
+    sha.Finalize();
+
+    BigNumber I;
+    I.SetBinary(sha.GetDigest(),sha.GetLength());
+    
+    sha.Initialize();
     sha.UpdateData(s.AsByteArray(), s.GetNumBytes());
-    sha.UpdateData(mDigest, SHA_DIGEST_LENGTH);
+    sha.UpdateData(I.AsByteArray(), I.GetNumBytes());
     sha.Finalize();
     x.SetBinary(sha.GetDigest(), sha.GetLength());
     v = g.ModExp(x, N);
@@ -115,7 +115,7 @@ void AuthProcessor::MagicVoid(const std::string& rI)
     t3.SetBinary(hash, 20);
 
     sha.Initialize();
-    sha.UpdateData(MAIN_LOGIN);
+    sha.UpdateData(username);
     sha.Finalize();
     uint8 t4[SHA_DIGEST_LENGTH];
     memcpy(t4, sha.GetDigest(), SHA_DIGEST_LENGTH);
@@ -136,8 +136,9 @@ void AuthProcessor::MagicVoid(const std::string& rI)
 
 bool AuthProcessor::send_logon_challenge()
 {
-    std::string username = MAIN_LOGIN;
     AUTH_LOGON_CHALLENGE_U sLC;
+    printf("login(uppercase): ");
+    std::cin >> username;
 
     sLC.data.cmd            = 0;
     sLC.data.error          = 0;
@@ -148,7 +149,7 @@ bool AuthProcessor::send_logon_challenge()
     sLC.data.version3       = 3;
     sLC.data.build          = 8606;
     sLC.data.platform       = (uint32)'x86';
-    sLC.data.os             = (uint32)'Win';
+    sLC.data.os             = (uint32)FAKE_OS;
     sLC.data.country        = (uint32)'enGB';
     sLC.data.timezone_bias  = 60; // why? why not.
     sLC.data.ip             = 0xF6876919;
@@ -199,9 +200,10 @@ bool AuthProcessor::recv_logon_challenge(char buffer[BUFFER_SIZE_IN],uint8 datal
 bool AuthProcessor::send_logon_proof()
 {
     AUTH_LOGON_PROOF_U sLP;
-
+    printf("password(uppercase): ");
+    std::cin >> password;
     // beggining of magic
-    MagicVoid(MAIN_PASSWORD);
+    MagicVoid();
     // end of magic.
 
     sLP.data.cmd            = 1;

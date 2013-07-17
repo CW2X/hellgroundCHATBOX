@@ -5,9 +5,8 @@
 #include <string>
 
 #define REALMLIST_ADDRESS "25.105.135.246"//"logon.hellground.net"
-#define MAIN_LOGIN "user2"//"emerytura125"
-#define MAIN_PASSWORD "f318ad75bf6d4f5b219984dc565bd072b43bba8f"//"4f3c709b69dd490932bdd5bde14a0dbcc0027529"
 #define AUTH_PORT "3724"
+#define FAKE_OS 'CHA'
 #define BUFFER_SIZE_IN  2048
 #define BUFFER_SIZE_OUT 256
 

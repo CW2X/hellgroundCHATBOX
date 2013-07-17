@@ -8,6 +8,8 @@ public:
     bool Update(inc_pack* packet);
     void SetKey(uint8 * key) {K.SetBinary(key,40);};
     bool send_out_pack(out_pack* packet);
+
+    std::string username;
 private:
     void encrypt_header(uint8* header) {m_crypt.EncryptSend(header,6);};
     void decrypt_header(uint8* header) {m_crypt.DecryptRecv(header,4);};

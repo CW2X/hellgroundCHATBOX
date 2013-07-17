@@ -44,6 +44,7 @@ int main( void )
                 sMainSocket.ServerAdress = sAProcessor.GetRealmAdress(0);
                 sMainSocket.ServerPort = sAProcessor.GetRealmPort(0);
                 sMainSocket.SetKey(sAProcessor.GetKey());
+                sMainSocket.username = sAProcessor.GetUsername();
             }
             
             if(!sMainSocket.Update(&InPacket))

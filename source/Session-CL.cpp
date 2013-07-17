@@ -5,7 +5,13 @@ bool Session::ClUpdate(cli_pack* InPack,out_pack* OuPack)
     switch(InPack->type)
     {
     case 0x01:  return handle_Cl(InPack,OuPack);
-    case 0x02:  return send_chat_message(InPack->data,OuPack);
+    case 0x02:
+        {
+            if (cinredirect == 0)
+                return send_chat_message(InPack->data,OuPack);
+            else if (cinredirect == 1)
+                return send_cmsg_login(OuPack,(uint8)InPack->data.c_str()[0]);
+        }
     }
     return true;
 }

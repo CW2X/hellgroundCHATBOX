@@ -1,9 +1,11 @@
 #include "Session.h"
+#include <iostream>
 
 Session::Session()
 {
     nofchannels = 0;
     activechannel = 1;
+    cinredirect = 0;
 }
 
 bool Session::Update(inc_pack* InPack,out_pack* OuPack)
@@ -19,6 +21,7 @@ bool Session::Update(inc_pack* InPack,out_pack* OuPack)
     case 0x0067: //SMSG_CONTACT_LIST
     case 0x0099: //SMSG_CHANNEL_NOTIFY
     case 0x0103: //SMSG_EMOTE
+    case 0x01CB: //SMSG_NOTIFICATION
     case 0x033D: //SMSG_MOTD
     case 0x03F1: //SMSG_USERLIST_UPDATE
         break;
@@ -65,18 +68,24 @@ bool Session::handle_char_enum(inc_pack* InPack,out_pack* OuPack)
         printf("%s (guid %u): lvl %u %s %s %s\n",characters[i].name.c_str(),characters[i].guid,characters[i].level,
             (characters[i].gender ? "female": "male"),CharacterRaces[characters[i].race],CharacterClasses[characters[i].clas]);
     }
-    return send_cmsg_login(OuPack);
+    printf("select character: ");
+    cinredirect = 1;
+    return true;
 }
 
-bool Session::send_cmsg_login(out_pack* OuPack)
+bool Session::send_cmsg_login(out_pack* OuPack,uint8 i)
 {
+    i -= 48;
+    cinredirect = 0;
+    if (i>7 || characters[--i].guid == 0)
+        i = 0;
     OuPack->cmd = 0x003D;
     OuPack->size = 8;
     
-    OuPack->data[3] = uint8(characters[0].guid & 0xFF000000);
-    OuPack->data[2] = uint8(characters[0].guid & 0x00FF0000);
-    OuPack->data[1] = uint8(characters[0].guid & 0x0000FF00);
-    OuPack->data[0] = uint8(characters[0].guid & 0x000000FF);
+    OuPack->data[3] = uint8(characters[i].guid & 0xFF000000);
+    OuPack->data[2] = uint8(characters[i].guid & 0x00FF0000);
+    OuPack->data[1] = uint8(characters[i].guid & 0x0000FF00);
+    OuPack->data[0] = uint8(characters[i].guid & 0x000000FF);
     OuPack->data[4] = 0;OuPack->data[5] = 0;OuPack->data[6] = 0;OuPack->data[7] = 0;
     return true;
 }

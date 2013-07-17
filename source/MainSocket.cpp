@@ -70,7 +70,7 @@ bool MainSocket::send_auth_session()
 {
     uint8 lbuf[BUFFER_SIZE_IN];
     uint8 i;
-    std::string username = MAIN_LOGIN;
+    
     // |Size (2)|Cmd (4)|Build (4)|unk (4)|username string(any)|0x00|seed (4)|digest (20)|
     lbuf[1] = (uint8)(username.length()+37); lbuf[0]=0x00 ; //size send in header is counted without uint16 size
     lbuf[2] = 0xED; lbuf[3] = 0x01; lbuf[4] = 0x00; lbuf[5] = 0x00;

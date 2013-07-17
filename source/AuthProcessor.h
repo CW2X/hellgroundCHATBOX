@@ -78,8 +78,9 @@ public:
     PCSTR GetRealmAdress(uint8 i) {return realmdata[i].address.c_str();};
     PCSTR GetRealmPort(uint8 i) {return realmdata[i].port.c_str();};
     uint8* GetKey() {return K.AsByteArray();};
+    std::string GetUsername() {return username;};
 private:
-    void MagicVoid(const std::string& rI);
+    void MagicVoid();
 
     bool handle_incoming(char buffer[BUFFER_SIZE_IN],uint8 datalength);
     bool send_logon_challenge(); // initialize 
@@ -92,4 +93,5 @@ private:
     BigNumber A,B,a,g,N,K,s,unk3,v,x,M,M2; // magic variables
     uint8 realms;
     RealmInfo realmdata[4];
+    std::string username,password;
 };

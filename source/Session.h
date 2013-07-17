@@ -40,13 +40,14 @@ private:
     bool handle_login_verify(inc_pack* InPack,out_pack* OuPack);
     bool handle_Cl(cli_pack* InPack,out_pack* OuPack);
 
-    bool send_cmsg_login(out_pack* OuPack);
+    bool send_cmsg_login(out_pack* OuPack,uint8 i);
     bool send_cmsg_join_channel(out_pack* OuPack,std::string name);
     bool send_chat_message(std::string data, out_pack* OuPack);
     bool send_char_enum(out_pack* OuPack);
 
     char* ChatLanguages(uint32 lang);
-    CharacterData characters[8];
+    CharacterData characters[7];
     std::string channels[9];
     uint8 nofchannels,activechannel;
+    uint8 cinredirect;
 };
