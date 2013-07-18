@@ -52,19 +52,19 @@ int main( void )
             
             if(sMainSocket.IsAuthed)
             {
-                OuPacket.cmd = 0;
+                OuPacket.reset();
                 if (!sSession.Update(&InPacket,&OuPacket))
                     return 1;
                 
-                if(OuPacket.cmd != 0 && !sMainSocket.send_out_pack(&OuPacket))
+                if(OuPacket.gc() != 0 && !sMainSocket.send_out_pack(&OuPacket))
                     return 1;
 
                 if (ClPacket.type != 0)
                 {
-                    OuPacket.cmd = 0;
+                    OuPacket.reset();
                     if(!sSession.ClUpdate(&ClPacket,&OuPacket))
                         return 1;
-                    if(OuPacket.cmd != 0 && !sMainSocket.send_out_pack(&OuPacket))
+                    if(OuPacket.gc() != 0 && !sMainSocket.send_out_pack(&OuPacket))
                         return 1;
                     ClPacket.type = 0;
                     _beginthread(ClRun,0,NULL);

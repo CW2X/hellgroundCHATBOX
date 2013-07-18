@@ -22,21 +22,6 @@ typedef signed __int64   int64;
 #define MAKE_UINT32(a,b,c,d)    uint32(((uint8)d) | ((uint8)c << 8) | ((uint8)b << 16) | ((uint8)a << 24))
 #define MAKE_UINT16(a,b)        uint16(((uint8)b) | ((uint8)a << 8))
 
-struct inc_pack
-{
-    uint16  size;               //this is just size of data
-    uint16  cmd;
-    uint8   data[BUFFER_SIZE_IN];
-};
-
-struct out_pack
-{
-    uint16  size;               //this is just size of data
-    uint32  cmd;
-    uint8   data[BUFFER_SIZE_OUT];
-
-};
-
 struct cli_pack
 {
     uint16      size;

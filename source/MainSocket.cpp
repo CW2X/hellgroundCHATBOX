@@ -4,7 +4,7 @@ bool MainSocket::Update(inc_pack* packet)
 {
     char recvbuff[BUFFER_SIZE_IN];
     uint16 datalength;
-    packet->cmd = (uint16)0;
+    packet->reset();
 
     if(!IsConnected)
     {
@@ -28,33 +28,30 @@ bool MainSocket::Update(inc_pack* packet)
         return true;
     decrypt_header((uint8*)recvbuff);
 
-    packet->size = MAKE_UINT16(recvbuff[0],recvbuff[1]) - 2;
-    packet->cmd  = MAKE_UINT16(recvbuff[3],recvbuff[2]);
-    datalength = packet->size;
+    packet->reset(recvbuff);
+    datalength = packet->gs();
     if (!recv_packet(recvbuff,&datalength))
         return false;
 
-    if (datalength != packet->size)
+    if (datalength != packet->gs())
     {
-        printf("wrong packet size, recived %u, size in header %u, opcode 0x%04X\n",datalength,packet->size,packet->cmd);
+        printf("wrong packet size, recived %u, size in header %u, opcode 0x%04X\n",datalength,packet->gs(),packet->gc());
         return false;
     }
     
-    if(packet->size > BUFFER_SIZE_IN)
+    if(packet->gs() > BUFFER_SIZE_IN)
     {
-        printf("possible Buffer Overflow! Interrupting (%u 0x%04X)",packet->size,packet->cmd);
+        printf("possible Buffer Overflow! Interrupting (%u 0x%04X)",packet->gs(),packet->gc());
         return false;
     }
 
-    if(IsIgnoredOpcode(packet->cmd))
+    if(IsIgnoredOpcode(packet->gc()))
     {
-        packet->cmd = 0x0000;
-        packet->size = 0x0000;
+        packet->reset();
         return true;
     }
     
-    for (uint16 i=0;i<packet->size;i++)
-        packet->data[i]=recvbuff[i];
+    packet->set(recvbuff);
     return true;
 }
 
@@ -68,7 +65,7 @@ bool MainSocket::recv_auth_challenge(char buffer[BUFFER_SIZE_IN],uint16 dataleng
 
 bool MainSocket::send_auth_session()
 {
-    uint8 lbuf[BUFFER_SIZE_IN];
+    uint8 lbuf[BUFFER_SIZE_OUT];
     uint8 i;
     
     // |Size (2)|Cmd (4)|Build (4)|unk (4)|username string(any)|0x00|seed (4)|digest (20)|
@@ -103,18 +100,18 @@ bool MainSocket::send_auth_session()
 
 bool MainSocket::send_out_pack(out_pack* packet)
 {
-    uint8 buffer[BUFFER_SIZE_IN];
+    uint8 buffer[BUFFER_SIZE_OUT];
 
     buffer[0] = 0x00; buffer[4] = 0x00; buffer[5] = 0x00;
-    buffer[1] = (uint8)(packet->size + 4);//size send in header is counted without uint16 size
-    buffer[2] = (uint8)(packet->cmd % 256);
-    buffer[3] = (uint8)((packet->cmd - buffer[2])/256);
+    buffer[1] = (uint8)(packet->gs() + 4);//size send in header is counted without uint16 size
+    buffer[2] = (uint8)(packet->gc() % 256);
+    buffer[3] = (uint8)((packet->gc() - buffer[2])/256);
 
-    for (uint8 i=0;i<packet->size;i++)
-        buffer[i+6] = packet->data[i];
+    for (uint8 i=0;i<packet->gs();i++)
+        buffer[i+6] = packet->gd(i);
 
     encrypt_header(buffer);
-    return send_packet((char*) buffer,(uint8)(packet->size + 6));
+    return send_packet((char*) buffer,(uint8)(packet->gs() + 6));
 }
 
 bool MainSocket::IsIgnoredOpcode(uint16 opcode)
@@ -124,10 +121,15 @@ bool MainSocket::IsIgnoredOpcode(uint16 opcode)
     case 0x0042: //SMSG_LOGIN_SETTIMESPEED
     case 0x00A9: //SMSG_UPDATE_OBJECT
     case 0x00AA: //SMSG_DESTROY_OBJECT
+    case 0x00B6: //MSG_MOVE_START_BACKWARD
+    case 0x00B7: //MSG_MOVE_STOP
+    case 0x00C9: //MSG_MOVE_FALL_LAND
+    case 0x00DA: //MSG_MOVE_SET_FACING
     case 0x00DD: //SMSG_MONSTER_MOVE
     case 0x00E2: //SMSG_FORCE_RUN_SPEED_CHANGE
     case 0x00E6: //SMSG_FORCE_SWIM_SPEED_CHANGE
     case 0x00E8: //SMSG_FORCE_MOVE_ROOT
+    case 0x00EE: //MSG_MOVE_HEARTBEAT
     case 0x00EA: //SMSG_FORCE_MOVE_UNROOT
     case 0x00FD: //SMSG_TUTORIAL_FLAGS
     case 0x0122: //SMSG_INITIALIZE_FACTIONS
@@ -141,8 +143,11 @@ bool MainSocket::IsIgnoredOpcode(uint16 opcode)
     case 0x0143: //SMSG_ATTACKSTART
     case 0x0144: //SMSG_ATTACKSTOP
     case 0x014A: //SMSG_ATTACKERSTATEUPDATE
+    case 0x014E: //SMSG_CANCEL_COMBAT
+    case 0x0150: //SMSG_SPELLHEALLOG
     case 0x0155: //SMSG_BINDPOINTUPDATE
     case 0x0179: //SMSG_PET_SPELLS
+    case 0x01EA: //SMSG_ITEM_TIME_UPDATE
     case 0x01F6: //SMSG_COMPRESSED_UPDATE_OBJECT
     case 0x0209: //SMSG_ACCOUNT_DATA_TIMES
     case 0x021E: //SMSG_SET_REST_START
@@ -154,6 +159,7 @@ bool MainSocket::IsIgnoredOpcode(uint16 opcode)
     case 0x02F4: //SMSG_WEATHER
     case 0x0329: //MSG_SET_DUNGEON_DIFFICULTY
     case 0x030D: //SMSG_SPLINE_MOVE_SET_RUN_MODE
+    case 0x030E: //SMSG_SPLINE_MOVE_SET_WALK_MODE
     case 0x0381: //SMSG_FORCE_FLIGHT_SPEED_CHANGE
     case 0x0390: //SMSG_TIME_SYNC_REQ
     case 0x03A4: //SMSG_SET_EXTRA_AURA_INFO

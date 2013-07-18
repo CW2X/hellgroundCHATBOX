@@ -1,4 +1,5 @@
 #include "BaseSocket.h"
+#include "iopackets.h"
 #include "Auth\AuthCrypt.h"
 #include "Auth\Sha1.h"
 

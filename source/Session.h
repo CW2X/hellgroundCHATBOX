@@ -1,4 +1,5 @@
 #include "base_defs.h"
+#include "iopackets.h"
 
 struct CharacterData
 {
@@ -35,6 +36,7 @@ public:
    
 private:
     bool handle_smsg_char_enum(inc_pack* InPack,out_pack* OuPack);
+    //bool handle_smsg_name_query_response(inc_pack*);
     bool handle_smsg_messagechat(inc_pack* InPack,out_pack* OuPack);
     bool handle_smsg_auth_response(inc_pack* InPack,out_pack* OuPack);
     bool handle_smsg_login_verify_world(inc_pack* InPack,out_pack* OuPack); 
@@ -45,6 +47,7 @@ private:
     bool send_cmsg_leave_channel(out_pack* OuPack,uint8 no);
     bool send_cmsg_messagechat(std::string data, out_pack* OuPack);
     bool send_cmsg_char_enum(out_pack* OuPack);
+    bool send_cmsg_name_query(out_pack* OuPack,uint32 guid);
 
     char* ChatLanguages(uint32 lang);
     CharacterData characters[7];

@@ -30,6 +30,7 @@
     <ClInclude Include="source\BaseSocket.h" />
     <ClInclude Include="source\base_defs.h" />
     <ClInclude Include="source\AuthProcessor.h" />
+    <ClInclude Include="source\iopackets.h" />
     <ClInclude Include="source\MainSocket.h" />
     <ClInclude Include="source\Session.h" />
   </ItemGroup>
