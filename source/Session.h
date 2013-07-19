@@ -1,5 +1,7 @@
 #include "base_defs.h"
 #include "iopackets.h"
+#include <map>
+#include <list>
 
 struct CharacterData
 {
@@ -23,6 +25,16 @@ struct ChatMessage
     uint32      length;
     std::string channel;
     std::string what;
+    char        who[15];
+};
+
+struct PlayerInfo
+{
+    uint32      guid;
+    std::string name;
+    uint32      clas;
+    uint32      race;
+    uint32      gender;
 };
 
 static char* ChatTagIdentifiers[]   = {"    ","AFK|","DND|","DND|","[GM]","[GM]","[GM]","[GM]"};
@@ -36,7 +48,7 @@ public:
    
 private:
     bool handle_smsg_char_enum(inc_pack* InPack,out_pack* OuPack);
-    //bool handle_smsg_name_query_response(inc_pack*);
+    bool handle_smsg_name_query_response(inc_pack*);
     bool handle_smsg_messagechat(inc_pack* InPack,out_pack* OuPack);
     bool handle_smsg_auth_response(inc_pack* InPack,out_pack* OuPack);
     bool handle_smsg_login_verify_world(inc_pack* InPack,out_pack* OuPack); 
@@ -55,4 +67,6 @@ private:
     bool channelson[9];
     uint8 activechannel;
     uint8 cinredirect;
+    std::map<uint32,PlayerInfo> PlayersInfoMap;
+    std::list<uint32> UnkPlayers,RequestedPlayers;
 };

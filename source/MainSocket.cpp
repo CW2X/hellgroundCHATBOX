@@ -30,21 +30,23 @@ bool MainSocket::Update(inc_pack* packet)
 
     packet->reset(recvbuff);
     datalength = packet->gs();
-    if (!recv_packet(recvbuff,&datalength))
-        return false;
-
-    if (datalength != packet->gs())
+    if (datalength)
     {
-        printf("wrong packet size, recived %u, size in header %u, opcode 0x%04X\n",datalength,packet->gs(),packet->gc());
-        return false;
-    }
+        if (!recv_packet(recvbuff,&datalength))
+            return false;
+
+        if (datalength != packet->gs())
+        {
+            printf("wrong packet size, recived %u, size in header %u, opcode 0x%04X\n",datalength,packet->gs(),packet->gc());
+            return false;
+        }
     
-    if(packet->gs() > BUFFER_SIZE_IN)
-    {
-        printf("possible Buffer Overflow! Interrupting (%u 0x%04X)",packet->gs(),packet->gc());
-        return false;
+        if(packet->gs() > BUFFER_SIZE_IN)
+        {
+            printf("possible Buffer Overflow! Interrupting (%u 0x%04X)",packet->gs(),packet->gc());
+            return false;
+        }
     }
-
     if(IsIgnoredOpcode(packet->gc()))
     {
         packet->reset();

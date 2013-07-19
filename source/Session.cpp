@@ -15,7 +15,7 @@ bool Session::Update(inc_pack* InPack,out_pack* OuPack)
     {
     case 0: break;
     case 0x003B: return handle_smsg_char_enum(InPack,OuPack);           //SMSG_CHAR_ENUM
-    //case 0x0050: return handle_smsg_name_query_response(InPack);        //SMSG_NAME_QUERY_RESPONSE
+    case 0x0051: return handle_smsg_name_query_response(InPack);        //SMSG_NAME_QUERY_RESPONSE
     case 0x0096: return handle_smsg_messagechat(InPack,OuPack);         //SMSG_MESSAGECHAT
     case 0x01EE: return handle_smsg_auth_response(InPack,OuPack);       //SMSG_AUTH_RESPONSE
     case 0x0236: return handle_smsg_login_verify_world(InPack,OuPack);  //SMSG_LOGIN_VERIFY_WORLD
@@ -28,14 +28,17 @@ bool Session::Update(inc_pack* InPack,out_pack* OuPack)
     case 0x033D: //SMSG_MOTD
     case 0x03EF: //SMSG_USERLIST_ADD
     case 0x03F1: //SMSG_USERLIST_UPDATE
-        break;
+        return true;
     default:
         {
             printf("received unhandled opcode: 0x%.4X size: %u\n",InPack->gc(),InPack->gs());
-            break;
+            return true;
         }
     }
-    
+    // here? means no inc_pack to process
+    if (UnkPlayers.begin() != UnkPlayers.end())
+        return send_cmsg_name_query(OuPack,*UnkPlayers.begin());
+
     return true;
 }
 
@@ -74,6 +77,7 @@ bool Session::handle_smsg_char_enum(inc_pack* InPack,out_pack* OuPack)
         InPack->skip(20*9);//items
         printf("%s (guid %u): lvl %u %s %s %s\n",characters[i].name.c_str(),characters[i].guid,characters[i].level,
             (characters[i].gender ? "female": "male"),CharacterRaces[characters[i].race],CharacterClasses[characters[i].clas]);
+        PlayersInfoMap[characters[i].guid].name = characters[i].name;
     }
     printf("select character: ");
     cinredirect = 1;
@@ -160,7 +164,17 @@ bool Session::handle_smsg_messagechat(inc_pack* InPack,out_pack* OuPack)
             *InPack >> mes.length;
             *InPack >> mes.what;
             *InPack >> mes.tag;
-            printf("%s%-10u[%s][%s]:%s\n",ChatTagIdentifiers[mes.tag],mes.guid,mes.channel.c_str(),ChatLanguages(mes.lang),mes.what.c_str());
+            std::map<uint32,PlayerInfo>::const_iterator itr = PlayersInfoMap.find(mes.guid);
+            if (itr != PlayersInfoMap.end())
+                sprintf_s(mes.who,"%s",itr->second.name.c_str());
+            else
+            {
+                sprintf_s(mes.who,"#%u",mes.guid);
+                UnkPlayers.push_back(mes.guid);
+                RequestedPlayers.push_back(mes.guid);
+            }
+            printf("%s[%s]%s : ",ChatTagIdentifiers[mes.tag],mes.channel.c_str(),mes.who);
+            printf("%s%s\n",(mes.lang <= 2 || mes.lang == 7) ? "":ChatLanguages(mes.lang),mes.what.c_str());
         }
     default:
         break;
@@ -221,5 +235,29 @@ bool Session::send_cmsg_name_query(out_pack* OuPack,uint32 guid)
 {
     OuPack->reset( 0x0050);
     *OuPack << guid << (uint32)0;
+    return true;
+}
+
+bool Session::handle_smsg_name_query_response(inc_pack *InPack)
+{
+    uint32 guid;
+    *InPack >> guid;
+    InPack->skip(4);
+    *InPack >> PlayersInfoMap[guid].name;
+    InPack->skip(1);
+    *InPack >> PlayersInfoMap[guid].race;
+    *InPack >> PlayersInfoMap[guid].gender;
+    *InPack >> PlayersInfoMap[guid].clas;
+
+    UnkPlayers.remove(guid);
+    for (std::list<uint32>::const_iterator itr = RequestedPlayers.begin(); itr !=RequestedPlayers.end();itr++)
+    {
+        if(*itr == guid)
+        {
+            printf("player guid %u is %s\n",guid, PlayersInfoMap[guid].name.c_str());
+            RequestedPlayers.erase(itr);
+            break;
+        }
+    }
     return true;
 }
