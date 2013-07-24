@@ -30,10 +30,74 @@ bool Session::handle_Cl(cli_pack* InPack,out_pack* OuPack)
     cmd = InPack->data.substr(1,space-1);
     if(InPack->data.size() > space)
         args = InPack->data.substr(space+1,InPack->data.size() - space +1);
-    if(cmd[0] >'0' && cmd[0] <='9' && cmd.size() ==1)
-    {activechannel = (uint8)cmd[0] - 48;return true;}
+
+    if(cmd[0] >'0' && cmd[0] <='9' && cmd[1] == 0x00)
+    {
+        activechannel = (uint8)cmd[0] - 48;
+        if(args != "")
+            return send_cmsg_messagechat(args,OuPack);
+        return true;
+    }
+
+    if (cmd == "say" || cmd == "s")
+    {
+        activechannel = 21;
+        if(args != "")
+            return send_cmsg_messagechat(args,OuPack);
+        return true;
+    }
+
+    if (cmd == "yell" || cmd == "y")
+    {
+        activechannel = 26;
+        if(args != "")
+            return send_cmsg_messagechat(args,OuPack);
+        return true;
+    }
+
+    if (cmd == "guild" || cmd == "g")
+    {
+        activechannel = 24;
+        if(args != "")
+            return send_cmsg_messagechat(args,OuPack);
+        return true;
+    }
+
+    if (cmd == "officer" || cmd == "o")
+    {
+        activechannel = 25;
+        if(args != "")
+            return send_cmsg_messagechat(args,OuPack);
+        return true;
+    }
+
+    if(cmd == "w" && args != "")
+    {
+        activechannel = 27;
+        space = 0;
+
+        while(args.size() > space && args.c_str()[space] != ' ')
+            space++;
+        if(args.size() > space)
+        {
+            whisptarget = args.substr(1,space-1);
+            std::string what = args.substr(space+1,args.size() - space +1);
+            return send_cmsg_messagechat(what,OuPack);
+        }
+        return true;
+    }
+
+    if(cmd == "r")
+    {
+        activechannel = 27;
+        if(args != "")
+            return send_cmsg_messagechat(args,OuPack);
+        return true;
+    }
+
     if (cmd == "c")
         return send_cmsg_char_enum(OuPack);
+
     if (cmd == "join")
     {
         if(args != "")
@@ -41,6 +105,7 @@ bool Session::handle_Cl(cli_pack* InPack,out_pack* OuPack)
         printf("wrong channel name\n");
         return true;
     }
+
     if (cmd == "leave")
     {
         if(args != "")

@@ -61,12 +61,14 @@ private:
     bool send_cmsg_char_enum(out_pack* OuPack);
     bool send_cmsg_name_query(out_pack* OuPack,uint32 guid);
 
-    char* ChatLanguages(uint32 lang);
-    CharacterData characters[7];
-    std::string channels[9];
-    bool channelson[9];
-    uint8 activechannel;
-    uint8 cinredirect;
+    char*           ChatLanguages(uint32 lang);
+    CharacterData   characters[7];
+    std::string     channels[9];
+    bool            channelson[9];
+    uint8           activechannel;
+    uint8           cinredirect;
     std::map<uint32,PlayerInfo> PlayersInfoMap;
     std::list<uint32> UnkPlayers,RequestedPlayers;
+    // first one stores all guids that are on our channels, second one only those who write sth and we want their nicks ASAP
+    std::string     whisptarget;
 };

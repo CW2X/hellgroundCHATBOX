@@ -25,8 +25,10 @@ bool Session::Update(inc_pack* InPack,out_pack* OuPack)
     case 0x0099: //SMSG_CHANNEL_NOTIFY
     case 0x0103: //SMSG_EMOTE
     case 0x01CB: //SMSG_NOTIFICATION
+    case 0x02A9: //SMSG_CHAT_PLAYER_NOT_FOUND
     case 0x033D: //SMSG_MOTD
     case 0x03EF: //SMSG_USERLIST_ADD
+    case 0x03F0: //SMSG_USERLIST_REMOVE
     case 0x03F1: //SMSG_USERLIST_UPDATE
         return true;
     default:
@@ -36,6 +38,8 @@ bool Session::Update(inc_pack* InPack,out_pack* OuPack)
         }
     }
     // here? means no inc_pack to process
+    if (RequestedPlayers.begin() != RequestedPlayers.end())
+        return send_cmsg_name_query(OuPack,*RequestedPlayers.begin());
     if (UnkPlayers.begin() != UnkPlayers.end())
         return send_cmsg_name_query(OuPack,*UnkPlayers.begin());
 
@@ -153,28 +157,47 @@ bool Session::handle_smsg_messagechat(inc_pack* InPack,out_pack* OuPack)
     ChatMessage mes;
 
     *InPack >> mes.type;
+    *InPack >> mes.lang >> mes.guid;
+    InPack->skip(8);
     switch(mes.type)
     {
-    case 17: //CHAT_MSG_CHANNEL
+    case 1:     {mes.channel = "Say";break;}
+    case 4:     {mes.channel = "Guild";break;} 
+    case 5:     {mes.channel = "Officer";break;}
+    case 6:     {mes.channel = "Yell";break;}
+    case 17:    {*InPack >> mes.channel;break;}
+    }
+    
+    InPack->skip(8);
+    *InPack >> mes.length;
+    *InPack >> mes.what;
+    *InPack >> mes.tag;
+    std::map<uint32,PlayerInfo>::const_iterator itr = PlayersInfoMap.find(mes.guid);
+    if (itr != PlayersInfoMap.end())
+        sprintf_s(mes.who,"%s",itr->second.name.c_str());
+    else
+    {
+        sprintf_s(mes.who,"#%u",mes.guid);
+        UnkPlayers.push_back(mes.guid);
+        RequestedPlayers.push_back(mes.guid);
+    }
+
+    switch(mes.type)
+    {
+    case 1:     //CHAT_MSG_SAY
+    case 4:     //CHAT_MSG_GUILD
+    case 5:     //CHAT_MSG_OFFICER
+    case 6:     //CHAT_MSG_YELL
+    case 17:    //CHAT_MSG_CHANNEL
         {
-            *InPack >> mes.lang >> mes.guid;
-            InPack->skip(8);
-            *InPack >> mes.channel;
-            InPack->skip(8);
-            *InPack >> mes.length;
-            *InPack >> mes.what;
-            *InPack >> mes.tag;
-            std::map<uint32,PlayerInfo>::const_iterator itr = PlayersInfoMap.find(mes.guid);
-            if (itr != PlayersInfoMap.end())
-                sprintf_s(mes.who,"%s",itr->second.name.c_str());
-            else
-            {
-                sprintf_s(mes.who,"#%u",mes.guid);
-                UnkPlayers.push_back(mes.guid);
-                RequestedPlayers.push_back(mes.guid);
-            }
             printf("%s[%s]%s : ",ChatTagIdentifiers[mes.tag],mes.channel.c_str(),mes.who);
             printf("%s%s\n",(mes.lang <= 2 || mes.lang == 7) ? "":ChatLanguages(mes.lang),mes.what.c_str());
+            break;
+        }
+    case 7:     //CHAT_MSG_WHISPER
+        {
+            printf("%s%s whispers:%s\n",ChatTagIdentifiers[mes.tag],mes.who,mes.what.c_str());
+            break;
         }
     default:
         break;
@@ -211,15 +234,24 @@ char* Session::ChatLanguages(uint32 lang)
 
 bool Session::send_cmsg_messagechat(std::string data,out_pack* OuPack)
 {
-    uint32 mtype = 17;//CHAT_MSG_CHANNEL
+    uint32 mtype;
     uint32 lang  =  7;//Common
-    uint8 point  =  8;
-    if (!channelson[activechannel-1])
-        return true;
+    
+    if( activechannel <20)
+    {
+        mtype = 17;
+        if (!channelson[activechannel-1])
+            return true;
+    }
+    else
+        mtype = activechannel - 20;
 
     OuPack->reset (0x0095);
     *OuPack << mtype << lang;
-    *OuPack << channels[activechannel-1];
+    if (mtype == 17)
+        *OuPack << channels[activechannel-1];
+    if (mtype == 7)
+        *OuPack << whisptarget;
     *OuPack << data;
     return true;
 }
@@ -255,7 +287,7 @@ bool Session::handle_smsg_name_query_response(inc_pack *InPack)
         if(*itr == guid)
         {
             printf("player guid %u is %s\n",guid, PlayersInfoMap[guid].name.c_str());
-            RequestedPlayers.erase(itr);
+            RequestedPlayers.remove(guid);
             break;
         }
     }
