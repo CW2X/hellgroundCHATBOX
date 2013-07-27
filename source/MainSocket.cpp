@@ -1,5 +1,10 @@
 #include "MainSocket.h"
 
+MainSocket::MainSocket()
+{
+    loaded  = 0;
+}
+
 bool MainSocket::Update(inc_pack* packet)
 {
     char recvbuff[BUFFER_SIZE_IN];
@@ -21,40 +26,69 @@ bool MainSocket::Update(inc_pack* packet)
             return send_auth_session();
         return true;
     }
-    datalength = 4;
-    if (!recv_packet(recvbuff,&datalength))
-        return false;
-    if (datalength == 0)
-        return true;
-    decrypt_header((uint8*)recvbuff);
 
-    packet->reset(recvbuff);
-    datalength = packet->gs();
-    if (datalength)
+    if (loaded == 0) // did we received whole data last time?
     {
+        datalength = 4;
+        if (!recv_packet(recvbuff,&datalength))
+            return false;
+        if (datalength == 0)
+            return true;
+        decrypt_header((uint8*)recvbuff);
+
+        curc = (uint16)(((uint8)recvbuff[3] << 8) | (uint8)recvbuff[2]);
+        curs = (uint16)(((uint8)recvbuff[0] << 8) | (uint8)recvbuff[1]) - 2;
+        
+        if(curs > BUFFER_SIZE_IN)
+        {
+            printf("possible Buffer Overflow! Interrupting (%u 0x%04X)",curs,curc);
+            return false;
+        }
+
+        datalength = curs;
+        if (datalength)
+        {
+            if (!recv_packet(recvbuff,&datalength))
+                return false;
+        }
+
+        if (datalength < curs)
+        { // not whole packet received
+            loaded = datalength;
+            packet->set(recvbuff);
+            return true;
+        }
+    
+        if(IsIgnoredOpcode(curc))
+            return true;
+
+        packet->reset(curs,curc);
+        packet->set(recvbuff);
+        return true;
+    }
+    else
+    {
+        datalength = curs - loaded;
         if (!recv_packet(recvbuff,&datalength))
             return false;
 
-        if (datalength != packet->gs())
-        {
-            printf("wrong packet size, recived %u, size in header %u, opcode 0x%04X\n",datalength,packet->gs(),packet->gc());
-            return false;
+        packet->set(recvbuff,loaded);
+
+        if(datalength < curs- loaded)
+        {// still not whole packet
+            loaded += datalength;
+            return true;
         }
-    
-        if(packet->gs() > BUFFER_SIZE_IN)
+
+        if(IsIgnoredOpcode(curc))
         {
-            printf("possible Buffer Overflow! Interrupting (%u 0x%04X)",packet->gs(),packet->gc());
-            return false;
+            loaded = 0;
+            return true;
         }
-    }
-    if(IsIgnoredOpcode(packet->gc()))
-    {
-        packet->reset();
+        packet->reset(curs,curc);
         return true;
+
     }
-    
-    packet->set(recvbuff);
-    return true;
 }
 
 bool MainSocket::recv_auth_challenge(char buffer[BUFFER_SIZE_IN],uint16 datalength)

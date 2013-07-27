@@ -13,18 +13,18 @@ public:
         pos  = 0;
     }
 
-    void reset(char* buff)
+    void reset(uint16 s, uint16 c)
     {
-        size = (uint16)(((uint8)buff[0] << 8) | (uint8)buff[1]) - 2;
-        cmd  = (uint16)(((uint8)buff[3] << 8) | (uint8)buff[2]);
+        size = s;
+        cmd  = c;
         pos  = 0;
         return;
     }
 
-    void set(char* buff)
+    void set(char* buff,uint16 offset = 0)
     {
-        for(uint16 k=0;(k<size) && (k<BUFFER_SIZE_IN);k++)
-            data[k]=(uint8)buff[k];
+        for(uint16 k=0;(k+offset<size) && (k+offset<BUFFER_SIZE_IN);k++)
+            data[k+offset]=(uint8)buff[k];
     }
 
     void skip(uint8 i)

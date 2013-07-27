@@ -6,6 +6,7 @@
 class MainSocket : public BaseSocket
 {
 public:
+    MainSocket();
     bool Update(inc_pack* packet);
     void SetKey(uint8 * key) {K.SetBinary(key,40);};
     bool send_out_pack(out_pack* packet);
@@ -18,7 +19,8 @@ private:
     bool send_auth_session();
     bool IsIgnoredOpcode(uint16 opcode);
 
-    AuthCrypt m_crypt;
-    BigNumber K;
-    uint32 serverSeed,clientSeed;
+    AuthCrypt   m_crypt;
+    BigNumber   K;
+    uint32      serverSeed,clientSeed;
+    uint16      curs,curc,loaded;
 };
