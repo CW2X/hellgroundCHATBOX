@@ -42,7 +42,7 @@ int main( void )
             if(!sMainSocket.IsConnected)
             {
                 sMainSocket.ServerAdress = sAProcessor.GetRealmAdress(0);
-                sMainSocket.ServerPort = sAProcessor.GetRealmPort(0);
+                sMainSocket.ServerPort = sAProcessor.GetRealmPort(2);
                 sMainSocket.SetKey(sAProcessor.GetKey());
                 sMainSocket.username = sAProcessor.GetUsername();
             }

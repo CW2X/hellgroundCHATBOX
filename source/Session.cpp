@@ -24,6 +24,7 @@ bool Session::Update(inc_pack* InPack,out_pack* OuPack)
     case 0x0092: //SMSG_GUILD_EVENT
     case 0x0099: //SMSG_CHANNEL_NOTIFY
     case 0x0103: //SMSG_EMOTE
+    case 0x0105: //SMSG_TEXT_EMOTE
     case 0x01CB: //SMSG_NOTIFICATION
     case 0x02A9: //SMSG_CHAT_PLAYER_NOT_FOUND
     case 0x033D: //SMSG_MOTD
@@ -38,8 +39,6 @@ bool Session::Update(inc_pack* InPack,out_pack* OuPack)
         }
     }
     // here? means no inc_pack to process
-    if (RequestedPlayers.begin() != RequestedPlayers.end())
-        return send_cmsg_name_query(OuPack,*RequestedPlayers.begin());
     if (UnkPlayers.begin() != UnkPlayers.end())
         return send_cmsg_name_query(OuPack,*UnkPlayers.begin());
 
@@ -175,7 +174,7 @@ bool Session::handle_smsg_messagechat(inc_pack* InPack,out_pack* OuPack)
     std::map<uint32,PlayerInfo>::const_iterator itr = PlayersInfoMap.find(mes.guid);
     if (itr != PlayersInfoMap.end())
         sprintf_s(mes.who,"%s",itr->second.name.c_str());
-    else
+    else if (mes.guid !=0)
     {
         sprintf_s(mes.who,"#%u",mes.guid);
         UnkPlayers.push_back(mes.guid);
@@ -267,6 +266,7 @@ bool Session::send_cmsg_name_query(out_pack* OuPack,uint32 guid)
 {
     OuPack->reset( 0x0050);
     *OuPack << guid << (uint32)0;
+    UnkPlayers.remove(guid);
     return true;
 }
 
@@ -281,7 +281,6 @@ bool Session::handle_smsg_name_query_response(inc_pack *InPack)
     *InPack >> PlayersInfoMap[guid].gender;
     *InPack >> PlayersInfoMap[guid].clas;
 
-    UnkPlayers.remove(guid);
     for (std::list<uint32>::const_iterator itr = RequestedPlayers.begin(); itr !=RequestedPlayers.end();itr++)
     {
         if(*itr == guid)
