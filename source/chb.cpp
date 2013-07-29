@@ -26,6 +26,7 @@ int main( void )
     MainSocket      sMainSocket;
     Session         sSession;
     ClPacket.type = 0x03;
+    uint8           RealmId;
 
     inc_pack InPacket;
     out_pack OuPacket;
@@ -41,10 +42,13 @@ int main( void )
         {
             if(!sMainSocket.IsConnected)
             {
-                sMainSocket.ServerAdress = sAProcessor.GetRealmAdress(0);
-                sMainSocket.ServerPort = sAProcessor.GetRealmPort(2);
+                printf("select realm ");
+                std::cin >> RealmId;
+                sMainSocket.ServerAdress = sAProcessor.GetRealmAdress(RealmId-49);
+                sMainSocket.ServerPort = sAProcessor.GetRealmPort(RealmId-49);
                 sMainSocket.SetKey(sAProcessor.GetKey());
                 sMainSocket.username = sAProcessor.GetUsername();
+                printf("\n");
             }
             
             if(!sMainSocket.Update(&InPacket))

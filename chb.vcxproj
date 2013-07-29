@@ -40,10 +40,13 @@
     <ClCompile Include="source\Auth\Hmac.cpp" />
     <ClCompile Include="source\Auth\Sha1.cpp" />
     <ClCompile Include="source\BaseSocket.cpp" />
+    <ClCompile Include="source\ChannelHandler.cpp" />
+    <ClCompile Include="source\ChatHandler.cpp" />
     <ClCompile Include="source\chb.cpp" />
     <ClCompile Include="source\AuthProcessor.cpp" />
+    <ClCompile Include="source\LoginHandler.cpp" />
     <ClCompile Include="source\MainSocket.cpp" />
-    <ClCompile Include="source\Session-CL.cpp" />
+    <ClCompile Include="source\CommandLineHandler.cpp" />
     <ClCompile Include="source\Session.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
