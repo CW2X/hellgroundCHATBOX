@@ -14,10 +14,10 @@ public:
     PCSTR ServerAdress;
     PCSTR ServerPort;
 protected:
-    bool open_socket();
+    void open_socket();
     void close_socket(); // for now never used
-    bool send_packet(char buffer[BUFFER_SIZE_OUT],uint16 datalength);
-    bool recv_packet(char * buffer,uint16* datalength);
+    void send_packet(char buffer[BUFFER_SIZE_OUT],uint16 datalength);
+    void recv_packet(char * buffer,uint16* datalength);
 private:
     WSADATA wsa_data;
     int MySocket;

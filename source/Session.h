@@ -43,26 +43,27 @@ class Session
 {
 public:
     Session();
-    bool Update(inc_pack* InPack,out_pack* OuPack);
-    bool ClUpdate(cli_pack* InPack,out_pack* OuPack);
+    void Update(inc_pack* InPack,out_pack* OuPack);
+    void ClUpdate(cli_pack* InPack,out_pack* OuPack);
    
 private:
-    bool handle_smsg_char_enum(inc_pack* InPack,out_pack* OuPack);
-    bool handle_smsg_name_query_response(inc_pack*);
-    bool handle_smsg_messagechat(inc_pack* InPack,out_pack* OuPack);
-    bool handle_smsg_channel_notify(inc_pack* InPack,out_pack* OuPack);
-    bool handle_smsg_channel_list(inc_pack* InPack);
-    bool handle_smsg_auth_response(inc_pack* InPack,out_pack* OuPack);
-    bool handle_smsg_login_verify_world(inc_pack* InPack,out_pack* OuPack); 
-    bool handle_Cl(cli_pack* InPack,out_pack* OuPack);
+    void handle_smsg_char_enum(inc_pack* InPack,out_pack* OuPack);
+    void handle_smsg_name_query_response(inc_pack*);
+    void handle_smsg_messagechat(inc_pack* InPack,out_pack* OuPack);
+    void handle_smsg_channel_notify(inc_pack* InPack,out_pack* OuPack);
+    void handle_smsg_channel_list(inc_pack* InPack);
+    void handle_smsg_auth_response(inc_pack* InPack,out_pack* OuPack);
+    void handle_smsg_login_verify_world(inc_pack* InPack,out_pack* OuPack); 
+    void handle_smsg_chat_player_not_found(inc_pack* InPack);
+    void handle_Cl(cli_pack* InPack,out_pack* OuPack);
 
-    bool send_cmsg_login(out_pack* OuPack,uint8 i);
-    bool send_cmsg_join_channel(out_pack* OuPack,std::string name);
-    bool send_cmsg_leave_channel(out_pack* OuPack,uint8 no);
-    bool send_cmsg_messagechat(std::string data, out_pack* OuPack);
-    bool send_cmsg_char_enum(out_pack* OuPack);
-    bool send_cmsg_name_query(out_pack* OuPack,uint32 guid);
-    bool send_cmsg_channel_list(out_pack* OuPack,std::string channelname);
+    void send_cmsg_login(out_pack* OuPack,uint8 i);
+    void send_cmsg_join_channel(out_pack* OuPack,std::string name);
+    void send_cmsg_leave_channel(out_pack* OuPack,uint8 no);
+    void send_cmsg_messagechat(std::string data, out_pack* OuPack);
+    void send_cmsg_char_enum(out_pack* OuPack);
+    void send_cmsg_name_query(out_pack* OuPack,uint32 guid);
+    void send_cmsg_channel_list(out_pack* OuPack,std::string channelname);
 
     char*           ChatLanguages(uint32 lang);
     CharacterData   characters[7];

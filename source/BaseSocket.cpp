@@ -6,7 +6,7 @@ BaseSocket::BaseSocket()
     IsAuthed    = false;
 }
 
-bool BaseSocket::open_socket()
+void BaseSocket::open_socket()
 {
     printf("initializing connection: %s:%s\n",ServerAdress,ServerPort);
     
@@ -23,7 +23,7 @@ bool BaseSocket::open_socket()
     if ( IsError != 0 ) {
         printf("getaddrinfo failed with error: %d\n", IsError);
         WSACleanup();
-        return false;
+        throw (1);
     }
     
     for(ptr=result; ptr != NULL ;ptr=ptr->ai_next) {
@@ -33,7 +33,7 @@ bool BaseSocket::open_socket()
         if (MySocket == INVALID_SOCKET) {
             printf("socket failed with error: %ld\n", WSAGetLastError());
             WSACleanup();
-            return false;
+            throw (1);
         }
         
         IsError = connect( MySocket, ptr->ai_addr, (int)ptr->ai_addrlen);
@@ -51,26 +51,25 @@ bool BaseSocket::open_socket()
     if (MySocket == INVALID_SOCKET) {
         printf("Unable to connect to server!\n");
         WSACleanup();
-        return false;
+        throw (1);
     }
     
     IsConnected = true;
     printf("connection successful\n");
-    return true;
 }
 
-bool BaseSocket::send_packet(char buffer[BUFFER_SIZE_OUT],uint16 datalength)
+void BaseSocket::send_packet(char buffer[BUFFER_SIZE_OUT],uint16 datalength)
 {
     int IsError = send( MySocket,buffer, datalength, 0 );
     if (IsError == SOCKET_ERROR) {
         printf("send failed with error: %d\n", WSAGetLastError());
         closesocket(MySocket);
         WSACleanup();
+        throw (1);
     }
-    return (IsError != -1);
 }
 
-bool BaseSocket::recv_packet(char* buffer, uint16* datalength)
+void BaseSocket::recv_packet(char* buffer, uint16* datalength)
 {
     fd_set recvset;
     timeval tv;
@@ -89,14 +88,13 @@ bool BaseSocket::recv_packet(char* buffer, uint16* datalength)
         if (IsError <0)
         {
             printf("recv failed with error: %d\n", WSAGetLastError());
-            return false;
+            throw (1);
         }
         *datalength = (uint16)IsError;
-        return true;
+        return;
     }
 
     *datalength = 0;
-    return true;
 }
 
 void BaseSocket::close_socket()

@@ -1,6 +1,6 @@
 #include "Session.h"
 
-bool Session::send_cmsg_join_channel(out_pack* OuPack,std::string name)
+void Session::send_cmsg_join_channel(out_pack* OuPack,std::string name)
 {
     uint8 channelid = 9;
     for (uint8 i=9;i>0;i--)
@@ -12,7 +12,7 @@ bool Session::send_cmsg_join_channel(out_pack* OuPack,std::string name)
     if (channelid == 9)
     {
         printf("too many chanels, leave one to join next");
-        return true;
+        return;
     }
 
     OuPack->reset(0x097);
@@ -24,28 +24,26 @@ bool Session::send_cmsg_join_channel(out_pack* OuPack,std::string name)
     channels[channelid] = name;
     channelson[channelid] = true;
     printf("Joining channel %s [%u]\n",name.c_str(),channelid+1);
-    return true;
 }
 
-bool Session::send_cmsg_leave_channel(out_pack* OuPack,uint8 no)
+void Session::send_cmsg_leave_channel(out_pack* OuPack,uint8 no)
 {
     if (!no || no > 9)
     {
         printf("usage: /leave channel number\n");
-        return true;
+        return;
     }
     if (channelson[no-1] == false)
-        return true;
+        return;
     printf("leaving channel %s [%u]\n",channels[no-1].c_str(),no);
     OuPack->reset (0x0098);
     *OuPack << (uint32)0;
     *OuPack << channels[no-1];
     channels[no-1] = "";
     channelson[no-1] = false;
-    return true;
 }
 
-bool Session::handle_smsg_channel_notify(inc_pack* InPack,out_pack* OuPack)
+void Session::handle_smsg_channel_notify(inc_pack* InPack,out_pack* OuPack)
 {
     uint8       type;
     std::string channelname;
@@ -55,21 +53,19 @@ bool Session::handle_smsg_channel_notify(inc_pack* InPack,out_pack* OuPack)
     switch (type)
     {
     case 0x02:
-        {printf("Joined channel %s\n",channelname.c_str());return send_cmsg_channel_list(OuPack,channelname);}
+        {printf("Joined channel %s\n",channelname.c_str()); return send_cmsg_channel_list(OuPack,channelname);}
     default:
         printf("received notify %u for channel %s\n",type,channelname.c_str());
     }
-    return true;
 }
 
-bool Session::send_cmsg_channel_list(out_pack* OuPack, std::string channelname)
+void Session::send_cmsg_channel_list(out_pack* OuPack, std::string channelname)
 {
     OuPack->reset(0x009A);
     *OuPack << channelname;
-    return true;
 }
 
-bool Session::handle_smsg_channel_list(inc_pack* InPack)
+void Session::handle_smsg_channel_list(inc_pack* InPack)
 {
     std::string channelname;
     uint32      nofplayers;
@@ -87,6 +83,4 @@ bool Session::handle_smsg_channel_list(inc_pack* InPack)
         if (itr == PlayersInfoMap.end())
             UnkPlayers.push_back(guid);
     }
-    
-    return true;
 }

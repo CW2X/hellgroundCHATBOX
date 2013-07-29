@@ -73,7 +73,7 @@ class AuthProcessor : public BaseSocket
 {
 public:
     AuthProcessor();
-    bool Update();
+    void Update();
     
     PCSTR GetRealmAdress(uint8 i) {return realmdata[i].address.c_str();};
     PCSTR GetRealmPort(uint8 i) {return realmdata[i].port.c_str();};
@@ -82,13 +82,13 @@ public:
 private:
     void MagicVoid();
 
-    bool handle_incoming(char buffer[BUFFER_SIZE_IN],uint8 datalength);
-    bool send_logon_challenge(); // initialize 
-    bool send_logon_proof();
-    bool send_realm_list();
-    bool recv_logon_challenge(char buffer[BUFFER_SIZE_IN],uint8 datalength);
-    bool recv_logon_proof(char buffer[BUFFER_SIZE_IN],uint8 datalength);
-    bool recv_realm_list(char buffer[BUFFER_SIZE_IN],uint8 datalength);
+    void handle_incoming(char buffer[BUFFER_SIZE_IN],uint8 datalength);
+    void send_logon_challenge(); // initialize 
+    void send_logon_proof();
+    void send_realm_list();
+    void recv_logon_challenge(char buffer[BUFFER_SIZE_IN],uint8 datalength);
+    void recv_logon_proof(char buffer[BUFFER_SIZE_IN],uint8 datalength);
+    void recv_realm_list(char buffer[BUFFER_SIZE_IN],uint8 datalength);
     
     BigNumber A,B,a,g,N,K,s,unk3,v,x,M,M2; // magic variables
     uint8 realms;

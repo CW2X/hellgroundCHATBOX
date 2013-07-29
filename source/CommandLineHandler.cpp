@@ -1,6 +1,6 @@
 #include "Session.h"
 
-bool Session::ClUpdate(cli_pack* InPack,out_pack* OuPack)
+void Session::ClUpdate(cli_pack* InPack,out_pack* OuPack)
 {
     switch(InPack->type)
     {
@@ -13,13 +13,12 @@ bool Session::ClUpdate(cli_pack* InPack,out_pack* OuPack)
                 return send_cmsg_login(OuPack,(uint8)InPack->data.c_str()[0]);
         }
     }
-    return true;
 }
 
-bool Session::handle_Cl(cli_pack* InPack,out_pack* OuPack)
+void Session::handle_Cl(cli_pack* InPack,out_pack* OuPack)
 {
     if(InPack->data[0] == 0x00 || InPack->data[1] == 0x00)
-        return true;
+        return;
 
     std::string     cmd,args;
     uint8           space=0;
@@ -36,7 +35,7 @@ bool Session::handle_Cl(cli_pack* InPack,out_pack* OuPack)
         activechannel = (uint8)cmd[0] - 48;
         if(args != "")
             return send_cmsg_messagechat(args,OuPack);
-        return true;
+        return;
     }
 
     if (cmd == "say" || cmd == "s")
@@ -44,7 +43,7 @@ bool Session::handle_Cl(cli_pack* InPack,out_pack* OuPack)
         activechannel = 21;
         if(args != "")
             return send_cmsg_messagechat(args,OuPack);
-        return true;
+        return;
     }
 
     if (cmd == "yell" || cmd == "y")
@@ -52,7 +51,7 @@ bool Session::handle_Cl(cli_pack* InPack,out_pack* OuPack)
         activechannel = 26;
         if(args != "")
             return send_cmsg_messagechat(args,OuPack);
-        return true;
+        return;
     }
 
     if (cmd == "guild" || cmd == "g")
@@ -60,7 +59,7 @@ bool Session::handle_Cl(cli_pack* InPack,out_pack* OuPack)
         activechannel = 24;
         if(args != "")
             return send_cmsg_messagechat(args,OuPack);
-        return true;
+        return;
     }
 
     if (cmd == "officer" || cmd == "o")
@@ -68,7 +67,7 @@ bool Session::handle_Cl(cli_pack* InPack,out_pack* OuPack)
         activechannel = 25;
         if(args != "")
             return send_cmsg_messagechat(args,OuPack);
-        return true;
+        return;
     }
 
     if(cmd == "w" && args != "")
@@ -85,7 +84,7 @@ bool Session::handle_Cl(cli_pack* InPack,out_pack* OuPack)
             printf("To %s : %s\n",whisptarget.c_str(),what.c_str());
             return send_cmsg_messagechat(what,OuPack);
         }
-        return true;
+        return;
     }
 
     if(cmd == "r")
@@ -93,7 +92,7 @@ bool Session::handle_Cl(cli_pack* InPack,out_pack* OuPack)
         activechannel = 27;
         if(args != "")
             return send_cmsg_messagechat(args,OuPack);
-        return true;
+        return;
     }
 
     if (cmd == "c")
@@ -104,7 +103,7 @@ bool Session::handle_Cl(cli_pack* InPack,out_pack* OuPack)
         if(args != "")
             return send_cmsg_join_channel(OuPack,args);
         printf("wrong channel name\n");
-        return true;
+        return;
     }
 
     if (cmd == "leave")
@@ -112,12 +111,11 @@ bool Session::handle_Cl(cli_pack* InPack,out_pack* OuPack)
         if(args != "")
             return send_cmsg_leave_channel(OuPack, (uint8)args.c_str()[0]-48);
         printf("usage: /leave channel number\n");
-        return true;
+        return;
     }
     
     printf("unknown command: ");
     for(uint8 i=1;i<InPack->size;i++)
         printf("%c",InPack->data[i]);
     printf("\n");
-    return true;
 }

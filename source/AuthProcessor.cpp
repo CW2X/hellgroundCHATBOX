@@ -7,27 +7,23 @@ AuthProcessor::AuthProcessor()
     ServerPort = AUTH_PORT;
 }
 
-bool AuthProcessor::handle_incoming(char buffer[BUFFER_SIZE_IN],uint8 datalength)
+void AuthProcessor::handle_incoming(char buffer[BUFFER_SIZE_IN],uint8 datalength)
 {
     switch(buffer[0])
     {
     case CMD_AUTH_LOGON_CHALLENGE:
         {
-            if (recv_logon_challenge(buffer,datalength))
-                return send_logon_proof();
-            else return false;
+            recv_logon_challenge(buffer,datalength);
+            return send_logon_proof();
         }
     case CMD_AUTH_LOGON_PROOF:
         {
-            if (recv_logon_proof(buffer,datalength))
-                return send_realm_list();
-            else return false;
+            recv_logon_proof(buffer,datalength);
+            return send_realm_list();
         }
     case CMD_REALM_LIST:
         {
-            if (recv_realm_list(buffer,datalength))
-                return true;
-            else return false;
+            return recv_realm_list(buffer,datalength);
         }
     default:
         {
@@ -37,10 +33,10 @@ bool AuthProcessor::handle_incoming(char buffer[BUFFER_SIZE_IN],uint8 datalength
             }
             printf("|EOT|\n");
             printf("unknown command: %u \n",(uint8)buffer[0]);
+            throw (1);
         }
 
     }
-    return false;
 }
 
 void AuthProcessor::MagicVoid()
@@ -134,7 +130,7 @@ void AuthProcessor::MagicVoid()
     M2.SetBinary(sha.GetDigest(),20);
 }
 
-bool AuthProcessor::send_logon_challenge()
+void AuthProcessor::send_logon_challenge()
 {
     AUTH_LOGON_CHALLENGE_U sLC;
     printf("login(uppercase): ");
@@ -157,10 +153,10 @@ bool AuthProcessor::send_logon_challenge()
     for(uint8 i=0; i<username.size();i++)
         sLC.data.I[i]=(uint8)(username.c_str()[i]);
 
-    return send_packet(sLC.c,username.length()+34);
+    send_packet(sLC.c,username.length()+34);
 }
 
-bool AuthProcessor::recv_logon_challenge(char buffer[BUFFER_SIZE_IN],uint8 datalength)
+void AuthProcessor::recv_logon_challenge(char buffer[BUFFER_SIZE_IN],uint8 datalength)
 {
     switch (buffer[2])
     {
@@ -169,7 +165,7 @@ bool AuthProcessor::recv_logon_challenge(char buffer[BUFFER_SIZE_IN],uint8 datal
             if (buffer[35] != 1 || buffer[37] != 32 || datalength < 119)
             {
                 printf("logon challenge: invalid response from server\n");
-                return false;
+                throw (1);
             }
             
             uint8 local[32];
@@ -185,7 +181,7 @@ bool AuthProcessor::recv_logon_challenge(char buffer[BUFFER_SIZE_IN],uint8 datal
                 local[i] = (uint8)buffer[i+70];
             s.SetBinary(local,32);
             // unk3.setbinary ?
-            return true;
+            return;
         }
     case 0x03:
         printf("account banned\n"); break;
@@ -194,10 +190,10 @@ bool AuthProcessor::recv_logon_challenge(char buffer[BUFFER_SIZE_IN],uint8 datal
     default:
         printf("other logon challenge error: %u\n",(uint8)buffer[2]);break;
     }
-    return false;
+    throw (1);
 }
 
-bool AuthProcessor::send_logon_proof()
+void AuthProcessor::send_logon_proof()
 {
     AUTH_LOGON_PROOF_U sLP;
     printf("password(uppercase): ");
@@ -215,10 +211,10 @@ bool AuthProcessor::send_logon_proof()
     sLP.data.number_of_keys = 0;
     sLP.data.securityFlags  = 0;
     
-    return send_packet(sLP.c,sizeof(sLP));
+    send_packet(sLP.c,sizeof(sLP));
 }
 
-bool AuthProcessor::recv_logon_proof(char buffer[BUFFER_SIZE_IN],uint8 datalength)
+void AuthProcessor::recv_logon_proof(char buffer[BUFFER_SIZE_IN],uint8 datalength)
 {
     if(buffer[1] == 0x04)
         printf("invalid password\n");
@@ -228,37 +224,38 @@ bool AuthProcessor::recv_logon_proof(char buffer[BUFFER_SIZE_IN],uint8 datalengt
         for (uint8 i=22;i<32;i++)
             sum += (uint8)buffer[i];
         if((uint8)buffer[24] != 128 || sum != 128)
-        {printf("logon proof: invalid response from server %u %u\n",sum,(uint8)buffer[24]); return false;}
+        {printf("logon proof: invalid response from server %u %u\n",sum,(uint8)buffer[24]); throw (1);}
         
         for(uint8 i=0;i<20;i++)
             if ((uint8)buffer[i+2] != (uint8)M2.AsByteArray()[i])
-                {printf("logon proof: invalid M2 key\n");return false;}
+                {printf("logon proof: invalid M2 key\n"); throw (1);}
         
-        return true;
+        return;
     }
     else
+    {
         printf("logon proof error: %u\n",buffer[1]);
-
-    return false;
+        throw (1);
+    }
 }
 
-bool AuthProcessor::send_realm_list()
+void AuthProcessor::send_realm_list()
 {
     char c[5] = {0x10,0x00,0x00,0x00,0x00};
-    return send_packet(c,5);
+    send_packet(c,5);
 }
 
-bool AuthProcessor::recv_realm_list(char buffer[BUFFER_SIZE_IN],uint8 datalength)
+void AuthProcessor::recv_realm_list(char buffer[BUFFER_SIZE_IN],uint8 datalength)
 {
     if((uint8)buffer[1] != datalength - 3)
-    {printf("realm list invalid packet size\n");return false;}
+    {printf("realm list invalid packet size\n");throw (1);}
     if((uint8)buffer[2] || (uint8)buffer[3] || (uint8)buffer[4] || (uint8)buffer[5] || (uint8)buffer[6] || (uint8)buffer[datalength-1] || (uint8)buffer[datalength-2] != 0x10)
-    {printf("realm list: invalid response from server\n");return false;}
+    {printf("realm list: invalid response from server\n");throw (1);}
 
     realms = (uint8)buffer[7];
     printf("received %i realm info\n",realms);
     if (realms>4)
-    {printf("too many realms\n");return false;}
+    {printf("too many realms\n"); throw (1);}
     uint8 pos = 9;
     for(uint8 i=0;i<realms;i++)
     {
@@ -302,25 +299,22 @@ bool AuthProcessor::recv_realm_list(char buffer[BUFFER_SIZE_IN],uint8 datalength
     }
     if (realms > 0)
         IsAuthed = true;
-    return true;
 }
 
-bool AuthProcessor::Update()
+void AuthProcessor::Update()
 {
     if(!IsConnected)
     {
-        if(!open_socket())
-            return false;
-        return send_logon_challenge();
+        open_socket();
+        send_logon_challenge();
+        return;
     }
 
     char recvbuff[BUFFER_SIZE_IN];
     uint16 datalength;
     datalength = 0;
     
-    if (!recv_packet(recvbuff,&datalength))
-        return false;
+    recv_packet(recvbuff,&datalength);
     if (datalength>0)
-        return handle_incoming(recvbuff,(uint8)datalength);
-    return true;
+        handle_incoming(recvbuff,(uint8)datalength);
 }

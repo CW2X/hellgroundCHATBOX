@@ -1,12 +1,15 @@
 #include "Session.h"
 
-bool Session::handle_smsg_messagechat(inc_pack* InPack,out_pack* OuPack)
+void Session::handle_smsg_messagechat(inc_pack* InPack,out_pack* OuPack)
 {
     ChatMessage mes;
 
     *InPack >> mes.type;
     *InPack >> mes.lang >> mes.guid;
     InPack->skip(8);
+
+    if (mes.lang == 0xFFFFFFFF)
+        return;
     switch(mes.type)
     {
     case 1:     {mes.channel = "Say";break;}
@@ -47,13 +50,18 @@ bool Session::handle_smsg_messagechat(inc_pack* InPack,out_pack* OuPack)
             printf("%s%s whispers : %s\n",ChatTagIdentifiers[mes.tag],mes.who,mes.what.c_str());
             break;
         }
+    case 0:     //CHAT_MSG_SYSTEM
+        {
+            printf("> %s\n",mes.what.c_str());
+            break;
+        }
     default:
         {
             printf("message type %u : %s\n",mes.type,mes.what.c_str());
             break;
         }
     }
-    return true;
+    return;
 }
 
 char* Session::ChatLanguages(uint32 lang)
@@ -83,7 +91,7 @@ char* Session::ChatLanguages(uint32 lang)
     }
 }
 
-bool Session::send_cmsg_messagechat(std::string data,out_pack* OuPack)
+void Session::send_cmsg_messagechat(std::string data,out_pack* OuPack)
 {
     uint32 mtype;
     uint32 lang  =  7;//Common
@@ -92,7 +100,7 @@ bool Session::send_cmsg_messagechat(std::string data,out_pack* OuPack)
     {
         mtype = 17;
         if (!channelson[activechannel-1])
-            return true;
+            return;
     }
     else
         mtype = activechannel - 20;
@@ -104,18 +112,16 @@ bool Session::send_cmsg_messagechat(std::string data,out_pack* OuPack)
     if (mtype == 7)
         *OuPack << whisptarget;
     *OuPack << data;
-    return true;
 }
 
-bool Session::send_cmsg_name_query(out_pack* OuPack,uint32 guid)
+void Session::send_cmsg_name_query(out_pack* OuPack,uint32 guid)
 {
     OuPack->reset( 0x0050);
     *OuPack << guid << (uint32)0;
     UnkPlayers.remove(guid);
-    return true;
 }
 
-bool Session::handle_smsg_name_query_response(inc_pack *InPack)
+void Session::handle_smsg_name_query_response(inc_pack *InPack)
 {
     uint32 guid;
     *InPack >> guid;
@@ -135,5 +141,11 @@ bool Session::handle_smsg_name_query_response(inc_pack *InPack)
             break;
         }
     }
-    return true;
+}
+
+void Session::handle_smsg_chat_player_not_found(inc_pack *InPack)
+{
+    std::string playername;
+    *InPack >> playername;
+    printf("Player %s not found\n",playername.c_str());
 }

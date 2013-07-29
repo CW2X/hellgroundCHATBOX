@@ -5,7 +5,7 @@ MainSocket::MainSocket()
     loaded  = 0;
 }
 
-bool MainSocket::Update(inc_pack* packet)
+void MainSocket::Update(inc_pack* packet)
 {
     char recvbuff[BUFFER_SIZE_IN];
     uint16 datalength;
@@ -15,25 +15,26 @@ bool MainSocket::Update(inc_pack* packet)
     {
         m_crypt.SetKey(&K);
         m_crypt.Init();
-        return open_socket();
+        open_socket();
     }
     if(!IsAuthed)
     {
         datalength = 0;
-        if (!recv_packet(recvbuff,&datalength))
-            return false;
-        if (datalength>0 && recv_auth_challenge(recvbuff,datalength))
-            return send_auth_session();
-        return true;
+        recv_packet(recvbuff,&datalength);
+        if (datalength>0)
+        {
+            recv_auth_challenge(recvbuff,datalength);
+            send_auth_session();
+        }
+        return;
     }
 
     if (loaded == 0) // did we received whole data last time?
     {
         datalength = 4;
-        if (!recv_packet(recvbuff,&datalength))
-            return false;
+        recv_packet(recvbuff,&datalength);
         if (datalength == 0)
-            return true;
+            return;
         decrypt_header((uint8*)recvbuff);
 
         curc = (uint16)(((uint8)recvbuff[3] << 8) | (uint8)recvbuff[2]);
@@ -42,64 +43,57 @@ bool MainSocket::Update(inc_pack* packet)
         if(curs > BUFFER_SIZE_IN)
         {
             printf("possible Buffer Overflow! Interrupting (%u 0x%04X)",curs,curc);
-            return false;
+            throw (1);
         }
 
         datalength = curs;
         if (datalength)
-        {
-            if (!recv_packet(recvbuff,&datalength))
-                return false;
-        }
+            recv_packet(recvbuff,&datalength);
 
         if (datalength < curs)
         { // not whole packet received
             loaded = datalength;
             packet->set(recvbuff);
-            return true;
+            return;
         }
     
         if(IsIgnoredOpcode(curc))
-            return true;
+            return;
 
         packet->reset(curs,curc);
         packet->set(recvbuff);
-        return true;
     }
     else
     {
         datalength = curs - loaded;
-        if (!recv_packet(recvbuff,&datalength))
-            return false;
+        recv_packet(recvbuff,&datalength);
 
         packet->set(recvbuff,loaded);
 
         if(datalength < curs- loaded)
         {// still not whole packet
             loaded += datalength;
-            return true;
+            return;
         }
 
         if(IsIgnoredOpcode(curc))
         {
             loaded = 0;
-            return true;
+            return;
         }
+        loaded = 0;
         packet->reset(curs,curc);
-        return true;
-
     }
 }
 
-bool MainSocket::recv_auth_challenge(char buffer[BUFFER_SIZE_IN],uint16 datalength)
+void MainSocket::recv_auth_challenge(char buffer[BUFFER_SIZE_IN],uint16 datalength)
 {
     if( (uint8)buffer[2] != 0xEC || (uint8)buffer[3] != 0x01 || datalength != 8)
-        return false;
+        throw (1);
     serverSeed = MAKE_UINT32(buffer[7],buffer[6],buffer[5],buffer[4]);
-    return true;
 }
 
-bool MainSocket::send_auth_session()
+void MainSocket::send_auth_session()
 {
     uint8 lbuf[BUFFER_SIZE_OUT];
     uint8 i;
@@ -131,10 +125,9 @@ bool MainSocket::send_auth_session()
     lbuf[i+19+username.length()] = sha.GetDigest()[i];
     send_packet((char*)lbuf,username.length()+39);
     IsAuthed = true;
-    return true;
 }
 
-bool MainSocket::send_out_pack(out_pack* packet)
+void MainSocket::send_out_pack(out_pack* packet)
 {
     uint8 buffer[BUFFER_SIZE_OUT];
 
@@ -147,7 +140,7 @@ bool MainSocket::send_out_pack(out_pack* packet)
         buffer[i+6] = packet->gd(i);
 
     encrypt_header(buffer);
-    return send_packet((char*) buffer,(uint8)(packet->gs() + 6));
+    send_packet((char*) buffer,(uint8)(packet->gs() + 6));
 }
 
 bool MainSocket::IsIgnoredOpcode(uint16 opcode)
@@ -203,7 +196,7 @@ bool MainSocket::IsIgnoredOpcode(uint16 opcode)
     case 0x0150: //SMSG_SPELLHEALLOG
     case 0x0151: //SMSG_SPELLENERGIZELOG
     case 0x0155: //SMSG_BINDPOINTUPDATE
-    case 0x0182: //SMSG_MOUNTSPECIAL_ANIM
+    case 0x0172: //SMSG_MOUNTSPECIAL_ANIM
     case 0x0179: //SMSG_PET_SPELLS
     case 0x01DB: //SMSG_STOP_MIRROR_TIMER
     case 0x01EA: //SMSG_ITEM_TIME_UPDATE

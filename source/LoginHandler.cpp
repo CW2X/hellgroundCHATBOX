@@ -1,19 +1,18 @@
 #include "Session.h"
 
-bool Session::handle_smsg_auth_response(inc_pack* InPack,out_pack* OuPack)
+void Session::handle_smsg_auth_response(inc_pack* InPack,out_pack* OuPack)
 {
     uint8 error;
     *InPack >> error;
     if (error != 0x0C)
     {
         printf("auth response received error: %u\n",error);
-        return false;
+        throw (1);
     }
     printf("authorization succesful\n");
-    return true;
 }
 
-bool Session::handle_smsg_char_enum(inc_pack* InPack,out_pack* OuPack)
+void Session::handle_smsg_char_enum(inc_pack* InPack,out_pack* OuPack)
 {
     // data: |number of characters|char 1|char2|...
     // character struct: |guid(8)|name|0|race(1)|class(1)|gender(1)|look(5)|level(1)|zone(4)|map(4)|xyz floats(12)|
@@ -39,10 +38,9 @@ bool Session::handle_smsg_char_enum(inc_pack* InPack,out_pack* OuPack)
     }
     printf("select character: ");
     cinredirect = 1;
-    return true;
 }
 
-bool Session::send_cmsg_login(out_pack* OuPack,uint8 i)
+void Session::send_cmsg_login(out_pack* OuPack,uint8 i)
 {
     i -= 48;
     cinredirect = 0;
@@ -51,19 +49,16 @@ bool Session::send_cmsg_login(out_pack* OuPack,uint8 i)
     OuPack->reset(0x003D);
     *OuPack << characters[i].guid;
     *OuPack << (uint32)0;
-    return true;
 }
 
-bool Session::handle_smsg_login_verify_world(inc_pack* InPack,out_pack* OuPack)
+void Session::handle_smsg_login_verify_world(inc_pack* InPack,out_pack* OuPack)
 {
     printf("player logged in\n\n");
-    return send_cmsg_join_channel(OuPack,"world");
-    return true;
+    send_cmsg_join_channel(OuPack,"world");
 }
 
-bool Session::send_cmsg_char_enum(out_pack* OuPack)
+void Session::send_cmsg_char_enum(out_pack* OuPack)
 {
     printf("requesting character list\n");
     OuPack->reset( 0x0037);
-    return true;
 }
