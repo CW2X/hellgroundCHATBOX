@@ -75,13 +75,10 @@ int main( void )
             }
         }
     }
-    catch (uint8 i)
+    catch (std::string error)
     {
-        if( i == 0)
-            printf("exiting\n");
-        else
-            printf("error occured, breaking\n");
-        return 1;
+        std::cout << error;
+        return 0;
     }
 
     return 0;

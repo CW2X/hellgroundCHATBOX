@@ -32,8 +32,7 @@ void AuthProcessor::handle_incoming(char buffer[BUFFER_SIZE_IN],uint8 datalength
                 printf("%u ",(uint8)buffer[i]);
             }
             printf("|EOT|\n");
-            printf("unknown command: %u \n",(uint8)buffer[0]);
-            throw (1);
+            throw string_format("unknown command: %u \n",(uint8)buffer[0]);
         }
 
     }
@@ -163,10 +162,7 @@ void AuthProcessor::recv_logon_challenge(char buffer[BUFFER_SIZE_IN],uint8 datal
     case 0x00:
         {
             if (buffer[35] != 1 || buffer[37] != 32 || datalength < 119)
-            {
-                printf("logon challenge: invalid response from server\n");
-                throw (1);
-            }
+                throw string_format("logon challenge: invalid response from server\n");
             
             uint8 local[32];
             for(int i = 0; i<32;i++)
@@ -184,13 +180,12 @@ void AuthProcessor::recv_logon_challenge(char buffer[BUFFER_SIZE_IN],uint8 datal
             return;
         }
     case 0x03:
-        printf("account banned\n"); break;
+        throw "account banned\n";
     case 0x04:
-        printf("unknown account\n"); break;
+        throw "unknown account\n";
     default:
-        printf("other logon challenge error: %u\n",(uint8)buffer[2]);break;
+        throw string_format("other logon challenge error: %u\n",(uint8)buffer[2]);
     }
-    throw (1);
 }
 
 void AuthProcessor::send_logon_proof()
@@ -224,19 +219,17 @@ void AuthProcessor::recv_logon_proof(char buffer[BUFFER_SIZE_IN],uint8 datalengt
         for (uint8 i=22;i<32;i++)
             sum += (uint8)buffer[i];
         if((uint8)buffer[24] != 128 || sum != 128)
-        {printf("logon proof: invalid response from server %u %u\n",sum,(uint8)buffer[24]); throw (1);}
+            throw string_format("logon proof: invalid response from server %u %u\n",sum,(uint8)buffer[24]);
         
         for(uint8 i=0;i<20;i++)
             if ((uint8)buffer[i+2] != (uint8)M2.AsByteArray()[i])
-                {printf("logon proof: invalid M2 key\n"); throw (1);}
+                throw "logon proof: invalid M2 key\n";
         
         return;
     }
     else
-    {
-        printf("logon proof error: %u\n",buffer[1]);
-        throw (1);
-    }
+        throw string_format("logon proof error: %u\n",buffer[1]);
+
 }
 
 void AuthProcessor::send_realm_list()
@@ -248,14 +241,14 @@ void AuthProcessor::send_realm_list()
 void AuthProcessor::recv_realm_list(char buffer[BUFFER_SIZE_IN],uint8 datalength)
 {
     if((uint8)buffer[1] != datalength - 3)
-    {printf("realm list invalid packet size\n");throw (1);}
+        throw "realm list invalid packet size\n";
     if((uint8)buffer[2] || (uint8)buffer[3] || (uint8)buffer[4] || (uint8)buffer[5] || (uint8)buffer[6] || (uint8)buffer[datalength-1] || (uint8)buffer[datalength-2] != 0x10)
-    {printf("realm list: invalid response from server\n");throw (1);}
+        throw "realm list: invalid response from server\n";
 
     realms = (uint8)buffer[7];
     printf("received %i realm info\n",realms);
     if (realms>4)
-    {printf("too many realms\n"); throw (1);}
+        throw "too many realms\n";
     uint8 pos = 9;
     for(uint8 i=0;i<realms;i++)
     {

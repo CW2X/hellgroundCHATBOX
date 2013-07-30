@@ -1,9 +1,10 @@
+#ifndef BASE_SOCKET
+#define BASE_SOCKET
+
 #include <ws2tcpip.h>
 #include <WinSock2.h>
 #include "base_defs.h"
-
-#ifndef BASE_SOCKET
-#define BASE_SOCKET
+#include "Util.h"
 
 class BaseSocket
 {

@@ -1,14 +1,12 @@
 #include "Session.h"
+#include "Util.h"
 
 void Session::handle_smsg_auth_response(inc_pack* InPack,out_pack* OuPack)
 {
     uint8 error;
     *InPack >> error;
     if (error != 0x0C)
-    {
-        printf("auth response received error: %u\n",error);
-        throw (1);
-    }
+        throw string_format("auth response received error: %u\n",error);
     printf("authorization succesful\n");
 }
 

@@ -1,3 +1,6 @@
+#ifndef SESSION_H
+#define SESSION_H
+
 #include "base_defs.h"
 #include "iopackets.h"
 #include <map>
@@ -76,3 +79,5 @@ private:
     // first one stores all guids that are on our channels, second one only those who write sth and we want their nicks ASAP
     std::string     whisptarget;
 };
+
+#endif

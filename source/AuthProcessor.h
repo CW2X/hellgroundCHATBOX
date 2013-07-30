@@ -1,3 +1,6 @@
+#ifndef AUTH_PROCESSOR_H
+#define AUTH_PROCESSOR_H
+
 #include "base_defs.h"
 #include "Auth\bn.h"
 #include "Auth\Sha1.h"
@@ -95,3 +98,5 @@ private:
     RealmInfo realmdata[4];
     std::string username,password;
 };
+
+#endif

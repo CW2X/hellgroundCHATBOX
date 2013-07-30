@@ -21,9 +21,8 @@ void BaseSocket::open_socket()
 
     IsError = getaddrinfo(ServerAdress, ServerPort, &hints, &result);
     if ( IsError != 0 ) {
-        printf("getaddrinfo failed with error: %d\n", IsError);
         WSACleanup();
-        throw (1);
+        throw string_format("getaddrinfo failed with error: %d\n", IsError);
     }
     
     for(ptr=result; ptr != NULL ;ptr=ptr->ai_next) {
@@ -31,9 +30,8 @@ void BaseSocket::open_socket()
             ptr->ai_protocol);
         
         if (MySocket == INVALID_SOCKET) {
-            printf("socket failed with error: %ld\n", WSAGetLastError());
             WSACleanup();
-            throw (1);
+            throw string_format("socket failed with error: %ld\n", WSAGetLastError());
         }
         
         IsError = connect( MySocket, ptr->ai_addr, (int)ptr->ai_addrlen);
@@ -49,9 +47,8 @@ void BaseSocket::open_socket()
     freeaddrinfo(result);
 
     if (MySocket == INVALID_SOCKET) {
-        printf("Unable to connect to server!\n");
         WSACleanup();
-        throw (1);
+        throw "Unable to connect to server!\n";
     }
     
     IsConnected = true;
@@ -62,10 +59,9 @@ void BaseSocket::send_packet(char buffer[BUFFER_SIZE_OUT],uint16 datalength)
 {
     int IsError = send( MySocket,buffer, datalength, 0 );
     if (IsError == SOCKET_ERROR) {
-        printf("send failed with error: %d\n", WSAGetLastError());
         closesocket(MySocket);
         WSACleanup();
-        throw (1);
+        throw string_format("send failed with error: %d\n", WSAGetLastError());
     }
 }
 
@@ -86,10 +82,7 @@ void BaseSocket::recv_packet(char* buffer, uint16* datalength)
         else
             IsError = recv(MySocket, buffer, *datalength, 0);
         if (IsError <0)
-        {
-            printf("recv failed with error: %d\n", WSAGetLastError());
-            throw (1);
-        }
+            throw string_format("recv failed with error: %d\n", WSAGetLastError());
         *datalength = (uint16)IsError;
         return;
     }

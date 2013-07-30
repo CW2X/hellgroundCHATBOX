@@ -1,7 +1,7 @@
-#include "base_defs.h"
-
 #ifndef IN_OUT_PACKETS
 #define IN_OUT_PACKETS
+
+#include "base_defs.h"
 
 class inc_pack
 {

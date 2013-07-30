@@ -41,10 +41,7 @@ void MainSocket::Update(inc_pack* packet)
         curs = (uint16)(((uint8)recvbuff[0] << 8) | (uint8)recvbuff[1]) - 2;
         
         if(curs > BUFFER_SIZE_IN)
-        {
-            printf("possible Buffer Overflow! Interrupting (%u 0x%04X)",curs,curc);
-            throw (1);
-        }
+            throw string_format("possible Buffer Overflow! Interrupting (%u 0x%04X)",curs,curc);
 
         datalength = curs;
         if (datalength)
@@ -89,7 +86,7 @@ void MainSocket::Update(inc_pack* packet)
 void MainSocket::recv_auth_challenge(char buffer[BUFFER_SIZE_IN],uint16 datalength)
 {
     if( (uint8)buffer[2] != 0xEC || (uint8)buffer[3] != 0x01 || datalength != 8)
-        throw (1);
+        throw "wrong auth challenge received";
     serverSeed = MAKE_UINT32(buffer[7],buffer[6],buffer[5],buffer[4]);
 }
 
@@ -188,6 +185,8 @@ bool MainSocket::IsIgnoredOpcode(uint16 opcode)
     case 0x0132: //SMSG_SPELL_GO
     case 0x0133: //SMSG_SPELL_FAILURE
     case 0x0137: //SMSG_UPDATE_AURA_DURATION
+    case 0x0139: //MSG_CHANNEL_START
+    case 0x013A: //MSG_CHANNEL_UPDATE
     case 0x013C: //SMSG_AI_REACTION
     case 0x0143: //SMSG_ATTACKSTART
     case 0x0144: //SMSG_ATTACKSTOP
@@ -205,12 +204,14 @@ bool MainSocket::IsIgnoredOpcode(uint16 opcode)
     case 0x0214: //SMSG_GAMEOBJECT_SPAWN_ANIM_OBSOLETE
     case 0x0215: //SMSG_GAMEOBJECT_DESPAWN_ANIM
     case 0x021E: //SMSG_SET_REST_START
+    case 0x0254: //SMSG_ZONE_UNDER_ATTACK
     case 0x024C: //SMSG_SPELLLOGEXECUTE
     case 0x024E: //SMSG_PERIODICAURALOG
     case 0x0250: //SMSG_SPELLNONMELEEDAMAGELOG
     case 0x0266: //SMSG_SET_FLAT_SPELL_MODIFIER
     case 0x0267: //SMSG_SET_PCT_SPELL_MODIFIER
     case 0x0269: //SMSG_CORPSE_RECLAIM_DELAY
+    case 0x027B: //SMSG_SPELLDISPELLOG
     case 0x02A6: //SMSG_SPELL_FAILED_OTHER
     case 0x02C2: //SMSG_INIT_WORLD_STATES
     case 0x02CA: //CMSG_MOVE_FALL_RESET
@@ -222,6 +223,7 @@ bool MainSocket::IsIgnoredOpcode(uint16 opcode)
     case 0x0343: //SMSG_MOVE_SET_CAN_FLY
     case 0x0344: //SMSG_MOVE_UNSET_CAN_FLY
     case 0x0346: //CMSG_MOVE_SET_FLY
+    case 0x03C0: //SMSG_CROSSED_INEBRIATION_THRESHOLD
     case 0x0359: //MSG_MOVE_START_ASCEND
     case 0x0378: //SMSG_DEATH_RELEASE_LOC
     case 0x0381: //SMSG_FORCE_FLIGHT_SPEED_CHANGE

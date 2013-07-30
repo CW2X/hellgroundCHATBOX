@@ -73,6 +73,7 @@
       <Filter>Sockets</Filter>
     </ClInclude>
     <ClInclude Include="source\iopackets.h" />
+    <ClInclude Include="source\Util.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\chb.cpp" />

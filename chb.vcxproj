@@ -33,6 +33,7 @@
     <ClInclude Include="source\iopackets.h" />
     <ClInclude Include="source\MainSocket.h" />
     <ClInclude Include="source\Session.h" />
+    <ClInclude Include="source\Util.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\Auth\AuthCrypt.cpp" />

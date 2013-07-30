@@ -1,3 +1,6 @@
+#ifndef MAIN_SOCKET_H
+#define MAIN_SOCKET_H
+
 #include "BaseSocket.h"
 #include "iopackets.h"
 #include "Auth\AuthCrypt.h"
@@ -24,3 +27,5 @@ private:
     uint32      serverSeed,clientSeed;
     uint16      curs,curc,loaded;
 };
+
+#endif
