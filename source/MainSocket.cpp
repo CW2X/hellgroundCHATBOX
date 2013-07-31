@@ -1,4 +1,5 @@
 #include "MainSocket.h"
+#include "Util.h"
 
 MainSocket::MainSocket()
 {
@@ -200,6 +201,7 @@ bool MainSocket::IsIgnoredOpcode(uint16 opcode)
     case 0x01DB: //SMSG_STOP_MIRROR_TIMER
     case 0x01EA: //SMSG_ITEM_TIME_UPDATE
     case 0x01F6: //SMSG_COMPRESSED_UPDATE_OBJECT
+    case 0x01FC: //SMSG_ENVIRONMENTALDAMAGELOG
     case 0x0209: //SMSG_ACCOUNT_DATA_TIMES
     case 0x0214: //SMSG_GAMEOBJECT_SPAWN_ANIM_OBSOLETE
     case 0x0215: //SMSG_GAMEOBJECT_DESPAWN_ANIM
@@ -223,6 +225,7 @@ bool MainSocket::IsIgnoredOpcode(uint16 opcode)
     case 0x0343: //SMSG_MOVE_SET_CAN_FLY
     case 0x0344: //SMSG_MOVE_UNSET_CAN_FLY
     case 0x0346: //CMSG_MOVE_SET_FLY
+    case 0x035A: //MSG_MOVE_STOP_ASCEND
     case 0x03C0: //SMSG_CROSSED_INEBRIATION_THRESHOLD
     case 0x0359: //MSG_MOVE_START_ASCEND
     case 0x0378: //SMSG_DEATH_RELEASE_LOC

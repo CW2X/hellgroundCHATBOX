@@ -1,4 +1,5 @@
 #include "AuthProcessor.h"
+#include "Util.h"
 #include <iostream>
 
 AuthProcessor::AuthProcessor()
@@ -132,8 +133,9 @@ void AuthProcessor::MagicVoid()
 void AuthProcessor::send_logon_challenge()
 {
     AUTH_LOGON_CHALLENGE_U sLC;
-    printf("login(uppercase): ");
+    printf("login: ");
     std::cin >> username;
+    string_to_uppercase(username);
 
     sLC.data.cmd            = 0;
     sLC.data.error          = 0;
@@ -193,6 +195,7 @@ void AuthProcessor::send_logon_proof()
     AUTH_LOGON_PROOF_U sLP;
     printf("password(uppercase): ");
     std::cin >> password;
+    string_to_uppercase(password);
     // beggining of magic
     MagicVoid();
     // end of magic.

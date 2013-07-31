@@ -28,7 +28,7 @@ struct ChatMessage
     uint32      length;
     std::string channel;
     std::string what;
-    char        who[15];
+    std::string who;
 };
 
 struct PlayerInfo
@@ -58,6 +58,7 @@ private:
     void handle_smsg_auth_response(inc_pack* InPack,out_pack* OuPack);
     void handle_smsg_login_verify_world(inc_pack* InPack,out_pack* OuPack); 
     void handle_smsg_chat_player_not_found(inc_pack* InPack);
+    void handle_smsg_userlist_add(inc_pack*);
     void handle_Cl(cli_pack* InPack,out_pack* OuPack);
 
     void send_cmsg_login(out_pack* OuPack,uint8 i);
@@ -68,7 +69,9 @@ private:
     void send_cmsg_name_query(out_pack* OuPack,uint32 guid);
     void send_cmsg_channel_list(out_pack* OuPack,std::string channelname);
 
-    char*           ChatLanguages(uint32 lang);
+    std::string Guid_to_name(uint32 guid);
+    char* ChatLanguages(uint32 lang);
+
     CharacterData   characters[7];
     std::string     channels[9];
     bool            channelson[9];

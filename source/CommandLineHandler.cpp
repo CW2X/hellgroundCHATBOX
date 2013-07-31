@@ -81,7 +81,6 @@ void Session::handle_Cl(cli_pack* InPack,out_pack* OuPack)
         {
             whisptarget = args.substr(0,space);
             std::string what = args.substr(space+1,args.size() - space +1);
-            printf("To %s : %s\n",whisptarget.c_str(),what.c_str());
             return send_cmsg_messagechat(what,OuPack);
         }
         return;

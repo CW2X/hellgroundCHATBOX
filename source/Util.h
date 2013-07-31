@@ -28,4 +28,10 @@ inline std::string string_format(const std::string fmt, ...)
     return str;
 }
 
+inline void string_to_uppercase(std::string& str)
+{
+    for (uint8 i=0;i<str.size();i++)
+        if (str.c_str()[i] >= 'a' && str.c_str()[i] <= 'z')
+            str.replace(i,1,1,str.c_str()[i]-32);
+}
 #endif

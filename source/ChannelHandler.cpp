@@ -53,7 +53,20 @@ void Session::handle_smsg_channel_notify(inc_pack* InPack,out_pack* OuPack)
     switch (type)
     {
     case 0x02:
-        {printf("Joined channel %s\n",channelname.c_str()); return send_cmsg_channel_list(OuPack,channelname);}
+        {
+            printf("Joined channel %s\n",channelname.c_str());
+            send_cmsg_channel_list(OuPack,channelname);
+            break;
+        }
+    case 0x07:
+        {
+            uint32 guid;
+            *InPack >> guid;
+            printf("%s :owner changed to %s\n",channelname.c_str(),Guid_to_name(guid).c_str());
+            break;
+        }
+    case 0x0B:
+        break;
     default:
         printf("received notify %u for channel %s\n",type,channelname.c_str());
     }
@@ -83,4 +96,13 @@ void Session::handle_smsg_channel_list(inc_pack* InPack)
         if (itr == PlayersInfoMap.end())
             UnkPlayers.push_back(guid);
     }
+}
+
+void Session::handle_smsg_userlist_add(inc_pack* InPack)
+{
+    uint32 guid;
+    *InPack >> guid;
+    std::map<uint32,PlayerInfo>::const_iterator itr = PlayersInfoMap.find(guid);
+    if (itr == PlayersInfoMap.end())
+        UnkPlayers.push_back(guid);
 }

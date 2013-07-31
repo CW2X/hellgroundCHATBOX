@@ -1,4 +1,5 @@
 #include "Session.h"
+#include "Util.h"
 
 void Session::handle_smsg_messagechat(inc_pack* InPack,out_pack* OuPack)
 {
@@ -23,15 +24,7 @@ void Session::handle_smsg_messagechat(inc_pack* InPack,out_pack* OuPack)
     *InPack >> mes.length;
     *InPack >> mes.what;
     *InPack >> mes.tag;
-    std::map<uint32,PlayerInfo>::const_iterator itr = PlayersInfoMap.find(mes.guid);
-    if (itr != PlayersInfoMap.end())
-        sprintf_s(mes.who,"%s",itr->second.name.c_str());
-    else if (mes.guid !=0)
-    {
-        sprintf_s(mes.who,"#%u",mes.guid);
-        UnkPlayers.push_back(mes.guid);
-        RequestedPlayers.push_back(mes.guid);
-    }
+    mes.who = Guid_to_name(mes.guid);
 
     switch(mes.type)
     {
@@ -41,13 +34,18 @@ void Session::handle_smsg_messagechat(inc_pack* InPack,out_pack* OuPack)
     case 6:     //CHAT_MSG_YELL
     case 17:    //CHAT_MSG_CHANNEL
         {
-            printf("%s[%s]%s : ",ChatTagIdentifiers[mes.tag],mes.channel.c_str(),mes.who);
+            printf("%s[%s]%s : ",ChatTagIdentifiers[mes.tag],mes.channel.c_str(),mes.who.c_str());
             printf("%s%s\n",(mes.lang <= 2 || mes.lang == 7) ? "":ChatLanguages(mes.lang),mes.what.c_str());
             break;
         }
     case 7:     //CHAT_MSG_WHISPER
         {
-            printf("%s%s whispers : %s\n",ChatTagIdentifiers[mes.tag],mes.who,mes.what.c_str());
+            printf("%s%s whispers : %s\n",ChatTagIdentifiers[mes.tag],mes.who.c_str(),mes.what.c_str());
+            break;
+        }
+    case 9:     //CHAT_MSG_REPLY
+        {
+            printf("To %s : %s\n",mes.who.c_str(),mes.what.c_str());
             break;
         }
     case 0:     //CHAT_MSG_SYSTEM
@@ -89,6 +87,21 @@ char* Session::ChatLanguages(uint32 lang)
     case 0xFFFFFFFF: return "ADDO";
     default: return "UNKN";
     }
+}
+
+std::string Session::Guid_to_name(uint32 guid)
+{
+    std::string name;
+    std::map<uint32,PlayerInfo>::const_iterator itr = PlayersInfoMap.find(guid);
+    if (itr != PlayersInfoMap.end())
+        name = itr->second.name;
+    else if (guid !=0)
+    {
+        name = string_format("%u",guid);
+        UnkPlayers.push_back(guid);
+        RequestedPlayers.push_back(guid);
+    }
+    return name;
 }
 
 void Session::send_cmsg_messagechat(std::string data,out_pack* OuPack)

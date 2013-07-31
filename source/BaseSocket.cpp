@@ -1,4 +1,5 @@
 #include "BaseSocket.h"
+#include "Util.h"
 
 BaseSocket::BaseSocket()
 {
