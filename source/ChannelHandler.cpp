@@ -58,14 +58,14 @@ void Session::handle_smsg_channel_notify(inc_pack* InPack,out_pack* OuPack)
             send_cmsg_channel_list(OuPack,channelname);
             break;
         }
-    case 0x07:
+    case 0x08:
         {
             uint32 guid;
             *InPack >> guid;
             printf("%s :owner changed to %s\n",channelname.c_str(),Guid_to_name(guid).c_str());
             break;
         }
-    case 0x0B:
+    case 0x0C:
         break;
     default:
         printf("received notify %u for channel %s\n",type,channelname.c_str());

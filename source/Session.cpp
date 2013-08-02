@@ -18,8 +18,10 @@ void Session::Update(inc_pack* InPack,out_pack* OuPack)
     case 0x0096: handle_smsg_messagechat(InPack,OuPack); return;         //SMSG_MESSAGECHAT
     case 0x0099: handle_smsg_channel_notify(InPack,OuPack); return;      //SMSG_CHANNEL_NOTIFY
     case 0x009B: handle_smsg_channel_list(InPack); return;               //SMSG_CHANNEL_LIST
+    case 0x01CB: handle_smsg_notification(InPack);return;                //SMSG_NOTIFICATION
     case 0x01EE: handle_smsg_auth_response(InPack,OuPack); return;       //SMSG_AUTH_RESPONSE
     case 0x0236: handle_smsg_login_verify_world(InPack,OuPack); return;  //SMSG_LOGIN_VERIFY_WORLD
+    case 0x02A9: handle_smsg_chat_player_not_found(InPack);return;       //SMSG_CHAT_PLAYER_NOT_FOUND
     case 0x03EF:                                                         //SMSG_USERLIST_ADD
     case 0x03F1: handle_smsg_userlist_add(InPack); return;               //SMSG_USERLIST_UPDATE
         //opcodes to be taken care of ... possibly
@@ -27,16 +29,11 @@ void Session::Update(inc_pack* InPack,out_pack* OuPack)
     case 0x0092: //SMSG_GUILD_EVENT
     case 0x0103: //SMSG_EMOTE
     case 0x0105: //SMSG_TEXT_EMOTE
-    case 0x01CB: //SMSG_NOTIFICATION
-    case 0x02A9: //SMSG_CHAT_PLAYER_NOT_FOUND
     case 0x033D: //SMSG_MOTD
     case 0x03F0: //SMSG_USERLIST_REMOVE
         return;
     default:
-        {
-            printf("received unhandled opcode: 0x%.4X size: %u\n",InPack->gc(),InPack->gs());
-            return;
-        }
+        return;
     }
     // here? means no inc_pack to process
     if (UnkPlayers.begin() != UnkPlayers.end())

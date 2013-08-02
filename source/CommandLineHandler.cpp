@@ -94,9 +94,6 @@ void Session::handle_Cl(cli_pack* InPack,out_pack* OuPack)
         return;
     }
 
-    if (cmd == "c")
-        return send_cmsg_char_enum(OuPack);
-
     if (cmd == "join")
     {
         if(args != "")

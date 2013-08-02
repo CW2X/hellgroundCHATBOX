@@ -55,6 +55,7 @@ private:
     void handle_smsg_messagechat(inc_pack* InPack,out_pack* OuPack);
     void handle_smsg_channel_notify(inc_pack* InPack,out_pack* OuPack);
     void handle_smsg_channel_list(inc_pack* InPack);
+    void handle_smsg_notification(inc_pack* InPack);
     void handle_smsg_auth_response(inc_pack* InPack,out_pack* OuPack);
     void handle_smsg_login_verify_world(inc_pack* InPack,out_pack* OuPack); 
     void handle_smsg_chat_player_not_found(inc_pack* InPack);

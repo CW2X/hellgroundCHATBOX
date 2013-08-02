@@ -162,3 +162,10 @@ void Session::handle_smsg_chat_player_not_found(inc_pack *InPack)
     *InPack >> playername;
     printf("Player %s not found\n",playername.c_str());
 }
+
+void Session::handle_smsg_notification(inc_pack *InPack)
+{
+    std::string notification;
+    *InPack >> notification;
+    printf("NOTIFICATION: %s\n",notification.c_str());
+}

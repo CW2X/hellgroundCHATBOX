@@ -8,6 +8,7 @@ void Session::handle_smsg_auth_response(inc_pack* InPack,out_pack* OuPack)
     if (error != 0x0C)
         throw string_format("auth response received error: %u\n",error);
     printf("authorization succesful\n");
+    send_cmsg_char_enum(OuPack);
 }
 
 void Session::handle_smsg_char_enum(inc_pack* InPack,out_pack* OuPack)

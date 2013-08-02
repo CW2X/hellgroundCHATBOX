@@ -193,7 +193,7 @@ void AuthProcessor::recv_logon_challenge(char buffer[BUFFER_SIZE_IN],uint8 datal
 void AuthProcessor::send_logon_proof()
 {
     AUTH_LOGON_PROOF_U sLP;
-    printf("password(uppercase): ");
+    printf("password: ");
     std::cin >> password;
     string_to_uppercase(password);
     // beggining of magic
