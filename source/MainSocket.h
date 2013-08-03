@@ -26,6 +26,8 @@ private:
     BigNumber   K;
     uint32      serverSeed,clientSeed;
     uint16      curs,curc,loaded;
+    char        header[4];
+    uint8       header_loaded;
 };
 
 #endif

@@ -285,7 +285,7 @@ void AuthProcessor::recv_realm_list(char buffer[BUFFER_SIZE_IN],uint8 datalength
             realmdata[i].version1 = (uint8)buffer[pos];
             realmdata[i].version2 = (uint8)buffer[pos+1];
             realmdata[i].version3 = (uint8)buffer[pos+2];
-            realmdata[i].build    = MAKE_UINT16(buffer[pos+4],buffer[pos+3]);
+            realmdata[i].build    = uint16(((uint8)buffer[pos+3]) | ((uint8)buffer[pos+4] << 8));
             pos += 5;
         }
 

@@ -15,9 +15,6 @@ typedef unsigned short   uint16;
 typedef unsigned int     uint32;
 typedef unsigned __int64 uint64;
 
-#define MAKE_UINT32(a,b,c,d)    uint32(((uint8)d) | ((uint8)c << 8) | ((uint8)b << 16) | ((uint8)a << 24))
-#define MAKE_UINT16(a,b)        uint16(((uint8)b) | ((uint8)a << 8))
-
 struct cli_pack
 {
     uint16      size;

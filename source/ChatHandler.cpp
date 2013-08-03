@@ -97,7 +97,7 @@ std::string Session::Guid_to_name(uint32 guid)
         name = itr->second.name;
     else if (guid !=0)
     {
-        name = string_format("%u",guid);
+        name = string_format("#%u",guid);
         UnkPlayers.push_back(guid);
         RequestedPlayers.push_back(guid);
     }

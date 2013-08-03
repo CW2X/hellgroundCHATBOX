@@ -4,6 +4,7 @@
 MainSocket::MainSocket()
 {
     loaded  = 0;
+    header_loaded = 0;
 }
 
 void MainSocket::Update(inc_pack* packet)
@@ -30,16 +31,43 @@ void MainSocket::Update(inc_pack* packet)
         return;
     }
 
-    if (loaded == 0) // did we received whole data last time?
+    if (loaded == 0) // starting new packet
     {
-        datalength = 4;
-        recv_packet(recvbuff,&datalength);
-        if (datalength == 0)
-            return;
-        decrypt_header((uint8*)recvbuff);
+        if (header_loaded == 0) //starting new header
+        {
+            datalength = 4;
+            recv_packet(header,&datalength);
+            if (datalength == 0)
+                return;
+            if (datalength != 4)
+            {//not whole header!
+                header_loaded = (uint8)datalength;
+                return;
+            }
+        }
+        else //last header was not fully received
+        {
+            char headertemp[4];
+            datalength = 4 - header_loaded;
+            recv_packet(headertemp,&datalength);
 
-        curc = (uint16)(((uint8)recvbuff[3] << 8) | (uint8)recvbuff[2]);
-        curs = (uint16)(((uint8)recvbuff[0] << 8) | (uint8)recvbuff[1]) - 2;
+            for(uint8 i=0;i<datalength;i++)
+                header[header_loaded+i] = headertemp[i];
+
+            if (datalength != 4- header_loaded)
+            {//still not whole
+                header_loaded += datalength;
+                return;
+            }
+
+            header_loaded = 0;
+        }
+
+        //we have good new header, lets process!
+        decrypt_header((uint8*)header);
+
+        curc = (uint16)(((uint8)header[3] << 8) | (uint8)header[2]);
+        curs = (uint16)(((uint8)header[0] << 8) | (uint8)header[1]) - 2;
         
         if(curs > BUFFER_SIZE_IN)
             throw string_format("possible Buffer Overflow! Interrupting (%u 0x%04X)",curs,curc);
@@ -61,7 +89,7 @@ void MainSocket::Update(inc_pack* packet)
         packet->reset(curs,curc);
         packet->set(recvbuff);
     }
-    else
+    else //not whole data was received last time
     {
         datalength = curs - loaded;
         recv_packet(recvbuff,&datalength);
@@ -74,12 +102,9 @@ void MainSocket::Update(inc_pack* packet)
             return;
         }
 
-        if(IsIgnoredOpcode(curc))
-        {
-            loaded = 0;
-            return;
-        }
         loaded = 0;
+        if(IsIgnoredOpcode(curc))
+            return;
         packet->reset(curs,curc);
     }
 }
@@ -88,7 +113,7 @@ void MainSocket::recv_auth_challenge(char buffer[BUFFER_SIZE_IN],uint16 dataleng
 {
     if( (uint8)buffer[2] != 0xEC || (uint8)buffer[3] != 0x01 || datalength != 8)
         throw "wrong auth challenge received";
-    serverSeed = MAKE_UINT32(buffer[7],buffer[6],buffer[5],buffer[4]);
+    serverSeed = uint32(((uint8)buffer[4]) | ((uint8)buffer[5] << 8) | ((uint8)buffer[6] << 16) | ((uint8)buffer[7] << 24));
 }
 
 void MainSocket::send_auth_session()
