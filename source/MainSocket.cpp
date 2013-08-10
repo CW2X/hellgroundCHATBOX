@@ -175,8 +175,12 @@ bool MainSocket::IsIgnoredOpcode(uint16 opcode)
     case 0x0096: //SMSG_MESSAGECHAT
     case 0x0099: //SMSG_CHANNEL_NOTIFY
     case 0x009B: //SMSG_CHANNEL_LIST
+    case 0x00A9: //SMSG_UPDATE_OBJECT
+    case 0x01CB: //SMSG_NOTIFICATION
     case 0x01EE: //SMSG_AUTH_RESPONSE
+    case 0x01F6: //SMSG_COMPRESSED_UPDATE_OBJECT
     case 0x0236: //SMSG_LOGIN_VERIFY_WORLD
+    case 0x02A9: //SMSG_CHAT_PLAYER_NOT_FOUND
     case 0x03EF: //SMSG_USERLIST_ADD
     case 0x03F1: //SMSG_USERLIST_UPDATE
         //opcodes to be taken care of ... possibly
@@ -184,8 +188,6 @@ bool MainSocket::IsIgnoredOpcode(uint16 opcode)
     case 0x0092: //SMSG_GUILD_EVENT
     case 0x0103: //SMSG_EMOTE
     case 0x0105: //SMSG_TEXT_EMOTE
-    case 0x01CB: //SMSG_NOTIFICATION
-    case 0x02A9: //SMSG_CHAT_PLAYER_NOT_FOUND
     case 0x033D: //SMSG_MOTD
     case 0x03F0: //SMSG_USERLIST_REMOVE
         return false;

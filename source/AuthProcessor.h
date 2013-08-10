@@ -6,6 +6,8 @@
 #include "Auth\Sha1.h"
 #include "BaseSocket.h"
 
+#define REALMLIST_ADDRESS "logon.hellground.net"//"25.105.135.246"//
+
 enum eAuthCmd
 {
     CMD_AUTH_LOGON_CHALLENGE        = 0x00,

@@ -3,6 +3,7 @@
 
 #include "base_defs.h"
 #include "iopackets.h"
+#include "MainSocket.h"
 #include <map>
 #include <list>
 
@@ -42,34 +43,39 @@ struct PlayerInfo
 
 static char* ChatTagIdentifiers[]   = {"    ","AFK|","DND|","DND|","[GM]","[GM]","[GM]","[GM]"};
 
+class MainSocket;
+
 class Session
 {
 public:
     Session();
-    void Update(inc_pack* InPack,out_pack* OuPack);
-    void ClUpdate(cli_pack* InPack,out_pack* OuPack);
+    void Update(inc_pack* InPack);
+    void ClUpdate(cli_pack* InPack);
    
 private:
-    void handle_smsg_char_enum(inc_pack* InPack,out_pack* OuPack);
-    void handle_smsg_name_query_response(inc_pack*);
-    void handle_smsg_messagechat(inc_pack* InPack,out_pack* OuPack);
-    void handle_smsg_channel_notify(inc_pack* InPack,out_pack* OuPack);
+    void handle_smsg_char_enum(inc_pack* InPack);
+    void handle_smsg_name_query_response(inc_pack* InPack);
+    void handle_smsg_messagechat(inc_pack* InPack);
+    void handle_smsg_channel_notify(inc_pack* InPack);
     void handle_smsg_channel_list(inc_pack* InPack);
+    void handle_smsg_update_object(inc_pack* InPack);
     void handle_smsg_notification(inc_pack* InPack);
-    void handle_smsg_auth_response(inc_pack* InPack,out_pack* OuPack);
-    void handle_smsg_login_verify_world(inc_pack* InPack,out_pack* OuPack); 
+    void handle_smsg_compressed_update_object(inc_pack* InPack);
+    void handle_smsg_auth_response(inc_pack* InPack);
+    void handle_smsg_login_verify_world(inc_pack* InPack); 
     void handle_smsg_chat_player_not_found(inc_pack* InPack);
     void handle_smsg_userlist_add(inc_pack*);
-    void handle_Cl(cli_pack* InPack,out_pack* OuPack);
+    void handle_Cl(cli_pack* InPack);
 
-    void send_cmsg_login(out_pack* OuPack,uint8 i);
-    void send_cmsg_join_channel(out_pack* OuPack,std::string name);
-    void send_cmsg_leave_channel(out_pack* OuPack,uint8 no);
-    void send_cmsg_messagechat(std::string data, out_pack* OuPack);
-    void send_cmsg_char_enum(out_pack* OuPack);
-    void send_cmsg_name_query(out_pack* OuPack,uint32 guid);
-    void send_cmsg_channel_list(out_pack* OuPack,std::string channelname);
+    void send_cmsg_login(uint8 i);
+    void send_cmsg_join_channel(std::string name);
+    void send_cmsg_leave_channel(uint8 no);
+    void send_cmsg_messagechat(std::string data);
+    void send_cmsg_char_enum();
+    void send_cmsg_name_query(uint32 guid);
+    void send_cmsg_channel_list(std::string channelname);
 
+    int uncompress_smsg_CUO(inc_pack* InPack);
     std::string Guid_to_name(uint32 guid);
     char* ChatLanguages(uint32 lang);
 
@@ -82,6 +88,7 @@ private:
     std::list<uint32> UnkPlayers,RequestedPlayers;
     // first one stores all guids that are on our channels, second one only those who write sth and we want their nicks ASAP
     std::string     whisptarget;
+    out_pack        OuPack;
 };
 
 #endif

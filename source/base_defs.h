@@ -4,7 +4,6 @@
 #include <stdio.h>
 #include <string>
 
-#define REALMLIST_ADDRESS "logon.hellground.net"//"25.105.135.246"//
 #define AUTH_PORT "3724"
 #define FAKE_OS 'Cha'
 #define BUFFER_SIZE_IN  16384

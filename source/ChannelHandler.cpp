@@ -1,6 +1,6 @@
 #include "Session.h"
 
-void Session::send_cmsg_join_channel(out_pack* OuPack,std::string name)
+void Session::send_cmsg_join_channel(std::string name)
 {
     uint8 channelid = 9;
     for (uint8 i=9;i>0;i--)
@@ -14,19 +14,19 @@ void Session::send_cmsg_join_channel(out_pack* OuPack,std::string name)
         printf("too many chanels, leave one to join next");
         return;
     }
-
-    OuPack->reset(0x097);
-    *OuPack << channelid;
-    *OuPack << (uint8)0;
-    *OuPack << (uint32)0;
-    *OuPack << name;
-    *OuPack << (uint8)0; // channel password string
+    OuPack.reset(0x097);
+    OuPack << channelid;
+    OuPack << (uint8)0;
+    OuPack << (uint32)0;
+    OuPack << name;
+    OuPack << (uint8)0; // channel password string
     channels[channelid] = name;
     channelson[channelid] = true;
     printf("Joining channel %s [%u]\n",name.c_str(),channelid+1);
+    sMainSocket.send_out_pack(&OuPack);
 }
 
-void Session::send_cmsg_leave_channel(out_pack* OuPack,uint8 no)
+void Session::send_cmsg_leave_channel(uint8 no)
 {
     if (!no || no > 9)
     {
@@ -36,14 +36,15 @@ void Session::send_cmsg_leave_channel(out_pack* OuPack,uint8 no)
     if (channelson[no-1] == false)
         return;
     printf("leaving channel %s [%u]\n",channels[no-1].c_str(),no);
-    OuPack->reset (0x0098);
-    *OuPack << (uint32)0;
-    *OuPack << channels[no-1];
+    OuPack.reset (0x0098);
+    OuPack << (uint32)0;
+    OuPack << channels[no-1];
     channels[no-1] = "";
     channelson[no-1] = false;
+    sMainSocket.send_out_pack(&OuPack);
 }
 
-void Session::handle_smsg_channel_notify(inc_pack* InPack,out_pack* OuPack)
+void Session::handle_smsg_channel_notify(inc_pack* InPack)
 {
     uint8       type;
     std::string channelname;
@@ -55,7 +56,7 @@ void Session::handle_smsg_channel_notify(inc_pack* InPack,out_pack* OuPack)
     case 0x02:
         {
             printf("Joined channel %s\n",channelname.c_str());
-            send_cmsg_channel_list(OuPack,channelname);
+            send_cmsg_channel_list(channelname);
             break;
         }
     case 0x08:
@@ -72,10 +73,12 @@ void Session::handle_smsg_channel_notify(inc_pack* InPack,out_pack* OuPack)
     }
 }
 
-void Session::send_cmsg_channel_list(out_pack* OuPack, std::string channelname)
+void Session::send_cmsg_channel_list(std::string channelname)
 {
-    OuPack->reset(0x009A);
-    *OuPack << channelname;
+
+    OuPack.reset(0x009A);
+    OuPack << channelname;
+    sMainSocket.send_out_pack(&OuPack);
 }
 
 void Session::handle_smsg_channel_list(inc_pack* InPack)

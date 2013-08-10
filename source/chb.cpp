@@ -1,10 +1,9 @@
 #include "AuthProcessor.h"
-#include "MainSocket.h"
 #include "Session.h"
 #include <iostream>
 #include <process.h>
 
-cli_pack ClPacket;
+cli_pack    ClPacket;
 
 void __cdecl ClRun(void * args)
 {
@@ -23,13 +22,11 @@ void __cdecl ClRun(void * args)
 int main( void )
 {
     AuthProcessor   sAProcessor;
-    MainSocket      sMainSocket;
     Session         sSession;
     ClPacket.type = 0x03;
     uint8           RealmId;
-
+    
     inc_pack InPacket;
-    out_pack OuPacket;
     try
     {
         while(1)
@@ -55,19 +52,11 @@ int main( void )
             
                 if(sMainSocket.IsAuthed)
                 {
-                    OuPacket.reset();
-                    sSession.Update(&InPacket,&OuPacket);
-
-                    if(OuPacket.gc() != 0)
-                        sMainSocket.send_out_pack(&OuPacket);
+                    sSession.Update(&InPacket);
 
                     if (ClPacket.type != 0)
                     {
-                        OuPacket.reset();
-                        sSession.ClUpdate(&ClPacket,&OuPacket);
-
-                        if(OuPacket.gc() != 0)
-                            sMainSocket.send_out_pack(&OuPacket);
+                        sSession.ClUpdate(&ClPacket);
                         ClPacket.type = 0;
                         _beginthread(ClRun,0,NULL);
                     }
@@ -78,6 +67,16 @@ int main( void )
     catch (std::string error)
     {
         std::cout << error;
+        return 0;
+    }
+    catch (char* error)
+    {
+        std::cout << error;
+        return 0;
+    }
+    catch (...)
+    {
+        std::cout << "Catched unhandled exception!";
         return 0;
     }
 

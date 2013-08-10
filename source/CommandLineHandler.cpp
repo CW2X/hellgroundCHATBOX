@@ -1,21 +1,21 @@
 #include "Session.h"
 
-void Session::ClUpdate(cli_pack* InPack,out_pack* OuPack)
+void Session::ClUpdate(cli_pack* InPack)
 {
     switch(InPack->type)
     {
-    case 0x01:  return handle_Cl(InPack,OuPack);
+    case 0x01:  return handle_Cl(InPack);
     case 0x02:
         {
             if (cinredirect == 0)
-                return send_cmsg_messagechat(InPack->data,OuPack);
+                return send_cmsg_messagechat(InPack->data);
             else if (cinredirect == 1)
-                return send_cmsg_login(OuPack,(uint8)InPack->data.c_str()[0]);
+                return send_cmsg_login((uint8)InPack->data.c_str()[0]);
         }
     }
 }
 
-void Session::handle_Cl(cli_pack* InPack,out_pack* OuPack)
+void Session::handle_Cl(cli_pack* InPack)
 {
     if(InPack->data[0] == 0x00 || InPack->data[1] == 0x00)
         return;
@@ -34,7 +34,7 @@ void Session::handle_Cl(cli_pack* InPack,out_pack* OuPack)
     {
         activechannel = (uint8)cmd[0] - 48;
         if(args != "")
-            return send_cmsg_messagechat(args,OuPack);
+            return send_cmsg_messagechat(args);
         return;
     }
 
@@ -42,7 +42,7 @@ void Session::handle_Cl(cli_pack* InPack,out_pack* OuPack)
     {
         activechannel = 21;
         if(args != "")
-            return send_cmsg_messagechat(args,OuPack);
+            return send_cmsg_messagechat(args);
         return;
     }
 
@@ -50,7 +50,7 @@ void Session::handle_Cl(cli_pack* InPack,out_pack* OuPack)
     {
         activechannel = 26;
         if(args != "")
-            return send_cmsg_messagechat(args,OuPack);
+            return send_cmsg_messagechat(args);
         return;
     }
 
@@ -58,7 +58,7 @@ void Session::handle_Cl(cli_pack* InPack,out_pack* OuPack)
     {
         activechannel = 24;
         if(args != "")
-            return send_cmsg_messagechat(args,OuPack);
+            return send_cmsg_messagechat(args);
         return;
     }
 
@@ -66,7 +66,7 @@ void Session::handle_Cl(cli_pack* InPack,out_pack* OuPack)
     {
         activechannel = 25;
         if(args != "")
-            return send_cmsg_messagechat(args,OuPack);
+            return send_cmsg_messagechat(args);
         return;
     }
 
@@ -81,7 +81,7 @@ void Session::handle_Cl(cli_pack* InPack,out_pack* OuPack)
         {
             whisptarget = args.substr(0,space);
             std::string what = args.substr(space+1,args.size() - space +1);
-            return send_cmsg_messagechat(what,OuPack);
+            return send_cmsg_messagechat(what);
         }
         return;
     }
@@ -90,14 +90,14 @@ void Session::handle_Cl(cli_pack* InPack,out_pack* OuPack)
     {
         activechannel = 27;
         if(args != "")
-            return send_cmsg_messagechat(args,OuPack);
+            return send_cmsg_messagechat(args);
         return;
     }
 
     if (cmd == "join")
     {
         if(args != "")
-            return send_cmsg_join_channel(OuPack,args);
+            return send_cmsg_join_channel(args);
         printf("wrong channel name\n");
         return;
     }
@@ -105,7 +105,7 @@ void Session::handle_Cl(cli_pack* InPack,out_pack* OuPack)
     if (cmd == "leave")
     {
         if(args != "")
-            return send_cmsg_leave_channel(OuPack, (uint8)args.c_str()[0]-48);
+            return send_cmsg_leave_channel((uint8)args.c_str()[0]-48);
         printf("usage: /leave channel number\n");
         return;
     }

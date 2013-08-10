@@ -1,7 +1,7 @@
 #include "Session.h"
 #include "Util.h"
 
-void Session::handle_smsg_messagechat(inc_pack* InPack,out_pack* OuPack)
+void Session::handle_smsg_messagechat(inc_pack* InPack)
 {
     ChatMessage mes;
 
@@ -104,7 +104,7 @@ std::string Session::Guid_to_name(uint32 guid)
     return name;
 }
 
-void Session::send_cmsg_messagechat(std::string data,out_pack* OuPack)
+void Session::send_cmsg_messagechat(std::string data)
 {
     uint32 mtype;
     uint32 lang  =  7;//Common
@@ -118,20 +118,22 @@ void Session::send_cmsg_messagechat(std::string data,out_pack* OuPack)
     else
         mtype = activechannel - 20;
 
-    OuPack->reset (0x0095);
-    *OuPack << mtype << lang;
+    OuPack.reset (0x0095);
+    OuPack << mtype << lang;
     if (mtype == 17)
-        *OuPack << channels[activechannel-1];
+        OuPack << channels[activechannel-1];
     if (mtype == 7)
-        *OuPack << whisptarget;
-    *OuPack << data;
+        OuPack << whisptarget;
+    OuPack << data;
+    sMainSocket.send_out_pack(&OuPack);
 }
 
-void Session::send_cmsg_name_query(out_pack* OuPack,uint32 guid)
+void Session::send_cmsg_name_query(uint32 guid)
 {
-    OuPack->reset( 0x0050);
-    *OuPack << guid << (uint32)0;
+    OuPack.reset( 0x0050);
+    OuPack << guid << (uint32)0;
     UnkPlayers.remove(guid);
+    sMainSocket.send_out_pack(&OuPack);
 }
 
 void Session::handle_smsg_name_query_response(inc_pack *InPack)
