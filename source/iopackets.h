@@ -66,7 +66,7 @@ public:
 private:
     uint16  size;
     uint16  cmd;
-    uint16  pos;
+    uint32  pos;
     uint8   data[BUFFER_SIZE_IN];
 };
 

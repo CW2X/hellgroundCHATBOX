@@ -49,6 +49,15 @@ void Session::send_cmsg_login(uint8 i)
     OuPack << characters[i].guid;
     OuPack << (uint32)0;
     sMainSocket.send_out_pack(&OuPack);
+    switch (characters[i].race)
+    {
+    case 1: case 3: case 4: case 7: case 11:
+        ishordeplayer = false;
+        break;
+    case 2: case 5: case 6: case 8: case 10:
+        ishordeplayer = true;
+        break;
+    }
 }
 
 void Session::handle_smsg_login_verify_world(inc_pack* InPack)

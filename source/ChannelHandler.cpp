@@ -19,7 +19,7 @@ void Session::send_cmsg_join_channel(std::string name)
     OuPack << (uint8)0;
     OuPack << (uint32)0;
     OuPack << name;
-    OuPack << (uint8)0; // channel password string
+    OuPack << (uint8)0;
     channels[channelid] = name;
     channelson[channelid] = true;
     printf("Joining channel %s [%u]\n",name.c_str(),channelid+1);
@@ -89,6 +89,8 @@ void Session::handle_smsg_channel_list(inc_pack* InPack)
     
     InPack->skip(1);
     *InPack >> channelname;
+    if (channelname == "")
+        return;
     InPack->skip(1);
     *InPack >> nofplayers;
     for (uint32 i=0;i<nofplayers;i++)
@@ -97,7 +99,7 @@ void Session::handle_smsg_channel_list(inc_pack* InPack)
         InPack->skip(5);
         std::map<uint32,PlayerInfo>::const_iterator itr = PlayersInfoMap.find(guid);
         if (itr == PlayersInfoMap.end())
-            UnkPlayers.push_back(guid);
+            send_cmsg_name_query(guid);
     }
 }
 
@@ -107,5 +109,5 @@ void Session::handle_smsg_userlist_add(inc_pack* InPack)
     *InPack >> guid;
     std::map<uint32,PlayerInfo>::const_iterator itr = PlayersInfoMap.find(guid);
     if (itr == PlayersInfoMap.end())
-        UnkPlayers.push_back(guid);
+        send_cmsg_name_query(guid);
 }

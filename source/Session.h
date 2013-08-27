@@ -34,7 +34,6 @@ struct ChatMessage
 
 struct PlayerInfo
 {
-    uint32      guid;
     std::string name;
     uint32      clas;
     uint32      race;
@@ -58,9 +57,7 @@ private:
     void handle_smsg_messagechat(inc_pack* InPack);
     void handle_smsg_channel_notify(inc_pack* InPack);
     void handle_smsg_channel_list(inc_pack* InPack);
-    void handle_smsg_update_object(inc_pack* InPack);
     void handle_smsg_notification(inc_pack* InPack);
-    void handle_smsg_compressed_update_object(inc_pack* InPack);
     void handle_smsg_auth_response(inc_pack* InPack);
     void handle_smsg_login_verify_world(inc_pack* InPack); 
     void handle_smsg_chat_player_not_found(inc_pack* InPack);
@@ -75,7 +72,6 @@ private:
     void send_cmsg_name_query(uint32 guid);
     void send_cmsg_channel_list(std::string channelname);
 
-    int uncompress_smsg_CUO(inc_pack* InPack);
     std::string Guid_to_name(uint32 guid);
     char* ChatLanguages(uint32 lang);
 
@@ -85,10 +81,10 @@ private:
     uint8           activechannel;
     uint8           cinredirect;
     std::map<uint32,PlayerInfo> PlayersInfoMap;
-    std::list<uint32> UnkPlayers,RequestedPlayers;
-    // first one stores all guids that are on our channels, second one only those who write sth and we want their nicks ASAP
+    std::list<uint32> RequestedPlayers;
     std::string     whisptarget;
     out_pack        OuPack;
+    bool            ishordeplayer;
 };
 
 #endif

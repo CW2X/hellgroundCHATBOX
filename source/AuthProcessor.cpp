@@ -215,7 +215,7 @@ void AuthProcessor::send_logon_proof()
 void AuthProcessor::recv_logon_proof(char buffer[BUFFER_SIZE_IN],uint8 datalength)
 {
     if(buffer[1] == 0x04)
-        printf("invalid password\n");
+        throw("invalid password\n");
     else if(buffer[1] == 0x00)
     {
         uint16 sum = 0 ;

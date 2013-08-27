@@ -3,64 +3,64 @@
   <ItemGroup>
     <ClInclude Include="source\base_defs.h" />
     <ClInclude Include="source\Auth\BigNumber.h">
-      <Filter>Auth&amp;zlib</Filter>
+      <Filter>Auth</Filter>
     </ClInclude>
     <ClInclude Include="source\Auth\Sha1.h">
-      <Filter>Auth&amp;zlib</Filter>
+      <Filter>Auth</Filter>
     </ClInclude>
     <ClInclude Include="source\Auth\bn.h">
-      <Filter>Auth&amp;zlib</Filter>
+      <Filter>Auth</Filter>
     </ClInclude>
     <ClInclude Include="source\Auth\sha.h">
-      <Filter>Auth&amp;zlib</Filter>
+      <Filter>Auth</Filter>
     </ClInclude>
     <ClInclude Include="source\Auth\e_os2.h">
-      <Filter>Auth&amp;zlib</Filter>
+      <Filter>Auth</Filter>
     </ClInclude>
     <ClInclude Include="source\Auth\ossl_typ.h">
-      <Filter>Auth&amp;zlib</Filter>
+      <Filter>Auth</Filter>
     </ClInclude>
     <ClInclude Include="source\Auth\opensslconf.h">
-      <Filter>Auth&amp;zlib</Filter>
+      <Filter>Auth</Filter>
     </ClInclude>
     <ClInclude Include="source\Auth\Hmac.h">
-      <Filter>Auth&amp;zlib</Filter>
+      <Filter>Auth</Filter>
     </ClInclude>
     <ClInclude Include="source\Auth\AuthCrypt.h">
-      <Filter>Auth&amp;zlib</Filter>
+      <Filter>Auth</Filter>
     </ClInclude>
     <ClInclude Include="source\Auth\hmac(OpenSSL).h">
-      <Filter>Auth&amp;zlib</Filter>
+      <Filter>Auth</Filter>
     </ClInclude>
     <ClInclude Include="source\Auth\evp.h">
-      <Filter>Auth&amp;zlib</Filter>
+      <Filter>Auth</Filter>
     </ClInclude>
     <ClInclude Include="source\Auth\bio.h">
-      <Filter>Auth&amp;zlib</Filter>
+      <Filter>Auth</Filter>
     </ClInclude>
     <ClInclude Include="source\Auth\objects.h">
-      <Filter>Auth&amp;zlib</Filter>
+      <Filter>Auth</Filter>
     </ClInclude>
     <ClInclude Include="source\Auth\symhacks.h">
-      <Filter>Auth&amp;zlib</Filter>
+      <Filter>Auth</Filter>
     </ClInclude>
     <ClInclude Include="source\Auth\stack.h">
-      <Filter>Auth&amp;zlib</Filter>
+      <Filter>Auth</Filter>
     </ClInclude>
     <ClInclude Include="source\Auth\opensslv.h">
-      <Filter>Auth&amp;zlib</Filter>
+      <Filter>Auth</Filter>
     </ClInclude>
     <ClInclude Include="source\Auth\safestack.h">
-      <Filter>Auth&amp;zlib</Filter>
+      <Filter>Auth</Filter>
     </ClInclude>
     <ClInclude Include="source\Auth\crypto.h">
-      <Filter>Auth&amp;zlib</Filter>
+      <Filter>Auth</Filter>
     </ClInclude>
     <ClInclude Include="source\Auth\asn1.h">
-      <Filter>Auth&amp;zlib</Filter>
+      <Filter>Auth</Filter>
     </ClInclude>
     <ClInclude Include="source\Auth\obj_mac.h">
-      <Filter>Auth&amp;zlib</Filter>
+      <Filter>Auth</Filter>
     </ClInclude>
     <ClInclude Include="source\Session.h" />
     <ClInclude Include="source\MainSocket.h">
@@ -74,26 +74,20 @@
     </ClInclude>
     <ClInclude Include="source\iopackets.h" />
     <ClInclude Include="source\Util.h" />
-    <ClInclude Include="source\Zlib\zlib.h">
-      <Filter>Auth&amp;zlib</Filter>
-    </ClInclude>
-    <ClInclude Include="source\Zlib\zconf.h">
-      <Filter>Auth&amp;zlib</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\chb.cpp" />
     <ClCompile Include="source\Auth\BigNumber.cpp">
-      <Filter>Auth&amp;zlib</Filter>
+      <Filter>Auth</Filter>
     </ClCompile>
     <ClCompile Include="source\Auth\Sha1.cpp">
-      <Filter>Auth&amp;zlib</Filter>
+      <Filter>Auth</Filter>
     </ClCompile>
     <ClCompile Include="source\Auth\Hmac.cpp">
-      <Filter>Auth&amp;zlib</Filter>
+      <Filter>Auth</Filter>
     </ClCompile>
     <ClCompile Include="source\Auth\AuthCrypt.cpp">
-      <Filter>Auth&amp;zlib</Filter>
+      <Filter>Auth</Filter>
     </ClCompile>
     <ClCompile Include="source\Session.cpp" />
     <ClCompile Include="source\MainSocket.cpp">
@@ -117,9 +111,6 @@
     <ClCompile Include="source\ChatHandler.cpp">
       <Filter>Handlers</Filter>
     </ClCompile>
-    <ClCompile Include="source\EnviromentHandler.cpp">
-      <Filter>Handlers</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Sockets">
@@ -128,7 +119,7 @@
     <Filter Include="Handlers">
       <UniqueIdentifier>{2f40499a-73a0-4001-a54c-c8be7b899971}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Auth&amp;zlib">
+    <Filter Include="Auth">
       <UniqueIdentifier>{5e482eb5-dffe-45e6-b6bc-a651148f9877}</UniqueIdentifier>
     </Filter>
   </ItemGroup>

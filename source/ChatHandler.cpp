@@ -98,7 +98,7 @@ std::string Session::Guid_to_name(uint32 guid)
     else if (guid !=0)
     {
         name = string_format("#%u",guid);
-        UnkPlayers.push_back(guid);
+        send_cmsg_name_query(guid);
         RequestedPlayers.push_back(guid);
     }
     return name;
@@ -107,7 +107,13 @@ std::string Session::Guid_to_name(uint32 guid)
 void Session::send_cmsg_messagechat(std::string data)
 {
     uint32 mtype;
-    uint32 lang  =  7;//Common
+    uint32 lang;
+
+    if (ishordeplayer)
+        lang = 1;
+    else
+        lang = 7;
+
     
     if( activechannel <20)
     {
@@ -132,7 +138,6 @@ void Session::send_cmsg_name_query(uint32 guid)
 {
     OuPack.reset( 0x0050);
     OuPack << guid << (uint32)0;
-    UnkPlayers.remove(guid);
     sMainSocket.send_out_pack(&OuPack);
 }
 
