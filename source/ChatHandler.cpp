@@ -1,5 +1,4 @@
 #include "Session.h"
-#include "Util.h"
 
 void Session::handle_smsg_messagechat(inc_pack* InPack)
 {
@@ -97,7 +96,9 @@ std::string Session::Guid_to_name(uint32 guid)
         name = itr->second.name;
     else if (guid !=0)
     {
-        name = string_format("#%u",guid);
+        char buf[10];
+        _itoa_s(guid,buf,10,10);
+        name = "#" + std::string(buf);
         send_cmsg_name_query(guid);
         RequestedPlayers.push_back(guid);
     }
@@ -131,14 +132,14 @@ void Session::send_cmsg_messagechat(std::string data)
     if (mtype == 7)
         OuPack << whisptarget;
     OuPack << data;
-    sMainSocket.send_out_pack(&OuPack);
+    sSocket.send_out_pack(&OuPack);
 }
 
 void Session::send_cmsg_name_query(uint32 guid)
 {
     OuPack.reset( 0x0050);
     OuPack << guid << (uint32)0;
-    sMainSocket.send_out_pack(&OuPack);
+    sSocket.send_out_pack(&OuPack);
 }
 
 void Session::handle_smsg_name_query_response(inc_pack *InPack)

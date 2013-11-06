@@ -6,7 +6,7 @@ void Session::handle_smsg_auth_response(inc_pack* InPack)
     uint8 error;
     *InPack >> error;
     if (error != 0x0C)
-        throw string_format("auth response received error: %u\n",error);
+        throw "auth response received error\n";
     printf("authorization succesful\n");
     send_cmsg_char_enum();
 }
@@ -48,7 +48,7 @@ void Session::send_cmsg_login(uint8 i)
     OuPack.reset(0x003D);
     OuPack << characters[i].guid;
     OuPack << (uint32)0;
-    sMainSocket.send_out_pack(&OuPack);
+    sSocket.send_out_pack(&OuPack);
     switch (characters[i].race)
     {
     case 1: case 3: case 4: case 7: case 11:
@@ -70,5 +70,5 @@ void Session::send_cmsg_char_enum()
 {
     printf("requesting character list\n");
     OuPack.reset( 0x0037);
-    sMainSocket.send_out_pack(&OuPack);
+    sSocket.send_out_pack(&OuPack);
 }

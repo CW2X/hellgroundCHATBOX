@@ -62,7 +62,7 @@ void MainSocket::Update(inc_pack* packet)
 
             header_loaded = 0;
         }
-
+        
         //we have good new header, lets process!
         decrypt_header((uint8*)header);
 
@@ -70,7 +70,7 @@ void MainSocket::Update(inc_pack* packet)
         curs = (uint16)(((uint8)header[0] << 8) | (uint8)header[1]) - 2;
         
         if(curs > BUFFER_SIZE_IN)
-            throw string_format("possible Buffer Overflow! Interrupting (%u 0x%04X)",curs,curc);
+            throw "possible Buffer Overflow! Interrupting\n";
 
         datalength = curs;
         if (datalength)
@@ -82,7 +82,7 @@ void MainSocket::Update(inc_pack* packet)
             packet->set(recvbuff);
             return;
         }
-    
+        
         if(IsIgnoredOpcode(curc))
             return;
 

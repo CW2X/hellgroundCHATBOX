@@ -4,8 +4,6 @@
 
 AuthProcessor::AuthProcessor()
 {
-    ServerAdress = REALMLIST_ADDRESS;
-    ServerPort = AUTH_PORT;
 }
 
 void AuthProcessor::handle_incoming(char buffer[BUFFER_SIZE_IN],uint8 datalength)
@@ -46,17 +44,15 @@ void AuthProcessor::MagicVoid()
     sha.UpdateData(":");
     sha.UpdateData(password);
     sha.Finalize();
-
     BigNumber I;
     I.SetBinary(sha.GetDigest(),sha.GetLength());
-    
+
     sha.Initialize();
     sha.UpdateData(s.AsByteArray(), s.GetNumBytes());
     sha.UpdateData(I.AsByteArray(), I.GetNumBytes());
     sha.Finalize();
     x.SetBinary(sha.GetDigest(), sha.GetLength());
     v = g.ModExp(x, N);
-
     a.SetRand(8 * 19);
     A = g.ModExp(a,N);
     
@@ -196,6 +192,7 @@ void AuthProcessor::send_logon_proof()
     printf("password: ");
     std::cin >> password;
     string_to_uppercase(password);
+    
     // beggining of magic
     MagicVoid();
     // end of magic.
@@ -301,6 +298,8 @@ void AuthProcessor::Update()
 {
     if(!IsConnected)
     {
+        ServerAdress = REALMLIST_ADDRESS;
+        ServerPort = AUTH_PORT;
         open_socket();
         send_logon_challenge();
         return;

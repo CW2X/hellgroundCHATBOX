@@ -1,7 +1,10 @@
 syntax: glob
-ipch/chb-3b770ed/chb-d648f053.ipch
+ipch/
 chb.vcxproj.user
 chb.sdf
 chb.opensdf
 chb.suo
 Release/
+chb.exe
+CHBSocket.dll
+CHBSocket.vcxproj.user

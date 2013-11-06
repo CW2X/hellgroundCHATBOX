@@ -12,15 +12,10 @@ public:
     void Update(inc_pack* packet);
     void SetKey(uint8 * key) {K.SetBinary(key,40);};
     void send_out_pack(out_pack* packet);
-
-    std::string username;
-    static MainSocket& getInstance()
-    {
-        static MainSocket instance;
-        return instance;
-    }
-private:
     MainSocket();
+    
+    std::string username;
+private:
     void encrypt_header(uint8* header) {m_crypt.EncryptSend(header,6);};
     void decrypt_header(uint8* header) {m_crypt.DecryptRecv(header,4);};
     void recv_auth_challenge(char buffer[BUFFER_SIZE_IN],uint16 datalength);
@@ -34,5 +29,4 @@ private:
     char        header[4];
     uint8       header_loaded;
 };
-#define sMainSocket MainSocket::getInstance()
 #endif

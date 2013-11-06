@@ -7,46 +7,17 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="source\Auth\asn1.h" />
-    <ClInclude Include="source\Auth\AuthCrypt.h" />
-    <ClInclude Include="source\Auth\BigNumber.h" />
-    <ClInclude Include="source\Auth\bio.h" />
-    <ClInclude Include="source\Auth\bn.h" />
-    <ClInclude Include="source\Auth\crypto.h" />
-    <ClInclude Include="source\Auth\evp.h" />
-    <ClInclude Include="source\Auth\e_os2.h" />
-    <ClInclude Include="source\Auth\hmac(OpenSSL).h" />
-    <ClInclude Include="source\Auth\Hmac.h" />
-    <ClInclude Include="source\Auth\objects.h" />
-    <ClInclude Include="source\Auth\obj_mac.h" />
-    <ClInclude Include="source\Auth\opensslconf.h" />
-    <ClInclude Include="source\Auth\opensslv.h" />
-    <ClInclude Include="source\Auth\ossl_typ.h" />
-    <ClInclude Include="source\Auth\safestack.h" />
-    <ClInclude Include="source\Auth\sha.h" />
-    <ClInclude Include="source\Auth\Sha1.h" />
-    <ClInclude Include="source\Auth\stack.h" />
-    <ClInclude Include="source\Auth\symhacks.h" />
-    <ClInclude Include="source\BaseSocket.h" />
     <ClInclude Include="source\base_defs.h" />
-    <ClInclude Include="source\AuthProcessor.h" />
+    <ClInclude Include="source\CSIDH.h" />
     <ClInclude Include="source\iopackets.h" />
-    <ClInclude Include="source\MainSocket.h" />
     <ClInclude Include="source\Session.h" />
     <ClInclude Include="source\Util.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="source\Auth\AuthCrypt.cpp" />
-    <ClCompile Include="source\Auth\BigNumber.cpp" />
-    <ClCompile Include="source\Auth\Hmac.cpp" />
-    <ClCompile Include="source\Auth\Sha1.cpp" />
-    <ClCompile Include="source\BaseSocket.cpp" />
     <ClCompile Include="source\ChannelHandler.cpp" />
     <ClCompile Include="source\ChatHandler.cpp" />
     <ClCompile Include="source\chb.cpp" />
-    <ClCompile Include="source\AuthProcessor.cpp" />
     <ClCompile Include="source\LoginHandler.cpp" />
-    <ClCompile Include="source\MainSocket.cpp" />
     <ClCompile Include="source\CommandLineHandler.cpp" />
     <ClCompile Include="source\Session.cpp" />
   </ItemGroup>
@@ -61,6 +32,7 @@
     <UseDebugLibraries>false</UseDebugLibraries>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
+    <CLRSupport>true</CLRSupport>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
@@ -71,6 +43,7 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
+    <OutDir>$(SolutionDir)$(Configuration)\</OutDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -86,9 +59,14 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalDependencies>libeay32.lib;kernel32.lib;Ws2_32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>Release\CHBSocket.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <DataExecutionPrevention>false</DataExecutionPrevention>
+      <LinkTimeCodeGeneration>Default</LinkTimeCodeGeneration>
+      <AdditionalLibraryDirectories>$(OutDir)\</AdditionalLibraryDirectories>
     </Link>
+    <PostBuildEvent>
+      <Command>if exist $(TargetPath) move $(TargetPath) $(OutDir)..</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
