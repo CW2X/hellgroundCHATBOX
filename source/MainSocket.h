@@ -9,7 +9,7 @@
 class MainSocket : public BaseSocket
 {
 public:
-    void Update(inc_pack* packet);
+    void Update(inc_pack* packet,std::string* retstr);
     void SetKey(uint8 * key) {K.SetBinary(key,40);};
     void send_out_pack(out_pack* packet);
     MainSocket();

@@ -1,31 +1,26 @@
 #include "MainSocket.h"
 #include "AuthProcessor.h"
+#include "CSN.h"
 
-#ifdef THIS_IS_DLL
-#define DLL_API _declspec(dllexport)
-#else
-#define DLL_API _declspec(dllimport)
-#endif
-
-namespace CSN
+class CHBSocket
 {
-    class CHBSocket
-    {
-    public:
-        DLL_API bool Update(inc_pack* InPacket,std::string* retstr);
-        DLL_API bool AllReady();
-        DLL_API void send_out_pack(out_pack* packet);
+public:
+    void Initialize(std::string login,std::string password,std::string address);
+    uint8 Update(inc_pack* InPacket,std::string* retstr);
+    void send_out_pack(out_pack* packet);
     
-        DLL_API static CHBSocket& getInstance()
-        {
-            static CHBSocket instance;
-            return instance;
-        }
-    private:
-        CHBSocket();
+    static CHBSocket& getInstance()
+    {
+        static CHBSocket instance;
+        return instance;
+    }
+private:
+    CHBSocket();
+        
+    MainSocket    sMainSocket;
+    AuthProcessor sAProcessor;
+};
 
-        MainSocket    sMainSocket;
-        AuthProcessor sAProcessor;
-    };
-}
-#define sSocket CSN::CHBSocket::getInstance()
+void CSN::Initialize(std::string login,std::string password,std::string address) {return CHBSocket::getInstance().Initialize(login,password,address);};
+uint8 CSN::Update(inc_pack* InPacket,std::string* retstr) {return CHBSocket::getInstance().Update(InPacket,retstr);};
+void CSN::send_out_pack(out_pack* OuPack) {return CHBSocket::getInstance().send_out_pack(OuPack);};

@@ -26,11 +26,6 @@ void AuthProcessor::handle_incoming(char buffer[BUFFER_SIZE_IN],uint8 datalength
         }
     default:
         {
-            for (uint8 i=0;i<datalength;i++)
-            {
-                printf("%u ",(uint8)buffer[i]);
-            }
-            printf("|EOT|\n");
             throw string_format("unknown command: %u \n",(uint8)buffer[0]);
         }
 
@@ -129,9 +124,6 @@ void AuthProcessor::MagicVoid()
 void AuthProcessor::send_logon_challenge()
 {
     AUTH_LOGON_CHALLENGE_U sLC;
-    printf("login: ");
-    std::cin >> username;
-    string_to_uppercase(username);
 
     sLC.data.cmd            = 0;
     sLC.data.error          = 0;
@@ -189,9 +181,6 @@ void AuthProcessor::recv_logon_challenge(char buffer[BUFFER_SIZE_IN],uint8 datal
 void AuthProcessor::send_logon_proof()
 {
     AUTH_LOGON_PROOF_U sLP;
-    printf("password: ");
-    std::cin >> password;
-    string_to_uppercase(password);
     
     // beggining of magic
     MagicVoid();
@@ -294,7 +283,7 @@ void AuthProcessor::recv_realm_list(char buffer[BUFFER_SIZE_IN],uint8 datalength
         IsAuthed = true;
 }
 
-void AuthProcessor::Update()
+void AuthProcessor::Update(std::string* retstr)
 {
     if(!IsConnected)
     {

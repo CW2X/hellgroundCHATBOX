@@ -132,14 +132,14 @@ void Session::send_cmsg_messagechat(std::string data)
     if (mtype == 7)
         OuPack << whisptarget;
     OuPack << data;
-    sSocket.send_out_pack(&OuPack);
+    CSN::send_out_pack(&OuPack);
 }
 
 void Session::send_cmsg_name_query(uint32 guid)
 {
     OuPack.reset( 0x0050);
     OuPack << guid << (uint32)0;
-    sSocket.send_out_pack(&OuPack);
+    CSN::send_out_pack(&OuPack);
 }
 
 void Session::handle_smsg_name_query_response(inc_pack *InPack)

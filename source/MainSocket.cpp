@@ -7,7 +7,7 @@ MainSocket::MainSocket()
     header_loaded = 0;
 }
 
-void MainSocket::Update(inc_pack* packet)
+void MainSocket::Update(inc_pack* packet,std::string* retstr)
 {
     char recvbuff[BUFFER_SIZE_IN];
     uint16 datalength;

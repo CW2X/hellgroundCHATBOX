@@ -78,7 +78,7 @@ class AuthProcessor : public BaseSocket
 {
 public:
     AuthProcessor();
-    void Update();
+    void Update(std::string* retstr);
     
     PCSTR GetRealmAdress(uint8 i) {return realmdata[i].address.c_str();};
     PCSTR GetRealmPort(uint8 i) {return realmdata[i].port.c_str();};

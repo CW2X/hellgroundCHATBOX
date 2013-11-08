@@ -8,8 +8,10 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="source\base_defs.h" />
-    <ClInclude Include="source\CSIDH.h" />
     <ClInclude Include="source\iopackets.h" />
+    <ClInclude Include="source\MainWindow.h">
+      <FileType>CppForm</FileType>
+    </ClInclude>
     <ClInclude Include="source\Session.h" />
     <ClInclude Include="source\Util.h" />
   </ItemGroup>
@@ -19,7 +21,20 @@
     <ClCompile Include="source\chb.cpp" />
     <ClCompile Include="source\LoginHandler.cpp" />
     <ClCompile Include="source\CommandLineHandler.cpp" />
+    <ClCompile Include="source\MainWindow.cpp" />
     <ClCompile Include="source\Session.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="source\MainWindow.resx">
+      <DependentUpon>MainWindow.h</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{1C6DD9ED-5323-4C2A-AD34-7F983E41154C}</ProjectGuid>

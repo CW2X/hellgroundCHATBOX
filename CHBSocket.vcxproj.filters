@@ -71,6 +71,7 @@
     <ClInclude Include="source\MainSocket.h">
       <Filter>Sockets</Filter>
     </ClInclude>
+    <ClInclude Include="source\CSN.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\CHBSocket.cpp" />

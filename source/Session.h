@@ -3,7 +3,7 @@
 
 #include "base_defs.h"
 #include "iopackets.h"
-#include "CHBSocket.h"
+#include "CSN.h"
 #include <map>
 #include <list>
 

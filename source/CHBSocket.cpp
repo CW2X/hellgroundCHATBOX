@@ -5,18 +5,21 @@ CHBSocket::CHBSocket()
 {
 }
 
-bool CHBSocket::AllReady()
+void CHBSocket::Initialize(std::string login,std::string password,std::string address)
 {
-    return sMainSocket.IsAuthed;
+
 }
 
-bool CHBSocket::Update(inc_pack* InPacket,std::string* retstr)
+uint8 CHBSocket::Update(inc_pack* InPacket,std::string* retstr)
 {
+    *retstr = "";
+    uint8 css = CSS_NONE;
+
     try
     {
         if (!sAProcessor.IsAuthed)
         {
-            sAProcessor.Update();
+            sAProcessor.Update(retstr);
         }
         else
         {
@@ -28,25 +31,28 @@ bool CHBSocket::Update(inc_pack* InPacket,std::string* retstr)
                 sMainSocket.username = sAProcessor.GetUsername();
             }
             
-            sMainSocket.Update(InPacket);
+            sMainSocket.Update(InPacket,retstr);
         }
     }
     catch (std::string error)
     {
-        *retstr = error;
-        return false;
+        *retstr = "CHBSocket: " + error;
+        return CSS_ERROR;
     }
     catch (char* error)
     {
-        *retstr = error;
-        return false;
+        *retstr = "CHBSocket: " + std::string(error);
+        return CSS_ERROR;
     }
     catch (...)
     {
-        *retstr = "Catched unhandled exception!";
-        return false;
+        *retstr = "CHBSocket: Catched unhandled exception!";
+        return CSS_ERROR;
     }
-    return true;
+
+    if (sMainSocket.IsAuthed)
+        css |= CSS_READY;
+    return css;
 }
 
 void CHBSocket::send_out_pack(out_pack* packet)

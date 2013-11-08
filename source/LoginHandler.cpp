@@ -48,7 +48,7 @@ void Session::send_cmsg_login(uint8 i)
     OuPack.reset(0x003D);
     OuPack << characters[i].guid;
     OuPack << (uint32)0;
-    sSocket.send_out_pack(&OuPack);
+    CSN::send_out_pack(&OuPack);
     switch (characters[i].race)
     {
     case 1: case 3: case 4: case 7: case 11:
@@ -70,5 +70,5 @@ void Session::send_cmsg_char_enum()
 {
     printf("requesting character list\n");
     OuPack.reset( 0x0037);
-    sSocket.send_out_pack(&OuPack);
+    CSN::send_out_pack(&OuPack);
 }
