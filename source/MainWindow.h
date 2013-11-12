@@ -1,5 +1,5 @@
 #pragma once
-
+#include "base_defs.h"
 namespace chb {
 
 	using namespace System;
@@ -9,9 +9,6 @@ namespace chb {
 	using namespace System::Data;
 	using namespace System::Drawing;
     using namespace System::Threading;
-    
-    void BackgroundThread();
-
 
 	public ref class MainWindow : public System::Windows::Forms::Form
 	{
@@ -20,10 +17,13 @@ namespace chb {
 		{
 			InitializeComponent();
 
-			Thread t = gcnew ThreadStart(BackgroundThread);
-            t.Start();
+			Thread^ t = gcnew Thread(gcnew ThreadStart(this,&MainWindow::BackgroundThread));
+            t->Start();
 		}
 
+        void print_msg();
+        void BackgroundThread();
+        String^ readData;
 	protected:
 		~MainWindow()
 		{
@@ -32,11 +32,10 @@ namespace chb {
 				delete components;
 			}
 		}
-    private: System::Windows::Forms::TextBox^  viewtext;
-    private: System::Windows::Forms::TextBox^  inputtext;
-    private: System::Windows::Forms::Button^  enterbutton;
-
-	private:
+    private:
+        System::Windows::Forms::TextBox^  viewtext;
+        System::Windows::Forms::TextBox^  inputtext;
+        System::Windows::Forms::Button^  enterbutton;
 		System::ComponentModel::Container ^components;
 
 #pragma region Windows Form Designer generated code
@@ -53,9 +52,12 @@ namespace chb {
             // 
             // viewtext
             // 
+            this->viewtext->BackColor = System::Drawing::Color::White;
+            this->viewtext->ForeColor = System::Drawing::Color::Black;
             this->viewtext->Location = System::Drawing::Point(12, 12);
             this->viewtext->Multiline = true;
             this->viewtext->Name = L"viewtext";
+            this->viewtext->ReadOnly = true;
             this->viewtext->Size = System::Drawing::Size(628, 242);
             this->viewtext->TabIndex = 0;
             // 

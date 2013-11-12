@@ -4,6 +4,7 @@
 
 AuthProcessor::AuthProcessor()
 {
+    PortString = AUTH_PORT;
 }
 
 void AuthProcessor::handle_incoming(char buffer[BUFFER_SIZE_IN],uint8 datalength)
@@ -26,7 +27,7 @@ void AuthProcessor::handle_incoming(char buffer[BUFFER_SIZE_IN],uint8 datalength
         }
     default:
         {
-            throw string_format("unknown command: %u \n",(uint8)buffer[0]);
+            throw string_format("unknown command: %u \r\n",(uint8)buffer[0]);
         }
 
     }
@@ -35,9 +36,9 @@ void AuthProcessor::handle_incoming(char buffer[BUFFER_SIZE_IN],uint8 datalength
 void AuthProcessor::MagicVoid()
 {
     Sha1Hash sha;
-    sha.UpdateData(username);
+    sha.UpdateData(m_username);
     sha.UpdateData(":");
-    sha.UpdateData(password);
+    sha.UpdateData(m_password);
     sha.Finalize();
     BigNumber I;
     I.SetBinary(sha.GetDigest(),sha.GetLength());
@@ -102,7 +103,7 @@ void AuthProcessor::MagicVoid()
     t3.SetBinary(hash, 20);
 
     sha.Initialize();
-    sha.UpdateData(username);
+    sha.UpdateData(m_username);
     sha.Finalize();
     uint8 t4[SHA_DIGEST_LENGTH];
     memcpy(t4, sha.GetDigest(), SHA_DIGEST_LENGTH);
@@ -127,7 +128,7 @@ void AuthProcessor::send_logon_challenge()
 
     sLC.data.cmd            = 0;
     sLC.data.error          = 0;
-    sLC.data.size           = 30 + username.size();
+    sLC.data.size           = 30 + m_username.size();
     sLC.data.gamename       = (uint32)'WoW';
     sLC.data.version1       = 2;
     sLC.data.version2       = 4;
@@ -138,11 +139,11 @@ void AuthProcessor::send_logon_challenge()
     sLC.data.country        = (uint32)'enGB';
     sLC.data.timezone_bias  = 60; // why? why not.
     sLC.data.ip             = 0xF6876919;
-    sLC.data.I_len          = username.size();
-    for(uint8 i=0; i<username.size();i++)
-        sLC.data.I[i]=(uint8)(username.c_str()[i]);
+    sLC.data.I_len          = m_username.size();
+    for(uint8 i=0; i<m_username.size();i++)
+        sLC.data.I[i]=(uint8)(m_username.c_str()[i]);
 
-    send_packet(sLC.c,username.length()+34);
+    send_packet(sLC.c,m_username.length()+34);
 }
 
 void AuthProcessor::recv_logon_challenge(char buffer[BUFFER_SIZE_IN],uint8 datalength)
@@ -152,7 +153,7 @@ void AuthProcessor::recv_logon_challenge(char buffer[BUFFER_SIZE_IN],uint8 datal
     case 0x00:
         {
             if (buffer[35] != 1 || buffer[37] != 32 || datalength < 119)
-                throw string_format("logon challenge: invalid response from server\n");
+                throw string_format("logon challenge: invalid response from server\r\n");
             
             uint8 local[32];
             for(int i = 0; i<32;i++)
@@ -170,11 +171,11 @@ void AuthProcessor::recv_logon_challenge(char buffer[BUFFER_SIZE_IN],uint8 datal
             return;
         }
     case 0x03:
-        throw "account banned\n";
+        throw "account banned\r\n";
     case 0x04:
-        throw "unknown account\n";
+        throw "unknown account\r\n";
     default:
-        throw string_format("other logon challenge error: %u\n",(uint8)buffer[2]);
+        throw string_format("other logon challenge error: %u\r\n",(uint8)buffer[2]);
     }
 }
 
@@ -201,23 +202,23 @@ void AuthProcessor::send_logon_proof()
 void AuthProcessor::recv_logon_proof(char buffer[BUFFER_SIZE_IN],uint8 datalength)
 {
     if(buffer[1] == 0x04)
-        throw("invalid password\n");
+        throw("invalid password\r\n");
     else if(buffer[1] == 0x00)
     {
         uint16 sum = 0 ;
         for (uint8 i=22;i<32;i++)
             sum += (uint8)buffer[i];
         if((uint8)buffer[24] != 128 || sum != 128)
-            throw string_format("logon proof: invalid response from server %u %u\n",sum,(uint8)buffer[24]);
+            throw string_format("logon proof: invalid response from server %u %u\r\n",sum,(uint8)buffer[24]);
         
         for(uint8 i=0;i<20;i++)
             if ((uint8)buffer[i+2] != (uint8)M2.AsByteArray()[i])
-                throw "logon proof: invalid M2 key\n";
+                throw "logon proof: invalid M2 key\r\n";
         
         return;
     }
     else
-        throw string_format("logon proof error: %u\n",buffer[1]);
+        throw string_format("logon proof error: %u\r\n",buffer[1]);
 
 }
 
@@ -230,14 +231,14 @@ void AuthProcessor::send_realm_list()
 void AuthProcessor::recv_realm_list(char buffer[BUFFER_SIZE_IN],uint8 datalength)
 {
     if((uint8)buffer[1] != datalength - 3)
-        throw "realm list invalid packet size\n";
+        throw "realm list invalid packet size\r\n";
     if((uint8)buffer[2] || (uint8)buffer[3] || (uint8)buffer[4] || (uint8)buffer[5] || (uint8)buffer[6] || (uint8)buffer[datalength-1] || (uint8)buffer[datalength-2] != 0x10)
-        throw "realm list: invalid response from server\n";
+        throw "realm list: invalid response from server\r\n";
 
     realms = (uint8)buffer[7];
-    printf("received %i realm info\n",realms);
+    m_ret += string_format("received %i realm info\r\n",realms);
     if (realms>4)
-        throw "too many realms\n";
+        throw "too many realms\r\n";
     uint8 pos = 9;
     for(uint8 i=0;i<realms;i++)
     {
@@ -275,7 +276,7 @@ void AuthProcessor::recv_realm_list(char buffer[BUFFER_SIZE_IN],uint8 datalength
             pos += 5;
         }
 
-        printf("%u | %u | %u | %s(%u.%u.%u %u) | %s:%s | %u\n",realmdata[i].icon,realmdata[i].lock,realmdata[i].flag,
+        m_ret += string_format("%u | %u | %u | %s(%u.%u.%u %u) | %s:%s | %u\r\n",realmdata[i].icon,realmdata[i].lock,realmdata[i].flag,
             realmdata[i].name.c_str(),realmdata[i].version1,realmdata[i].version2,realmdata[i].version3,
             realmdata[i].build,realmdata[i].address.c_str(),realmdata[i].port.c_str(),realmdata[i].AmountOfCharacters);
     }
@@ -285,12 +286,12 @@ void AuthProcessor::recv_realm_list(char buffer[BUFFER_SIZE_IN],uint8 datalength
 
 void AuthProcessor::Update(std::string* retstr)
 {
+    m_ret = "";
     if(!IsConnected)
     {
-        ServerAdress = REALMLIST_ADDRESS;
-        ServerPort = AUTH_PORT;
         open_socket();
         send_logon_challenge();
+        *retstr = m_ret;
         return;
     }
 
@@ -301,4 +302,12 @@ void AuthProcessor::Update(std::string* retstr)
     recv_packet(recvbuff,&datalength);
     if (datalength>0)
         handle_incoming(recvbuff,(uint8)datalength);
+    *retstr = m_ret;
+}
+
+void AuthProcessor::Initialize(std::string username,std::string password,std::string address)
+{
+    m_username = username;
+    m_password = password;
+    AddressString = address;
 }

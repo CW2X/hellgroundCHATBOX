@@ -16,11 +16,12 @@ public:
     }
 private:
     CHBSocket();
-        
+    
+    bool          initialized;
     MainSocket    sMainSocket;
     AuthProcessor sAProcessor;
 };
 
-void CSN::Initialize(std::string login,std::string password,std::string address) {return CHBSocket::getInstance().Initialize(login,password,address);};
+void CSN::Initialize(std::string username,std::string password,std::string address) {return CHBSocket::getInstance().Initialize(username,password,"logon.hellground.net");};
 uint8 CSN::Update(inc_pack* InPacket,std::string* retstr) {return CHBSocket::getInstance().Update(InPacket,retstr);};
 void CSN::send_out_pack(out_pack* OuPack) {return CHBSocket::getInstance().send_out_pack(OuPack);};

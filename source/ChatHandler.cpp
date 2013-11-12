@@ -34,27 +34,27 @@ void Session::handle_smsg_messagechat(inc_pack* InPack)
     case 17:    //CHAT_MSG_CHANNEL
         {
             printf("%s[%s]%s : ",ChatTagIdentifiers[mes.tag],mes.channel.c_str(),mes.who.c_str());
-            printf("%s%s\n",(mes.lang <= 2 || mes.lang == 7) ? "":ChatLanguages(mes.lang),mes.what.c_str());
+            printf("%s%s\r\n",(mes.lang <= 2 || mes.lang == 7) ? "":ChatLanguages(mes.lang),mes.what.c_str());
             break;
         }
     case 7:     //CHAT_MSG_WHISPER
         {
-            printf("%s%s whispers : %s\n",ChatTagIdentifiers[mes.tag],mes.who.c_str(),mes.what.c_str());
+            printf("%s%s whispers : %s\r\n",ChatTagIdentifiers[mes.tag],mes.who.c_str(),mes.what.c_str());
             break;
         }
     case 9:     //CHAT_MSG_REPLY
         {
-            printf("To %s : %s\n",mes.who.c_str(),mes.what.c_str());
+            printf("To %s : %s\r\n",mes.who.c_str(),mes.what.c_str());
             break;
         }
     case 0:     //CHAT_MSG_SYSTEM
         {
-            printf("> %s\n",mes.what.c_str());
+            printf("> %s\r\n",mes.what.c_str());
             break;
         }
     default:
         {
-            printf("message type %u : %s\n",mes.type,mes.what.c_str());
+            printf("message type %u : %s\r\n",mes.type,mes.what.c_str());
             break;
         }
     }
@@ -157,7 +157,7 @@ void Session::handle_smsg_name_query_response(inc_pack *InPack)
     {
         if(*itr == guid)
         {
-            printf("player guid %u is %s\n",guid, PlayersInfoMap[guid].name.c_str());
+            printf("player guid %u is %s\r\n",guid, PlayersInfoMap[guid].name.c_str());
             RequestedPlayers.remove(guid);
             break;
         }
@@ -168,12 +168,12 @@ void Session::handle_smsg_chat_player_not_found(inc_pack *InPack)
 {
     std::string playername;
     *InPack >> playername;
-    printf("Player %s not found\n",playername.c_str());
+    printf("Player %s not found\r\n",playername.c_str());
 }
 
 void Session::handle_smsg_notification(inc_pack *InPack)
 {
     std::string notification;
     *InPack >> notification;
-    printf("NOTIFICATION: %s\n",notification.c_str());
+    printf("NOTIFICATION: %s\r\n",notification.c_str());
 }

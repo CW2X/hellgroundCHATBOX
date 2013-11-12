@@ -14,7 +14,7 @@ public:
     void send_out_pack(out_pack* packet);
     MainSocket();
     
-    std::string username;
+    std::string m_username;
 private:
     void encrypt_header(uint8* header) {m_crypt.EncryptSend(header,6);};
     void decrypt_header(uint8* header) {m_crypt.DecryptRecv(header,4);};

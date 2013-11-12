@@ -6,8 +6,6 @@
 #include "Auth\Sha1.h"
 #include "BaseSocket.h"
 
-#define REALMLIST_ADDRESS "logon.hellground.net"
-
 enum eAuthCmd
 {
     CMD_AUTH_LOGON_CHALLENGE        = 0x00,
@@ -79,11 +77,11 @@ class AuthProcessor : public BaseSocket
 public:
     AuthProcessor();
     void Update(std::string* retstr);
+    void Initialize(std::string username,std::string password,std::string address);
     
     PCSTR GetRealmAdress(uint8 i) {return realmdata[i].address.c_str();};
     PCSTR GetRealmPort(uint8 i) {return realmdata[i].port.c_str();};
     uint8* GetKey() {return K.AsByteArray();};
-    std::string GetUsername() {return username;};
 private:
     void MagicVoid();
 
@@ -98,7 +96,7 @@ private:
     BigNumber A,B,a,g,N,K,s,unk3,v,x,M,M2; // magic variables
     uint8 realms;
     RealmInfo realmdata[4];
-    std::string username,password;
+    std::string m_username,m_password;
 };
 
 #endif

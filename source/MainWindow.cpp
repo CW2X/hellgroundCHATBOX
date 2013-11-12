@@ -2,12 +2,13 @@
 #include "Session.h"
 using namespace chb;
 
-void chb::BackgroundThread()
+void MainWindow::BackgroundThread()
 {
-    Session         sSession;
-    inc_pack InPacket;
+    Session     sSession;
+    inc_pack    InPacket;
     std::string retstr;
-
+    
+    CSN::Initialize("DERLIN358","PASSDERLIN","logon.hellground.net");
     try
     {
         while(1)
@@ -16,24 +17,38 @@ void chb::BackgroundThread()
             if (css & CSN::CSS_ERROR)
                 throw retstr;
             if (css & CSN::CSS_INFO)
-                //print
-                ;
-
+            {
+                readData = gcnew String(retstr.c_str());
+                print_msg();
+            }
             
             if(css & CSN::CSS_READY)
                 sSession.Update(&InPacket);
         }
     }
-    catch (std::string)
+    catch (std::string error)
     {
-        //std::cout << error;
+        readData = gcnew String(error.c_str());
+        print_msg();
     }
-    catch (char*)
+    catch (char* error)
     {
-        //std::cout << error;
+        readData = gcnew String(error);
+        print_msg();
     }
     catch (...)
     {
-        //std::cout << "Catched unhandled exception!";
+        readData = gcnew String("Unhandled exception!");
+        print_msg();
     };
 }
+
+void MainWindow::print_msg()
+{
+    if (this->InvokeRequired)
+    {
+        this->Invoke(gcnew MethodInvoker(this,&chb::MainWindow::print_msg));
+    }
+    else
+        viewtext->Text = viewtext->Text + readData;
+} 

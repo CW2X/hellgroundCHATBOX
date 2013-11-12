@@ -3,18 +3,24 @@ using namespace CSN;
 
 CHBSocket::CHBSocket()
 {
+    initialized = false;
 }
 
-void CHBSocket::Initialize(std::string login,std::string password,std::string address)
+void CHBSocket::Initialize(std::string username,std::string password,std::string address)
 {
-
+    sMainSocket.m_username = username;
+    sAProcessor.Initialize(username,password,address);
+    initialized = true;
 }
 
 uint8 CHBSocket::Update(inc_pack* InPacket,std::string* retstr)
 {
     *retstr = "";
     uint8 css = CSS_NONE;
-
+    
+    if(!initialized)
+        return css;
+    
     try
     {
         if (!sAProcessor.IsAuthed)
@@ -25,10 +31,9 @@ uint8 CHBSocket::Update(inc_pack* InPacket,std::string* retstr)
         {
             if(!sMainSocket.IsConnected)
             {
-                sMainSocket.ServerAdress = sAProcessor.GetRealmAdress(0);
-                sMainSocket.ServerPort = sAProcessor.GetRealmPort(0);
+                sMainSocket.AddressString = sAProcessor.GetRealmAdress(0);
+                sMainSocket.PortString = sAProcessor.GetRealmPort(0);
                 sMainSocket.SetKey(sAProcessor.GetKey());
-                sMainSocket.username = sAProcessor.GetUsername();
             }
             
             sMainSocket.Update(InPacket,retstr);
@@ -52,6 +57,8 @@ uint8 CHBSocket::Update(inc_pack* InPacket,std::string* retstr)
 
     if (sMainSocket.IsAuthed)
         css |= CSS_READY;
+    if (*retstr != "")
+        css |= CSS_INFO;
     return css;
 }
 

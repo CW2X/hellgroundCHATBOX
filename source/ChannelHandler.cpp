@@ -22,7 +22,7 @@ void Session::send_cmsg_join_channel(std::string name)
     OuPack << (uint8)0;
     channels[channelid] = name;
     channelson[channelid] = true;
-    printf("Joining channel %s [%u]\n",name.c_str(),channelid+1);
+    printf("Joining channel %s [%u]\r\n",name.c_str(),channelid+1);
     CSN::send_out_pack(&OuPack);
 }
 
@@ -30,12 +30,12 @@ void Session::send_cmsg_leave_channel(uint8 no)
 {
     if (!no || no > 9)
     {
-        printf("usage: /leave channel number\n");
+        printf("usage: /leave channel number\r\n");
         return;
     }
     if (channelson[no-1] == false)
         return;
-    printf("leaving channel %s [%u]\n",channels[no-1].c_str(),no);
+    printf("leaving channel %s [%u]\r\n",channels[no-1].c_str(),no);
     OuPack.reset (0x0098);
     OuPack << (uint32)0;
     OuPack << channels[no-1];
@@ -55,7 +55,7 @@ void Session::handle_smsg_channel_notify(inc_pack* InPack)
     {
     case 0x02:
         {
-            printf("Joined channel %s\n",channelname.c_str());
+            printf("Joined channel %s\r\n",channelname.c_str());
             send_cmsg_channel_list(channelname);
             break;
         }
@@ -63,13 +63,13 @@ void Session::handle_smsg_channel_notify(inc_pack* InPack)
         {
             uint32 guid;
             *InPack >> guid;
-            printf("%s :owner changed to %s\n",channelname.c_str(),Guid_to_name(guid).c_str());
+            printf("%s :owner changed to %s\r\n",channelname.c_str(),Guid_to_name(guid).c_str());
             break;
         }
     case 0x0C:
         break;
     default:
-        printf("received notify %u for channel %s\n",type,channelname.c_str());
+        printf("received notify %u for channel %s\r\n",type,channelname.c_str());
     }
 }
 

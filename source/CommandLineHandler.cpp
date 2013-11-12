@@ -98,7 +98,7 @@ void Session::handle_Cl(cli_pack* InPack)
     {
         if(args != "")
             return send_cmsg_join_channel(args);
-        printf("wrong channel name\n");
+        printf("wrong channel name\r\n");
         return;
     }
 
@@ -106,12 +106,12 @@ void Session::handle_Cl(cli_pack* InPack)
     {
         if(args != "")
             return send_cmsg_leave_channel((uint8)args.c_str()[0]-48);
-        printf("usage: /leave channel number\n");
+        printf("usage: /leave channel number\r\n");
         return;
     }
     
     printf("unknown command: ");
     for(uint8 i=1;i<InPack->size;i++)
         printf("%c",InPack->data[i]);
-    printf("\n");
+    printf("\r\n");
 }
