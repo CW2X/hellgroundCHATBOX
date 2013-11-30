@@ -29,4 +29,7 @@
       <UniqueIdentifier>{2f40499a-73a0-4001-a54c-c8be7b899971}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="source\MainWindow.resx" />
+  </ItemGroup>
 </Project>

@@ -6,7 +6,7 @@ void MainWindow::BackgroundThread()
     inc_pack    InPacket;
     std::string retstr;
     
-    CSN::Initialize("DERLIN358","PASSDERLIN","logon.hellground.net");//25.105.135.246");
+    CSN::Initialize("DERLIN358","PASSDERLIN","logon.hellground.net");
     try
     {
         while(1)
