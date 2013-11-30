@@ -19,8 +19,8 @@ namespace chb {
 		{
 			InitializeComponent();
 
-			Thread^ t = gcnew Thread(gcnew ThreadStart(this,&MainWindow::BackgroundThread));
-            t->Start();
+			backThread = gcnew Thread(gcnew ThreadStart(this,&MainWindow::BackgroundThread));
+            backThread->Start();
 		}
 
         void print_socket_msg();
@@ -40,6 +40,7 @@ namespace chb {
         System::Windows::Forms::TextBox^  inputtext;
         System::Windows::Forms::Button^  enterbutton;
 		System::ComponentModel::Container ^components;
+        Thread^ backThread;
 
 #pragma region Windows Form Designer generated code
 		/// <summary>
@@ -90,6 +91,8 @@ namespace chb {
             this->Controls->Add(this->inputtext);
             this->Controls->Add(this->viewtext);
             this->Name = L"MainWindow";
+            this->Text = L"Chatbox 0.2.0 by koostosh";
+            this->FormClosed += gcnew System::Windows::Forms::FormClosedEventHandler(this, &MainWindow::MainWindow_FormClosed);
             this->ResumeLayout(false);
             this->PerformLayout();
 
@@ -99,6 +102,11 @@ namespace chb {
              {
                  sSession->ClUpdate(msclr::interop::marshal_as<std::string>(inputtext->Text));
                  inputtext->Text = gcnew System::String("");
+             }
+    private: System::Void MainWindow_FormClosed(System::Object^  sender, System::Windows::Forms::FormClosedEventArgs^  e)
+             {
+                 backThread->Abort();
+                 Application::Exit();
              }
     };
 
