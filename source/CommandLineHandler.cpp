@@ -1,34 +1,34 @@
 #include "Session.h"
 
-void Session::ClUpdate(cli_pack* InPack)
+void Session::ClUpdate(std::string clData)
 {
-    switch(InPack->type)
+    if (clData.c_str()[0] == '/')
+        handle_Cl(clData);
+    else
     {
-    case 0x01:  return handle_Cl(InPack);
-    case 0x02:
         {
             if (cinredirect == 0)
-                return send_cmsg_messagechat(InPack->data);
+                return send_cmsg_messagechat(clData);
             else if (cinredirect == 1)
-                return send_cmsg_login((uint8)InPack->data.c_str()[0]);
+                return send_cmsg_login((uint8)clData.c_str()[0]);
         }
     }
 }
 
-void Session::handle_Cl(cli_pack* InPack)
+void Session::handle_Cl(std::string clData)
 {
-    if(InPack->data[0] == 0x00 || InPack->data[1] == 0x00)
+    if(clData[0] == 0x00 || clData[1] == 0x00)
         return;
 
     std::string     cmd,args;
     uint8           space=0;
 
-    while(InPack->data.size() > space && InPack->data.c_str()[space] != ' ')
+    while(clData.size() > space && clData.c_str()[space] != ' ')
         space++;
     
-    cmd = InPack->data.substr(1,space-1);
-    if(InPack->data.size() > space)
-        args = InPack->data.substr(space+1,InPack->data.size() - space +1);
+    cmd = clData.substr(1,space-1);
+    if(clData.size() > space)
+        args = clData.substr(space+1,clData.size() - space +1);
 
     if(cmd[0] >'0' && cmd[0] <='9' && cmd[1] == 0x00)
     {
@@ -109,9 +109,4 @@ void Session::handle_Cl(cli_pack* InPack)
         printf("usage: /leave channel number\r\n");
         return;
     }
-    
-    printf("unknown command: ");
-    for(uint8 i=1;i<InPack->size;i++)
-        printf("%c",InPack->data[i]);
-    printf("\r\n");
 }

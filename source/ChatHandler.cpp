@@ -1,4 +1,5 @@
 #include "Session.h"
+#include "Util.h"
 
 void Session::handle_smsg_messagechat(inc_pack* InPack)
 {
@@ -33,28 +34,28 @@ void Session::handle_smsg_messagechat(inc_pack* InPack)
     case 6:     //CHAT_MSG_YELL
     case 17:    //CHAT_MSG_CHANNEL
         {
-            printf("%s[%s]%s : ",ChatTagIdentifiers[mes.tag],mes.channel.c_str(),mes.who.c_str());
-            printf("%s%s\r\n",(mes.lang <= 2 || mes.lang == 7) ? "":ChatLanguages(mes.lang),mes.what.c_str());
+            print((std::string)ChatTagIdentifiers[mes.tag] + "[" + mes.channel + "]" + mes.who + " : ");
+            print(((mes.lang <= 2 || mes.lang == 7) ? "":ChatLanguages(mes.lang)) + mes.what + "\r\n");
             break;
         }
     case 7:     //CHAT_MSG_WHISPER
         {
-            printf("%s%s whispers : %s\r\n",ChatTagIdentifiers[mes.tag],mes.who.c_str(),mes.what.c_str());
+            print(ChatTagIdentifiers[mes.tag] + mes.who + " whispers : " + mes.what + "\r\n");
             break;
         }
     case 9:     //CHAT_MSG_REPLY
         {
-            printf("To %s : %s\r\n",mes.who.c_str(),mes.what.c_str());
+            print("To " + mes.who + " : " + mes.what + "\r\n");
             break;
         }
     case 0:     //CHAT_MSG_SYSTEM
         {
-            printf("> %s\r\n",mes.what.c_str());
+            print("> " + mes.what + "\r\n");
             break;
         }
     default:
         {
-            printf("message type %u : %s\r\n",mes.type,mes.what.c_str());
+            print("message type " + utostr(mes.type) + " : " + mes.what + "\r\n");
             break;
         }
     }
@@ -96,9 +97,7 @@ std::string Session::Guid_to_name(uint32 guid)
         name = itr->second.name;
     else if (guid !=0)
     {
-        char buf[10];
-        _itoa_s(guid,buf,10,10);
-        name = "#" + std::string(buf);
+        name = "#" + utostr(guid);
         send_cmsg_name_query(guid);
         RequestedPlayers.push_back(guid);
     }
@@ -157,7 +156,7 @@ void Session::handle_smsg_name_query_response(inc_pack *InPack)
     {
         if(*itr == guid)
         {
-            printf("player guid %u is %s\r\n",guid, PlayersInfoMap[guid].name.c_str());
+            print("player guid " + utostr(guid) + " is " + PlayersInfoMap[guid].name + "\r\n");
             RequestedPlayers.remove(guid);
             break;
         }
@@ -168,12 +167,12 @@ void Session::handle_smsg_chat_player_not_found(inc_pack *InPack)
 {
     std::string playername;
     *InPack >> playername;
-    printf("Player %s not found\r\n",playername.c_str());
+    print("Player " + playername + " not found\r\n");
 }
 
 void Session::handle_smsg_notification(inc_pack *InPack)
 {
     std::string notification;
     *InPack >> notification;
-    printf("NOTIFICATION: %s\r\n",notification.c_str());
+    print("NOTIFICATION: " + notification + "\r\n");
 }

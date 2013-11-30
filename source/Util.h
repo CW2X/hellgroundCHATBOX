@@ -34,4 +34,11 @@ inline void string_to_uppercase(std::string& str)
         if (str.c_str()[i] >= 'a' && str.c_str()[i] <= 'z')
             str.replace(i,1,1,str.c_str()[i]-32);
 }
+
+inline std::string utostr(uint32 u)
+{
+    char buf[10];
+    _itoa_s(u,buf,10,10);
+    return std::string(buf);
+}
 #endif

@@ -14,11 +14,4 @@ typedef unsigned short   uint16;
 typedef unsigned int     uint32;
 typedef unsigned __int64 uint64;
 
-struct cli_pack
-{
-    uint16      size;
-    uint8       type;
-    std::string data;
-};
-
 #endif

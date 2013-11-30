@@ -47,11 +47,15 @@ class MainSocket;
 class Session
 {
 public:
-    Session();
-    void Update(inc_pack* InPack);
-    void ClUpdate(cli_pack* InPack);
-   
+    void Update(inc_pack* InPack,std::string* retstr);
+    void ClUpdate(std::string clData);
+    static Session* getInstance()
+    {
+        static Session instance;
+        return &instance;
+    }
 private:
+    Session();
     void handle_smsg_char_enum(inc_pack* InPack);
     void handle_smsg_name_query_response(inc_pack* InPack);
     void handle_smsg_messagechat(inc_pack* InPack);
@@ -62,7 +66,7 @@ private:
     void handle_smsg_login_verify_world(inc_pack* InPack); 
     void handle_smsg_chat_player_not_found(inc_pack* InPack);
     void handle_smsg_userlist_add(inc_pack*);
-    void handle_Cl(cli_pack* InPack);
+    void handle_Cl(std::string clData);
 
     void send_cmsg_login(uint8 i);
     void send_cmsg_join_channel(std::string name);
@@ -74,6 +78,7 @@ private:
 
     std::string Guid_to_name(uint32 guid);
     char* ChatLanguages(uint32 lang);
+    void print(std::string s) {m_ret += s;};
 
     CharacterData   characters[7];
     std::string     channels[9];
@@ -85,6 +90,9 @@ private:
     std::string     whisptarget;
     out_pack        OuPack;
     bool            ishordeplayer;
+
+    std::string m_ret;
 };
 
+#define sSession Session::getInstance()
 #endif

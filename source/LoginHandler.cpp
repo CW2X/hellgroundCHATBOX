@@ -7,7 +7,7 @@ void Session::handle_smsg_auth_response(inc_pack* InPack)
     *InPack >> error;
     if (error != 0x0C)
         throw "auth response received error\r\n";
-    printf("authorization succesful\r\n");
+    print("authorization succesful\r\n");
     send_cmsg_char_enum();
 }
 
@@ -20,7 +20,7 @@ void Session::handle_smsg_char_enum(inc_pack* InPack)
     uint8  nofchars;
 
     *InPack >> nofchars;
-    printf("received characters list, %u characters\r\n",nofchars);
+    print("received characters list, " + utostr(nofchars) + " characters\r\n");
     for (uint8 i=0;i<nofchars;i++)
     {
         *InPack >> characters[i].guid;
@@ -31,11 +31,12 @@ void Session::handle_smsg_char_enum(inc_pack* InPack)
         *InPack >> characters[i].level;
         InPack->skip(29); InPack->skip(12);//pet data
         InPack->skip(20*9);//items
-        printf("%s (guid %u): lvl %u %s %s %s\r\n",characters[i].name.c_str(),characters[i].guid,characters[i].level,
-            (characters[i].gender ? "female": "male"),CharacterRaces[characters[i].race],CharacterClasses[characters[i].clas]);
+        print(characters[i].name + " (guid " + utostr(characters[i].guid) + "): " +
+            utostr(characters[i].level) + (characters[i].gender ? " female ": " male ") + CharacterRaces[characters[i].race] +
+            " " +CharacterClasses[characters[i].clas] + "\r\n");
         PlayersInfoMap[characters[i].guid].name = characters[i].name;
     }
-    printf("select character: ");
+    //print("select character: ");
     cinredirect = 1;
 }
 
@@ -62,13 +63,13 @@ void Session::send_cmsg_login(uint8 i)
 
 void Session::handle_smsg_login_verify_world(inc_pack* InPack)
 {
-    printf("player logged in\r\n\r\n");
+    print("player logged in\r\n\r\n");
     send_cmsg_join_channel("world");
 }
 
 void Session::send_cmsg_char_enum()
 {
-    printf("requesting character list\r\n");
+    print("requesting character list\r\n");
     OuPack.reset( 0x0037);
     CSN::send_out_pack(&OuPack);
 }

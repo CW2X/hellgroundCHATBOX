@@ -1,14 +1,12 @@
 #include "MainWindow.h"
-#include "Session.h"
 using namespace chb;
 
 void MainWindow::BackgroundThread()
 {
-    Session     sSession;
     inc_pack    InPacket;
     std::string retstr;
     
-    CSN::Initialize("DERLIN358","PASSDERLIN","logon.hellground.net");
+    CSN::Initialize("DERLIN358","PASSDERLIN","logon.hellground.net");//25.105.135.246");
     try
     {
         while(1)
@@ -19,36 +17,61 @@ void MainWindow::BackgroundThread()
             if (css & CSN::CSS_INFO)
             {
                 readData = gcnew String(retstr.c_str());
-                print_msg();
+                print_socket_msg();
             }
             
             if(css & CSN::CSS_READY)
-                sSession.Update(&InPacket);
+            {
+                sSession->Update(&InPacket,&retstr);
+                if (retstr != "")
+                {
+                    readData = gcnew String(retstr.c_str());
+                    print_session_msg();
+                }
+            }
         }
     }
     catch (std::string error)
     {
         readData = gcnew String(error.c_str());
-        print_msg();
+        print_socket_msg();
     }
     catch (char* error)
     {
         readData = gcnew String(error);
-        print_msg();
+        print_socket_msg();
     }
     catch (...)
     {
         readData = gcnew String("Unhandled exception!");
-        print_msg();
+        print_socket_msg();
     };
 }
 
-void MainWindow::print_msg()
+void MainWindow::print_socket_msg()
 {
     if (this->InvokeRequired)
     {
-        this->Invoke(gcnew MethodInvoker(this,&chb::MainWindow::print_msg));
+        this->Invoke(gcnew MethodInvoker(this,&chb::MainWindow::print_socket_msg));
     }
     else
+    {
         viewtext->Text = viewtext->Text + readData;
+        viewtext->Select(viewtext->TextLength-1,0);
+        viewtext->ScrollToCaret();
+    }
 } 
+
+void MainWindow::print_session_msg()
+{
+    if (this->InvokeRequired)
+    {
+        this->Invoke(gcnew MethodInvoker(this,&chb::MainWindow::print_socket_msg));
+    }
+    else
+    {
+        viewtext->Text = viewtext->Text + readData;
+        viewtext->Select(viewtext->TextLength-1,0);
+        viewtext->ScrollToCaret();
+    }
+}

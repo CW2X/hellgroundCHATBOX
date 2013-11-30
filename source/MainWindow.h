@@ -1,5 +1,7 @@
 #pragma once
 #include "base_defs.h"
+#include "Session.h"
+#include <msclr\marshal_cppstd.h>
 namespace chb {
 
 	using namespace System;
@@ -21,7 +23,8 @@ namespace chb {
             t->Start();
 		}
 
-        void print_msg();
+        void print_socket_msg();
+        void print_session_msg();
         void BackgroundThread();
         String^ readData;
 	protected:
@@ -58,6 +61,7 @@ namespace chb {
             this->viewtext->Multiline = true;
             this->viewtext->Name = L"viewtext";
             this->viewtext->ReadOnly = true;
+            this->viewtext->ScrollBars = System::Windows::Forms::ScrollBars::Vertical;
             this->viewtext->Size = System::Drawing::Size(628, 242);
             this->viewtext->TabIndex = 0;
             // 
@@ -76,6 +80,7 @@ namespace chb {
             this->enterbutton->TabIndex = 2;
             this->enterbutton->Text = L"Enter";
             this->enterbutton->UseVisualStyleBackColor = true;
+            this->enterbutton->Click += gcnew System::EventHandler(this, &MainWindow::enterbutton_Click);
             // 
             // MainWindow
             // 
@@ -90,6 +95,11 @@ namespace chb {
 
         }
 #pragma endregion
-	};
+    private: System::Void enterbutton_Click(System::Object^  sender, System::EventArgs^  e)
+             {
+                 sSession->ClUpdate(msclr::interop::marshal_as<std::string>(inputtext->Text));
+                 inputtext->Text = gcnew System::String("");
+             }
+    };
 
 }

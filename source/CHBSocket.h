@@ -22,6 +22,6 @@ private:
     AuthProcessor sAProcessor;
 };
 
-void CSN::Initialize(std::string username,std::string password,std::string address) {return CHBSocket::getInstance().Initialize(username,password,"logon.hellground.net");};
+void CSN::Initialize(std::string username,std::string password,std::string address) {return CHBSocket::getInstance().Initialize(username,password,address);};
 uint8 CSN::Update(inc_pack* InPacket,std::string* retstr) {return CHBSocket::getInstance().Update(InPacket,retstr);};
 void CSN::send_out_pack(out_pack* OuPack) {return CHBSocket::getInstance().send_out_pack(OuPack);};
