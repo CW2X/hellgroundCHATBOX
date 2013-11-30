@@ -50,6 +50,8 @@ void MainWindow::BackgroundThread()
 
 void MainWindow::print_socket_msg()
 {
+    if (ExitingProgram)
+        return;
     if (this->InvokeRequired)
     {
         this->Invoke(gcnew MethodInvoker(this,&chb::MainWindow::print_socket_msg));

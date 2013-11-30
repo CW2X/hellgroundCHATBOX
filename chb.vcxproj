@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Release|Win32">
@@ -8,6 +8,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="source\base_defs.h" />
+    <ClInclude Include="source\CSN.h" />
     <ClInclude Include="source\iopackets.h" />
     <ClInclude Include="source\MainWindow.h">
       <FileType>CppForm</FileType>
@@ -34,6 +35,7 @@
   <ItemGroup>
     <EmbeddedResource Include="source\MainWindow.resx">
       <DependentUpon>MainWindow.h</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup Label="Globals">

@@ -6,6 +6,7 @@
     <ClInclude Include="source\iopackets.h" />
     <ClInclude Include="source\Util.h" />
     <ClInclude Include="source\MainWindow.h" />
+    <ClInclude Include="source\CSN.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\chb.cpp" />

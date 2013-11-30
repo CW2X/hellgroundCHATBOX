@@ -17,6 +17,7 @@ namespace chb {
 	public:
 		MainWindow(void)
 		{
+            ExitingProgram = false;
 			InitializeComponent();
 
 			backThread = gcnew Thread(gcnew ThreadStart(this,&MainWindow::BackgroundThread));
@@ -41,6 +42,7 @@ namespace chb {
         System::Windows::Forms::Button^  enterbutton;
 		System::ComponentModel::Container ^components;
         Thread^ backThread;
+        bool ExitingProgram;
 
 #pragma region Windows Form Designer generated code
 		/// <summary>
@@ -105,6 +107,7 @@ namespace chb {
              }
     private: System::Void MainWindow_FormClosed(System::Object^  sender, System::Windows::Forms::FormClosedEventArgs^  e)
              {
+                 ExitingProgram = true;
                  backThread->Abort();
                  Application::Exit();
              }
