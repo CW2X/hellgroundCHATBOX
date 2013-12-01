@@ -133,6 +133,7 @@ namespace chb {
             this->Controls->Add(this->PasswordBox);
             this->Controls->Add(this->LoginBox);
             this->Controls->Add(this->CancelButton);
+            this->KeyPreview = true;
             this->MaximizeBox = false;
             this->MinimizeBox = false;
             this->Name = L"LoginForm";
