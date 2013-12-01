@@ -156,8 +156,12 @@ namespace chb {
             if (String::IsNullOrEmpty(LoginBox->Text) || String::IsNullOrEmpty(PasswordBox->Text))
                 return;
 
-            Application::Run(gcnew MainWindow(LoginBox->Text, PasswordBox->Text));
-            Close();
+            Form^ form = gcnew MainWindow(LoginBox->Text, PasswordBox->Text);
+            form->Parent = this;
+            form->StartPosition = FormStartPosition::CenterScreen;
+            form->Show();
+
+            Hide();
         }
     private:
         System::Void LoginForm_KeyDown(System::Object^  sender, System::Windows::Forms::KeyEventArgs^  e)

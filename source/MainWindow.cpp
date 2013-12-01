@@ -13,8 +13,8 @@ void MainWindow::BackgroundThread()
         {
             if (!sSession->initialized)
             {
-                Application::Run(gcnew LoginForm);
-                return Close();
+                this->Parent->Show();
+                Close();
             }
 
             uint8 css = CSN::Update(&InPacket,&retstr);
