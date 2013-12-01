@@ -13,10 +13,10 @@ void MainWindow::BackgroundThread()
         {
             if (!sSession->initialized)
             {
-                this->Parent->Show();
+                this->Owner->Show();
                 Close();
             }
-
+            
             uint8 css = CSN::Update(&InPacket,&retstr);
             if (css & CSN::CSS_ERROR)
                 throw retstr;
@@ -86,6 +86,6 @@ void MainWindow::print_session_msg()
 
 void Session::InitializeSocket(std::string username,std::string password)
 {
-    CSN::Initialize(username,password,"logon.hellground.net");
+    CSN::Initialize(username.c_str(), password.c_str(), "logon.hellground.net");
     initialized = true;
 }

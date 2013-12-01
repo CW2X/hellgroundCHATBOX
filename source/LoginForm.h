@@ -157,9 +157,9 @@ namespace chb {
                 return;
 
             Form^ form = gcnew MainWindow(LoginBox->Text, PasswordBox->Text);
-            form->Parent = this;
+            form->TopMost = false;
             form->StartPosition = FormStartPosition::CenterScreen;
-            form->Show();
+            form->Show(this);
 
             Hide();
         }
