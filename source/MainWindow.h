@@ -1,6 +1,8 @@
 #pragma once
 #include "base_defs.h"
 #include "Session.h"
+#include"Util.h"
+
 #include <msclr\marshal_cppstd.h>
 namespace chb {
 
@@ -15,8 +17,36 @@ namespace chb {
 	public ref class MainWindow : public System::Windows::Forms::Form
 	{
 	public:
-		MainWindow(void)
+		MainWindow(System::String^ login, System::String^ password)
 		{
+            msclr::interop::marshal_context context;
+
+            std::string slogin = context.marshal_as<const char*>(login);
+            std::string spassword = context.marshal_as<const char*>(password);
+            string_to_uppercase(slogin);
+            string_to_uppercase(spassword);
+
+            try
+            {
+                sSession->InitializeSocket(slogin, spassword);
+            }
+            catch (std::string error)
+            {
+                MessageBox::Show(gcnew String(error.c_str()));
+            }
+            catch (char* error)
+            {
+                MessageBox::Show(gcnew String(error));
+            }
+            catch (Exception^ e)
+            {
+                MessageBox::Show(e->Message);
+            }
+            catch (...)
+            {
+                MessageBox::Show(gcnew String("Unhandled exception!"));
+            };
+
             ExitingProgram = false;
 			InitializeComponent();
 

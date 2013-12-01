@@ -15,16 +15,6 @@ void Session::ClUpdate(std::string clData)
         case 1:
             send_cmsg_login((uint8)clData.c_str()[0]);
             break;
-        case 2:
-            string_to_uppercase(clData);
-            username = clData;
-            cinredirect = 3;
-            break;
-        case 3:
-            cinredirect = 0;
-            string_to_uppercase(clData);
-            InitializeSocket(username,clData);
-            break;
         }
     }
 }

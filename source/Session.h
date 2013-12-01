@@ -55,6 +55,7 @@ public:
         static Session instance;
         return &instance;
     }
+    void InitializeSocket(std::string username, std::string password);
 private:
     Session();
     void handle_smsg_char_enum(inc_pack* InPack);
@@ -80,7 +81,6 @@ private:
     std::string Guid_to_name(uint32 guid);
     char* ChatLanguages(uint32 lang);
     void print(std::string s) {m_ret += s;};
-    void InitializeSocket(std::string username,std::string password);
 
     CharacterData   characters[7];
     std::string     channels[9];

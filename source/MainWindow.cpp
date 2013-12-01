@@ -1,19 +1,20 @@
 #include "MainWindow.h"
+#include "LoginForm.h"
 using namespace chb;
 
 void MainWindow::BackgroundThread()
 {
     inc_pack    InPacket;
     std::string retstr;
-    
+
     try
     {
         while(1)
         {
             if (!sSession->initialized)
             {
-                Thread::Sleep(1000);
-                continue;
+                Application::Run(gcnew LoginForm);
+                return Close();
             }
 
             uint8 css = CSN::Update(&InPacket,&retstr);

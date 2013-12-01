@@ -7,6 +7,7 @@
     <ClInclude Include="source\Util.h" />
     <ClInclude Include="source\MainWindow.h" />
     <ClInclude Include="source\CSN.h" />
+    <ClInclude Include="source\LoginForm.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\chb.cpp" />
@@ -24,6 +25,7 @@
       <Filter>Handlers</Filter>
     </ClCompile>
     <ClCompile Include="source\MainWindow.cpp" />
+    <ClCompile Include="source\LoginForm.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Handlers">
