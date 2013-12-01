@@ -67,7 +67,7 @@ namespace chb {
             this->viewtext->ScrollBars = System::Windows::Forms::ScrollBars::Vertical;
             this->viewtext->Size = System::Drawing::Size(628, 242);
             this->viewtext->TabIndex = 0;
-            this->viewtext->Text = L"Enter username and password:";
+            this->viewtext->Text = L"Enter username and password:\r\n";
             // 
             // inputtext
             // 
