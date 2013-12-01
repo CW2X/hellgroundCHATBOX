@@ -67,6 +67,7 @@ namespace chb {
             this->viewtext->ScrollBars = System::Windows::Forms::ScrollBars::Vertical;
             this->viewtext->Size = System::Drawing::Size(628, 242);
             this->viewtext->TabIndex = 0;
+            this->viewtext->Text = L"Enter username and password:";
             // 
             // inputtext
             // 
@@ -92,7 +93,10 @@ namespace chb {
             this->Controls->Add(this->enterbutton);
             this->Controls->Add(this->inputtext);
             this->Controls->Add(this->viewtext);
+            this->FormBorderStyle = System::Windows::Forms::FormBorderStyle::FixedSingle;
+            this->MaximizeBox = false;
             this->Name = L"MainWindow";
+            this->ShowIcon = false;
             this->Text = L"Chatbox 0.2.0 by koostosh";
             this->FormClosed += gcnew System::Windows::Forms::FormClosedEventHandler(this, &MainWindow::MainWindow_FormClosed);
             this->ResumeLayout(false);

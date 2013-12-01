@@ -49,6 +49,7 @@ class Session
 public:
     void Update(inc_pack* InPack,std::string* retstr);
     void ClUpdate(std::string clData);
+    bool initialized;
     static Session* getInstance()
     {
         static Session instance;
@@ -79,6 +80,7 @@ private:
     std::string Guid_to_name(uint32 guid);
     char* ChatLanguages(uint32 lang);
     void print(std::string s) {m_ret += s;};
+    void InitializeSocket(std::string username,std::string password);
 
     CharacterData   characters[7];
     std::string     channels[9];
@@ -90,8 +92,8 @@ private:
     std::string     whisptarget;
     out_pack        OuPack;
     bool            ishordeplayer;
-
-    std::string m_ret;
+    std::string     username;
+    std::string     m_ret;
 };
 
 #define sSession Session::getInstance()

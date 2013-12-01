@@ -1,4 +1,5 @@
 #include "Session.h"
+#include "Util.h"
 
 void Session::ClUpdate(std::string clData)
 {
@@ -6,11 +7,24 @@ void Session::ClUpdate(std::string clData)
         handle_Cl(clData);
     else
     {
+        switch (cinredirect)
         {
-            if (cinredirect == 0)
-                return send_cmsg_messagechat(clData);
-            else if (cinredirect == 1)
-                return send_cmsg_login((uint8)clData.c_str()[0]);
+        case 0:
+            send_cmsg_messagechat(clData);
+            break;
+        case 1:
+            send_cmsg_login((uint8)clData.c_str()[0]);
+            break;
+        case 2:
+            string_to_uppercase(clData);
+            username = clData;
+            cinredirect = 3;
+            break;
+        case 3:
+            cinredirect = 0;
+            string_to_uppercase(clData);
+            InitializeSocket(username,clData);
+            break;
         }
     }
 }

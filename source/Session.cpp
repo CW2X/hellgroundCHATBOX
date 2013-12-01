@@ -5,7 +5,8 @@ Session::Session()
     for(uint8 i=0;i<9;i++)
         channelson[i] = false;
     activechannel = 1;
-    cinredirect = 0;
+    cinredirect = 2;
+    initialized = false;
 }
 
 void Session::Update(inc_pack* InPack,std::string* retstr)

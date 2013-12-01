@@ -6,11 +6,16 @@ void MainWindow::BackgroundThread()
     inc_pack    InPacket;
     std::string retstr;
     
-    CSN::Initialize("DERLIN358","PASSDERLIN","logon.hellground.net");
     try
     {
         while(1)
         {
+            if (!sSession->initialized)
+            {
+                Thread::Sleep(1000);
+                continue;
+            }
+
             uint8 css = CSN::Update(&InPacket,&retstr);
             if (css & CSN::CSS_ERROR)
                 throw retstr;
@@ -76,4 +81,10 @@ void MainWindow::print_session_msg()
         viewtext->Select(viewtext->TextLength-1,0);
         viewtext->ScrollToCaret();
     }
+}
+
+void Session::InitializeSocket(std::string username,std::string password)
+{
+    CSN::Initialize(username,password,"logon.hellground.net");
+    initialized = true;
 }
