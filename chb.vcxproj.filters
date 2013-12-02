@@ -34,5 +34,6 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="source\MainWindow.resx" />
+    <EmbeddedResource Include="source\LoginForm.resx" />
   </ItemGroup>
 </Project>

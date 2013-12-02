@@ -127,7 +127,7 @@ namespace chb {
             this->MaximizeBox = false;
             this->Name = L"MainWindow";
             this->ShowIcon = false;
-            this->Text = L"Chatbox 0.2.0 by koostosh";
+            this->Text = L"Chatbox 0.2.0 by HGdev team";
             this->FormClosed += gcnew System::Windows::Forms::FormClosedEventHandler(this, &MainWindow::MainWindow_FormClosed);
             this->ResumeLayout(false);
             this->PerformLayout();

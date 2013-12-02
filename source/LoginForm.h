@@ -70,6 +70,7 @@ namespace chb {
             // 
             // CancelButton
             // 
+            this->CancelButton->DialogResult = System::Windows::Forms::DialogResult::Cancel;
             this->CancelButton->Location = System::Drawing::Point(116, 65);
             this->CancelButton->Name = L"CancelButton";
             this->CancelButton->Size = System::Drawing::Size(60, 23);
@@ -123,8 +124,10 @@ namespace chb {
             // 
             // LoginForm
             // 
+            this->AcceptButton = this->LoginButton;
             this->AutoScaleDimensions = System::Drawing::SizeF(6, 13);
             this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::Font;
+            this->CancelButton = this->CancelButton;
             this->ClientSize = System::Drawing::Size(186, 101);
             this->ControlBox = false;
             this->Controls->Add(this->LoginButton);
