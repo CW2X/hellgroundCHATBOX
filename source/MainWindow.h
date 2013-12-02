@@ -97,7 +97,6 @@ namespace chb {
             this->viewtext->ScrollBars = System::Windows::Forms::ScrollBars::Vertical;
             this->viewtext->Size = System::Drawing::Size(628, 242);
             this->viewtext->TabIndex = 0;
-            this->viewtext->Text = L"Enter username and password:\r\n";
             // 
             // inputtext
             // 
@@ -128,6 +127,7 @@ namespace chb {
             this->Name = L"MainWindow";
             this->ShowIcon = false;
             this->Text = L"Chatbox 0.2.0 by HGdev team";
+            this->Activated += gcnew System::EventHandler(this, &MainWindow::MainWindow_Activated);
             this->FormClosed += gcnew System::Windows::Forms::FormClosedEventHandler(this, &MainWindow::MainWindow_FormClosed);
             this->ResumeLayout(false);
             this->PerformLayout();
@@ -145,6 +145,9 @@ namespace chb {
                  backThread->Abort();
                  Application::Exit();
              }
-    };
+    private: System::Void MainWindow_Activated(System::Object^  sender, System::EventArgs^  e) {
+                 this->inputtext->Focus();
+             }
+};
 
 }

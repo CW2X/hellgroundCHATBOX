@@ -10,24 +10,15 @@ namespace chb {
 	using namespace System::Data;
 	using namespace System::Drawing;
 
-	/// <summary>
-	/// Summary for LoginForm
-	/// </summary>
 	public ref class LoginForm : public System::Windows::Forms::Form
 	{
 	public:
 		LoginForm(void)
 		{
 			InitializeComponent();
-			//
-			//TODO: Add the constructor code here
-			//
 		}
 
 	protected:
-		/// <summary>
-		/// Clean up any resources being used.
-		/// </summary>
 		~LoginForm()
 		{
 			if (components)
@@ -37,20 +28,11 @@ namespace chb {
 		}
         public: System::Windows::Forms::Button^  CancelButton;
         private: System::Windows::Forms::TextBox^  LoginBox;
-        public:
         private: System::Windows::Forms::TextBox^  PasswordBox;
         private: System::Windows::Forms::Label^  label1;
         private: System::Windows::Forms::Label^  label2;
         public: System::Windows::Forms::Button^  LoginButton;
-        private:
-
-        private:
-        protected:
-
 	private:
-		/// <summary>
-		/// Required designer variable.
-		/// </summary>
 		System::ComponentModel::Container ^components;
 
 #pragma region Windows Form Designer generated code
@@ -127,7 +109,6 @@ namespace chb {
             this->AcceptButton = this->LoginButton;
             this->AutoScaleDimensions = System::Drawing::SizeF(6, 13);
             this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::Font;
-            this->CancelButton = this->CancelButton;
             this->ClientSize = System::Drawing::Size(186, 101);
             this->ControlBox = false;
             this->Controls->Add(this->LoginButton);
@@ -141,19 +122,19 @@ namespace chb {
             this->MinimizeBox = false;
             this->Name = L"LoginForm";
             this->Text = L"Login";
+            this->Activated += gcnew System::EventHandler(this, &LoginForm::LoginForm_Activated);
             this->KeyDown += gcnew System::Windows::Forms::KeyEventHandler(this, &LoginForm::LoginForm_KeyDown);
             this->ResumeLayout(false);
             this->PerformLayout();
 
         }
 #pragma endregion
-        private:
+    private:
         System::Void CancelButton_Click(System::Object^  sender, System::EventArgs^  e)
         {
             Close();
         }
 
-    private:
         System::Void LoginButton_Click(System::Object^  sender, System::EventArgs^  e)
         {
             if (String::IsNullOrEmpty(LoginBox->Text) || String::IsNullOrEmpty(PasswordBox->Text))
@@ -166,11 +147,16 @@ namespace chb {
 
             Hide();
         }
-    private:
+
         System::Void LoginForm_KeyDown(System::Object^  sender, System::Windows::Forms::KeyEventArgs^  e)
         {
             if (e->KeyCode == Keys::Enter)
                 LoginButton_Click(sender, e);
         }
-};
+
+        System::Void LoginForm_Activated(System::Object^  sender, System::EventArgs^  e)
+        {
+            this->LoginBox->Focus();
+        }
+    };
 }
