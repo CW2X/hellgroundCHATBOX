@@ -6,7 +6,6 @@ Session::Session()
         channelson[i] = false;
     activechannel = 1;
     cinredirect = 2;
-    initialized = false;
 }
 
 void Session::Update(inc_pack* InPack,std::string* retstr)
@@ -29,5 +28,5 @@ void Session::Update(inc_pack* InPack,std::string* retstr)
     default:
         break;
     }
-    *retstr = m_ret;
+    *retstr += m_ret;
 }

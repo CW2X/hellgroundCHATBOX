@@ -1,4 +1,4 @@
-#include "Session.h"
+#include "CHBMain.h"
 #include "Util.h"
 
 void Session::ClUpdate(std::string clData)
@@ -39,6 +39,24 @@ void Session::handle_Cl(std::string clData)
         activechannel = (uint8)cmd[0] - 48;
         if(args != "")
             return send_cmsg_messagechat(args);
+        return;
+    }
+
+    if (cmd == "login")
+    {
+        space = 0;
+
+        while(args.size() > space && args.c_str()[space] != ' ')
+            space++;
+        if(args.size() > space)
+        {
+            username = args.substr(0,space);
+            std::string password = args.substr(space+1,args.size() - space +1);
+            string_to_uppercase(username);
+            string_to_uppercase(password);
+            sCHBMain->Initialize(username,password);
+            return;
+        }
         return;
     }
 

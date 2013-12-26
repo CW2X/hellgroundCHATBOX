@@ -1,11 +1,10 @@
 #include "MainWindow.h"
-#include "LoginForm.h"
 
 using namespace chb;
 
 int main( void )
 {
-    Form^ form = gcnew LoginForm;
+    Form^ form = gcnew MainWindow;
     form->StartPosition = FormStartPosition::CenterScreen;
     Application::Run(form);
 

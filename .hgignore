@@ -6,4 +6,5 @@ chb.opensdf
 chb.suo
 Release/
 chb.exe
-CHBSocket.vcxproj.user
+CHBMain.vcxproj.user
+CHBMain.dll

@@ -1,9 +1,7 @@
 #pragma once
 #include "base_defs.h"
-#include "Session.h"
-#include"Util.h"
-
 #include <msclr\marshal_cppstd.h>
+
 namespace chb {
 
 	using namespace System;
@@ -14,51 +12,25 @@ namespace chb {
 	using namespace System::Drawing;
     using namespace System::Threading;
 
+    typedef uint8 (*mainDllUpdateType)(std::string*);
+    typedef void (*mainDllInputType)(std::string);
+
 	public ref class MainWindow : public System::Windows::Forms::Form
 	{
 	public:
-		MainWindow(System::String^ login, System::String^ password)
+		MainWindow()
 		{
-            msclr::interop::marshal_context context;
-
-            std::string slogin = context.marshal_as<const char*>(login);
-            std::string spassword = context.marshal_as<const char*>(password);
-            string_to_uppercase(slogin);
-            string_to_uppercase(spassword);
-
-            try
-            {
-                sSession->InitializeSocket(slogin, spassword);
-            }
-            catch (std::string error)
-            {
-                MessageBox::Show(gcnew String(error.c_str()));
-            }
-            catch (char* error)
-            {
-                MessageBox::Show(gcnew String(error));
-            }
-            catch (Exception^ e)
-            {
-                MessageBox::Show(e->Message);
-            }
-            catch (...)
-            {
-                MessageBox::Show(gcnew String("Unhandled exception!"));
-            };
-
             ExitingProgram = false;
 			InitializeComponent();
 
+            mainDllUpdateFunction = NULL;
+            mainDllInputFunction = NULL;
 			backThread = gcnew Thread(gcnew ThreadStart(this,&MainWindow::BackgroundThread));
             backThread->Start();
 		}
 
-        void print_socket_msg();
-        void print_session_msg();
-        void BackgroundThread();
-        String^ readData;
-	protected:
+        void LoginFormReturn(std::string username,std::string password);
+    protected:
 		~MainWindow()
 		{
 			if (components)
@@ -66,6 +38,10 @@ namespace chb {
 				delete components;
 			}
 		}
+        void print_msg();
+        void BackgroundThread();
+        String^ readData;
+	
     private:
         System::Windows::Forms::TextBox^  viewtext;
         System::Windows::Forms::TextBox^  inputtext;
@@ -73,6 +49,8 @@ namespace chb {
 		System::ComponentModel::Container ^components;
         Thread^ backThread;
         bool ExitingProgram;
+        mainDllUpdateType mainDllUpdateFunction;
+        mainDllInputType mainDllInputFunction;
 
 #pragma region Windows Form Designer generated code
 		/// <summary>
@@ -126,7 +104,7 @@ namespace chb {
             this->MaximizeBox = false;
             this->Name = L"MainWindow";
             this->ShowIcon = false;
-            this->Text = L"Chatbox 0.2.0 by HGdev team";
+            this->Text = (L"Chatbox "+ VERSION +" by HGdev team");
             this->Activated += gcnew System::EventHandler(this, &MainWindow::MainWindow_Activated);
             this->FormClosed += gcnew System::Windows::Forms::FormClosedEventHandler(this, &MainWindow::MainWindow_FormClosed);
             this->ResumeLayout(false);
@@ -134,20 +112,27 @@ namespace chb {
 
         }
 #pragma endregion
-    private: System::Void enterbutton_Click(System::Object^  sender, System::EventArgs^  e)
-             {
-                 sSession->ClUpdate(msclr::interop::marshal_as<std::string>(inputtext->Text));
-                 inputtext->Text = gcnew System::String("");
-             }
-    private: System::Void MainWindow_FormClosed(System::Object^  sender, System::Windows::Forms::FormClosedEventArgs^  e)
-             {
-                 ExitingProgram = true;
-                 backThread->Abort();
-                 Application::Exit();
-             }
-    private: System::Void MainWindow_Activated(System::Object^  sender, System::EventArgs^  e) {
-                 this->inputtext->Focus();
-             }
+    private:
+        System::Void enterbutton_Click(System::Object^  sender, System::EventArgs^  e)
+        {
+            if (mainDllInputFunction != NULL)
+            mainDllInputFunction(msclr::interop::marshal_as<std::string>(inputtext->Text));
+            inputtext->Text = gcnew System::String("");
+        }
+
+        System::Void MainWindow_FormClosed(System::Object^  sender, System::Windows::Forms::FormClosedEventArgs^  e)
+        {
+            ExitingProgram = true;
+            backThread->Abort();
+            Application::Exit();
+        }
+
+        System::Void MainWindow_Activated(System::Object^  sender, System::EventArgs^  e)
+        {
+            this->inputtext->Focus();
+        }
+
+        void CreateLoginForm();
 };
 
 }

@@ -139,13 +139,11 @@ namespace chb {
         {
             if (String::IsNullOrEmpty(LoginBox->Text) || String::IsNullOrEmpty(PasswordBox->Text))
                 return;
-
-            Form^ form = gcnew MainWindow(LoginBox->Text, PasswordBox->Text);
-            form->TopMost = false;
-            form->StartPosition = FormStartPosition::CenterScreen;
-            form->Show(this);
-
-            Hide();
+            
+            std::string username = msclr::interop::marshal_as<std::string>(LoginBox->Text);
+            std::string password = msclr::interop::marshal_as<std::string>(PasswordBox->Text);
+            ((MainWindow^)(this->Owner))->LoginFormReturn(username,password);
+            this->Close();
         }
 
         System::Void LoginForm_KeyDown(System::Object^  sender, System::Windows::Forms::KeyEventArgs^  e)

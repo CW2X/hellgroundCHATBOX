@@ -131,14 +131,14 @@ void Session::send_cmsg_messagechat(std::string data)
     if (mtype == 7)
         OuPack << whisptarget;
     OuPack << data;
-    CSN::send_out_pack(&OuPack);
+    send_out_pack();
 }
 
 void Session::send_cmsg_name_query(uint32 guid)
 {
     OuPack.reset( 0x0050);
     OuPack << guid << (uint32)0;
-    CSN::send_out_pack(&OuPack);
+    send_out_pack();
 }
 
 void Session::handle_smsg_name_query_response(inc_pack *InPack)

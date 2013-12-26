@@ -1,0 +1,133 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="source\CHBMain.cpp" />
+    <ClCompile Include="source\Session.cpp" />
+    <ClCompile Include="source\LoginHandler.cpp">
+      <Filter>handlers</Filter>
+    </ClCompile>
+    <ClCompile Include="source\CommandLineHandler.cpp">
+      <Filter>handlers</Filter>
+    </ClCompile>
+    <ClCompile Include="source\ChatHandler.cpp">
+      <Filter>handlers</Filter>
+    </ClCompile>
+    <ClCompile Include="source\ChannelHandler.cpp">
+      <Filter>handlers</Filter>
+    </ClCompile>
+    <ClCompile Include="source\AuthProcessor.cpp">
+      <Filter>sockets</Filter>
+    </ClCompile>
+    <ClCompile Include="source\BaseSocket.cpp">
+      <Filter>sockets</Filter>
+    </ClCompile>
+    <ClCompile Include="source\CHBSocket.cpp">
+      <Filter>sockets</Filter>
+    </ClCompile>
+    <ClCompile Include="source\MainSocket.cpp">
+      <Filter>sockets</Filter>
+    </ClCompile>
+    <ClCompile Include="source\Auth\AuthCrypt.cpp">
+      <Filter>auth</Filter>
+    </ClCompile>
+    <ClCompile Include="source\Auth\BigNumber.cpp">
+      <Filter>auth</Filter>
+    </ClCompile>
+    <ClCompile Include="source\Auth\Hmac.cpp">
+      <Filter>auth</Filter>
+    </ClCompile>
+    <ClCompile Include="source\Auth\Sha1.cpp">
+      <Filter>auth</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="source\base_defs.h" />
+    <ClInclude Include="source\iopackets.h" />
+    <ClInclude Include="source\Session.h" />
+    <ClInclude Include="source\Util.h" />
+    <ClInclude Include="source\AuthProcessor.h">
+      <Filter>sockets</Filter>
+    </ClInclude>
+    <ClInclude Include="source\BaseSocket.h">
+      <Filter>sockets</Filter>
+    </ClInclude>
+    <ClInclude Include="source\CHBSocket.h">
+      <Filter>sockets</Filter>
+    </ClInclude>
+    <ClInclude Include="source\MainSocket.h">
+      <Filter>sockets</Filter>
+    </ClInclude>
+    <ClInclude Include="source\Auth\asn1.h">
+      <Filter>auth</Filter>
+    </ClInclude>
+    <ClInclude Include="source\Auth\AuthCrypt.h">
+      <Filter>auth</Filter>
+    </ClInclude>
+    <ClInclude Include="source\Auth\BigNumber.h">
+      <Filter>auth</Filter>
+    </ClInclude>
+    <ClInclude Include="source\Auth\bio.h">
+      <Filter>auth</Filter>
+    </ClInclude>
+    <ClInclude Include="source\Auth\bn.h">
+      <Filter>auth</Filter>
+    </ClInclude>
+    <ClInclude Include="source\Auth\crypto.h">
+      <Filter>auth</Filter>
+    </ClInclude>
+    <ClInclude Include="source\Auth\e_os2.h">
+      <Filter>auth</Filter>
+    </ClInclude>
+    <ClInclude Include="source\Auth\evp.h">
+      <Filter>auth</Filter>
+    </ClInclude>
+    <ClInclude Include="source\Auth\Hmac.h">
+      <Filter>auth</Filter>
+    </ClInclude>
+    <ClInclude Include="source\Auth\hmac(OpenSSL).h">
+      <Filter>auth</Filter>
+    </ClInclude>
+    <ClInclude Include="source\Auth\obj_mac.h">
+      <Filter>auth</Filter>
+    </ClInclude>
+    <ClInclude Include="source\Auth\objects.h">
+      <Filter>auth</Filter>
+    </ClInclude>
+    <ClInclude Include="source\Auth\opensslconf.h">
+      <Filter>auth</Filter>
+    </ClInclude>
+    <ClInclude Include="source\Auth\opensslv.h">
+      <Filter>auth</Filter>
+    </ClInclude>
+    <ClInclude Include="source\Auth\ossl_typ.h">
+      <Filter>auth</Filter>
+    </ClInclude>
+    <ClInclude Include="source\Auth\safestack.h">
+      <Filter>auth</Filter>
+    </ClInclude>
+    <ClInclude Include="source\Auth\sha.h">
+      <Filter>auth</Filter>
+    </ClInclude>
+    <ClInclude Include="source\Auth\Sha1.h">
+      <Filter>auth</Filter>
+    </ClInclude>
+    <ClInclude Include="source\Auth\stack.h">
+      <Filter>auth</Filter>
+    </ClInclude>
+    <ClInclude Include="source\Auth\symhacks.h">
+      <Filter>auth</Filter>
+    </ClInclude>
+    <ClInclude Include="source\CHBMain.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="sockets">
+      <UniqueIdentifier>{6bf4cf53-1cce-45fb-973c-ded3956a9e3d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="handlers">
+      <UniqueIdentifier>{1091ef38-3457-40a1-9340-fa0b1a801658}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="auth">
+      <UniqueIdentifier>{7b3b9d40-b935-4436-a2b4-173831e72235}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

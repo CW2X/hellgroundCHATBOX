@@ -3,7 +3,6 @@
 
 #include "base_defs.h"
 #include "iopackets.h"
-#include "CSN.h"
 #include <map>
 #include <list>
 
@@ -47,17 +46,11 @@ class MainSocket;
 class Session
 {
 public:
+    Session();
     void Update(inc_pack* InPack,std::string* retstr);
     void ClUpdate(std::string clData);
-    bool initialized;
-    static Session* getInstance()
-    {
-        static Session instance;
-        return &instance;
-    }
     void InitializeSocket(std::string username, std::string password);
 private:
-    Session();
     void handle_smsg_char_enum(inc_pack* InPack);
     void handle_smsg_name_query_response(inc_pack* InPack);
     void handle_smsg_messagechat(inc_pack* InPack);
@@ -81,6 +74,7 @@ private:
     std::string Guid_to_name(uint32 guid);
     char* ChatLanguages(uint32 lang);
     void print(std::string s) {m_ret += s;};
+    void send_out_pack();
 
     CharacterData   characters[7];
     std::string     channels[9];
@@ -96,5 +90,4 @@ private:
     std::string     m_ret;
 };
 
-#define sSession Session::getInstance()
 #endif

@@ -24,7 +24,7 @@ void Session::send_cmsg_join_channel(std::string name)
     channels[channelid] = name;
     channelson[channelid] = true;
     print("Joining channel " + name + " [" + utostr(channelid+1) + "]\r\n");
-    CSN::send_out_pack(&OuPack);
+    send_out_pack();
 }
 
 void Session::send_cmsg_leave_channel(uint8 no)
@@ -42,7 +42,7 @@ void Session::send_cmsg_leave_channel(uint8 no)
     OuPack << channels[no-1];
     channels[no-1] = "";
     channelson[no-1] = false;
-    CSN::send_out_pack(&OuPack);
+    send_out_pack();
 }
 
 void Session::handle_smsg_channel_notify(inc_pack* InPack)
@@ -79,7 +79,7 @@ void Session::send_cmsg_channel_list(std::string channelname)
 
     OuPack.reset(0x009A);
     OuPack << channelname;
-    CSN::send_out_pack(&OuPack);
+    send_out_pack();
 }
 
 void Session::handle_smsg_channel_list(inc_pack* InPack)

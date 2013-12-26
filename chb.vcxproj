@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="Build" ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Release|Win32">
       <Configuration>Release</Configuration>
@@ -7,27 +7,17 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="source\base_defs.h" />
-    <ClInclude Include="source\CSN.h" />
-    <ClInclude Include="source\iopackets.h" />
     <ClInclude Include="source\LoginForm.h">
       <FileType>CppForm</FileType>
     </ClInclude>
     <ClInclude Include="source\MainWindow.h">
       <FileType>CppForm</FileType>
     </ClInclude>
-    <ClInclude Include="source\Session.h" />
-    <ClInclude Include="source\Util.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="source\ChannelHandler.cpp" />
-    <ClCompile Include="source\ChatHandler.cpp" />
     <ClCompile Include="source\chb.cpp" />
     <ClCompile Include="source\LoginForm.cpp" />
-    <ClCompile Include="source\LoginHandler.cpp" />
-    <ClCompile Include="source\CommandLineHandler.cpp" />
     <ClCompile Include="source\MainWindow.cpp" />
-    <ClCompile Include="source\Session.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -37,9 +27,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="source\LoginForm.resx">
-      <DependentUpon>source\LoginForm.h</DependentUpon>
-    </EmbeddedResource>
+    <EmbeddedResource Include="source\LoginForm.resx" />
     <EmbeddedResource Include="source\MainWindow.resx">
       <DependentUpon>MainWindow.h</DependentUpon>
       <SubType>Designer</SubType>
@@ -81,7 +69,7 @@
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
-      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <GenerateDebugInformation>false</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <AdditionalDependencies>kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>

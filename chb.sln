@@ -1,17 +1,24 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2013
-VisualStudioVersion = 12.0.21005.1
-MinimumVisualStudioVersion = 10.0.40219.1
+# Visual C++ Express 2010
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "chb", "chb.vcxproj", "{1C6DD9ED-5323-4C2A-AD34-7F983E41154C}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "CHBMain", "CHBMain.vcxproj", "{DD92716E-2CB4-4323-9CE1-0074C1C6D733}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
 		Release|Win32 = Release|Win32
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{1C6DD9ED-5323-4C2A-AD34-7F983E41154C}.Debug|Win32.ActiveCfg = Release|Win32
+		{1C6DD9ED-5323-4C2A-AD34-7F983E41154C}.Debug|Win32.Build.0 = Release|Win32
 		{1C6DD9ED-5323-4C2A-AD34-7F983E41154C}.Release|Win32.ActiveCfg = Release|Win32
 		{1C6DD9ED-5323-4C2A-AD34-7F983E41154C}.Release|Win32.Build.0 = Release|Win32
+		{DD92716E-2CB4-4323-9CE1-0074C1C6D733}.Debug|Win32.ActiveCfg = Debug|Win32
+		{DD92716E-2CB4-4323-9CE1-0074C1C6D733}.Debug|Win32.Build.0 = Debug|Win32
+		{DD92716E-2CB4-4323-9CE1-0074C1C6D733}.Release|Win32.ActiveCfg = Release|Win32
+		{DD92716E-2CB4-4323-9CE1-0074C1C6D733}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
