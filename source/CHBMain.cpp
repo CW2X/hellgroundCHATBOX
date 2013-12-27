@@ -6,30 +6,32 @@ CHBMain::CHBMain()
     initialized = false;
 }
 
-uint8 CHBMain::Update(std::string* retstr)
+void CHBMain::Update(std::string* retstr,std::string* commstr)
 {
     inc_pack InPacket;
 
     try
     {
         *retstr = "";
+        *commstr = "";
 
         if(firstTick)
         {
             firstTick = false;
             *retstr = std::string("Chatbox v.")+ VERSION +"\r\n";
-            return 1;
+            *commstr = std::string("Ln\nCh:xD");
+            
         }
 
         if(!sMainSocket.IsAuthed)
         {
             if (!initialized)
-                return 0;
+                return;
 
             if (!sAProcessor.IsAuthed)
             {
                 sAProcessor.Update(retstr);
-                return 0;
+                return;
             }
         
             if(!sMainSocket.IsConnected)
@@ -58,7 +60,6 @@ uint8 CHBMain::Update(std::string* retstr)
     {
         *retstr += "Unhandled error!";
     }
-    return 0;
 }
 
 void CHBMain::Input(std::string in)
@@ -85,9 +86,9 @@ void Session::send_out_pack()
 
 extern "C"
 {
-    _declspec(dllexport) uint8 MainDllUpdate(std::string* retstr)
+    _declspec(dllexport) void MainDllUpdate(std::string* retstr,std::string* commstr)
     {
-        return sCHBMain->Update(retstr);
+        sCHBMain->Update(retstr,commstr);
     };
     _declspec(dllexport) void MainDllInput(std::string in)
     {

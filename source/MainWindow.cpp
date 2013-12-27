@@ -4,11 +4,11 @@ using namespace chb;
 void MainWindow::BackgroundThread()
 {
     std::string retstr;
-    unsigned char returnvalue;
+    std::string commstr;
 
     while(1)
     {
-
+        //Load functions if nesescary
         if (mainDllUpdateFunction == NULL)
         {
             HMODULE MainDll = LoadLibrary(TEXT("CHBMain.dll"));
@@ -20,20 +20,40 @@ void MainWindow::BackgroundThread()
             mainDllInputFunction = (mainDllInputType)GetProcAddress(MainDll,"MainDllInput");
             continue;
         }
+        //call function
+        mainDllUpdateFunction(&retstr,&commstr);
 
-        returnvalue = mainDllUpdateFunction(&retstr);
-
+        //print output
         if (retstr != "")
         {
             readData = gcnew String(retstr.c_str());
             print_msg();
         }
         
-        if (returnvalue == 1)
+        //parse internal commands
+        while(!commstr.empty())
         {
-            Thread::Sleep(500);
-            CreateLoginForm();
-            
+            size_t siz = commstr.find("\n");
+            std::string sub= commstr.substr(0,siz);
+            if (siz != std::string::npos)
+                commstr.erase(0,siz+1);
+            else
+                commstr.clear();
+
+            if (sub == "Ln")
+            {
+                Thread::Sleep(500);
+                CreateLoginForm();
+            }
+            else if (sub.substr(0,3) == "Ch:")
+            {
+                label1->Text = gcnew String((sub.substr(3,sub.length()-3) + ":").c_str());
+            }
+            else
+            {
+                readData = gcnew String("UIC\r\n");
+                print_msg();
+            }
         }
     }
 }

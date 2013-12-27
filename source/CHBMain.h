@@ -14,7 +14,7 @@ public:
         return &instance;
     }
 
-    uint8 Update(std::string* retstr);
+    void Update(std::string* retstr,std::string* commstr);
     void Input(std::string in);
     void Initialize(std::string username,std::string password);
     void send_out_pack(out_pack* packet);

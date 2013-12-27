@@ -12,7 +12,7 @@ namespace chb {
 	using namespace System::Drawing;
     using namespace System::Threading;
 
-    typedef uint8 (*mainDllUpdateType)(std::string*);
+    typedef void (*mainDllUpdateType)(std::string*,std::string*);
     typedef void (*mainDllInputType)(std::string);
 
 	public ref class MainWindow : public System::Windows::Forms::Form
@@ -52,6 +52,15 @@ namespace chb {
         mainDllUpdateType mainDllUpdateFunction;
         mainDllInputType mainDllInputFunction;
 
+        System::Windows::Forms::Label^  label1;
+        System::Windows::Forms::TabControl^  tabControl;
+        System::Windows::Forms::TabPage^  tabPageFriends;
+        System::Windows::Forms::TabPage^  tabPageGuild;
+    private: System::Windows::Forms::Button^  buttonRemoveFriend;
+    private: System::Windows::Forms::Button^  buttonAddFriend;
+    private: System::Windows::Forms::ListBox^  listBox1;
+             System::Windows::Forms::TabPage^  tabPageSettings;
+
 #pragma region Windows Form Designer generated code
 		/// <summary>
 		/// Required method for Designer support - do not modify
@@ -61,6 +70,16 @@ namespace chb {
 		{
             this->viewtext = (gcnew System::Windows::Forms::TextBox());
             this->inputtext = (gcnew System::Windows::Forms::TextBox());
+            this->label1 = (gcnew System::Windows::Forms::Label());
+            this->tabControl = (gcnew System::Windows::Forms::TabControl());
+            this->tabPageFriends = (gcnew System::Windows::Forms::TabPage());
+            this->buttonRemoveFriend = (gcnew System::Windows::Forms::Button());
+            this->buttonAddFriend = (gcnew System::Windows::Forms::Button());
+            this->listBox1 = (gcnew System::Windows::Forms::ListBox());
+            this->tabPageGuild = (gcnew System::Windows::Forms::TabPage());
+            this->tabPageSettings = (gcnew System::Windows::Forms::TabPage());
+            this->tabControl->SuspendLayout();
+            this->tabPageFriends->SuspendLayout();
             this->SuspendLayout();
             // 
             // viewtext
@@ -75,23 +94,116 @@ namespace chb {
             this->viewtext->Name = L"viewtext";
             this->viewtext->ReadOnly = true;
             this->viewtext->ScrollBars = System::Windows::Forms::ScrollBars::Vertical;
-            this->viewtext->Size = System::Drawing::Size(628, 242);
+            this->viewtext->Size = System::Drawing::Size(475, 242);
             this->viewtext->TabIndex = 0;
+            this->viewtext->TabStop = false;
             // 
             // inputtext
             // 
             this->inputtext->Anchor = static_cast<System::Windows::Forms::AnchorStyles>(((System::Windows::Forms::AnchorStyles::Bottom | System::Windows::Forms::AnchorStyles::Left) 
                 | System::Windows::Forms::AnchorStyles::Right));
-            this->inputtext->Location = System::Drawing::Point(12, 260);
+            this->inputtext->Location = System::Drawing::Point(85, 260);
             this->inputtext->Name = L"inputtext";
-            this->inputtext->Size = System::Drawing::Size(628, 20);
+            this->inputtext->Size = System::Drawing::Size(402, 20);
             this->inputtext->TabIndex = 1;
             this->inputtext->KeyPress += gcnew System::Windows::Forms::KeyPressEventHandler(this, &MainWindow::inputtext_KeyPress);
             this->inputtext->PreviewKeyDown += gcnew System::Windows::Forms::PreviewKeyDownEventHandler(this, &MainWindow::inputtext_PreviewKeyDown);
             // 
+            // label1
+            // 
+            this->label1->AutoSize = true;
+            this->label1->Location = System::Drawing::Point(9, 263);
+            this->label1->Name = L"label1";
+            this->label1->Size = System::Drawing::Size(48, 13);
+            this->label1->TabIndex = 3;
+            this->label1->Text = L"channel:";
+            this->label1->TextAlign = System::Drawing::ContentAlignment::TopRight;
+            // 
+            // tabControl
+            // 
+            this->tabControl->Anchor = static_cast<System::Windows::Forms::AnchorStyles>(((System::Windows::Forms::AnchorStyles::Top | System::Windows::Forms::AnchorStyles::Bottom) 
+                | System::Windows::Forms::AnchorStyles::Right));
+            this->tabControl->Controls->Add(this->tabPageFriends);
+            this->tabControl->Controls->Add(this->tabPageGuild);
+            this->tabControl->Controls->Add(this->tabPageSettings);
+            this->tabControl->Location = System::Drawing::Point(493, 12);
+            this->tabControl->Name = L"tabControl";
+            this->tabControl->SelectedIndex = 0;
+            this->tabControl->Size = System::Drawing::Size(147, 268);
+            this->tabControl->TabIndex = 2;
+            this->tabControl->TabStop = false;
+            // 
+            // tabPageFriends
+            // 
+            this->tabPageFriends->Controls->Add(this->buttonRemoveFriend);
+            this->tabPageFriends->Controls->Add(this->buttonAddFriend);
+            this->tabPageFriends->Controls->Add(this->listBox1);
+            this->tabPageFriends->Location = System::Drawing::Point(4, 22);
+            this->tabPageFriends->Name = L"tabPageFriends";
+            this->tabPageFriends->Padding = System::Windows::Forms::Padding(3);
+            this->tabPageFriends->Size = System::Drawing::Size(139, 242);
+            this->tabPageFriends->TabIndex = 0;
+            this->tabPageFriends->Text = L"Friends";
+            this->tabPageFriends->UseVisualStyleBackColor = true;
+            // 
+            // buttonRemoveFriend
+            // 
+            this->buttonRemoveFriend->Anchor = static_cast<System::Windows::Forms::AnchorStyles>((System::Windows::Forms::AnchorStyles::Bottom | System::Windows::Forms::AnchorStyles::Left));
+            this->buttonRemoveFriend->Location = System::Drawing::Point(72, 213);
+            this->buttonRemoveFriend->Name = L"buttonRemoveFriend";
+            this->buttonRemoveFriend->Size = System::Drawing::Size(61, 23);
+            this->buttonRemoveFriend->TabIndex = 2;
+            this->buttonRemoveFriend->Text = L"Remove";
+            this->buttonRemoveFriend->UseVisualStyleBackColor = true;
+            // 
+            // buttonAddFriend
+            // 
+            this->buttonAddFriend->Anchor = static_cast<System::Windows::Forms::AnchorStyles>((System::Windows::Forms::AnchorStyles::Bottom | System::Windows::Forms::AnchorStyles::Left));
+            this->buttonAddFriend->Location = System::Drawing::Point(6, 213);
+            this->buttonAddFriend->Name = L"buttonAddFriend";
+            this->buttonAddFriend->Size = System::Drawing::Size(61, 23);
+            this->buttonAddFriend->TabIndex = 1;
+            this->buttonAddFriend->Text = L"Add";
+            this->buttonAddFriend->UseVisualStyleBackColor = true;
+            // 
+            // listBox1
+            // 
+            this->listBox1->Anchor = static_cast<System::Windows::Forms::AnchorStyles>(((System::Windows::Forms::AnchorStyles::Top | System::Windows::Forms::AnchorStyles::Bottom) 
+                | System::Windows::Forms::AnchorStyles::Left));
+            this->listBox1->FormattingEnabled = true;
+            this->listBox1->IntegralHeight = false;
+            this->listBox1->Items->AddRange(gcnew cli::array< System::Object^  >(3) {L"You don\'t have friends", L"", L"... how sad"});
+            this->listBox1->Location = System::Drawing::Point(0, 0);
+            this->listBox1->Name = L"listBox1";
+            this->listBox1->Size = System::Drawing::Size(139, 207);
+            this->listBox1->TabIndex = 0;
+            this->listBox1->TabStop = false;
+            // 
+            // tabPageGuild
+            // 
+            this->tabPageGuild->Location = System::Drawing::Point(4, 22);
+            this->tabPageGuild->Name = L"tabPageGuild";
+            this->tabPageGuild->Padding = System::Windows::Forms::Padding(3);
+            this->tabPageGuild->Size = System::Drawing::Size(139, 242);
+            this->tabPageGuild->TabIndex = 1;
+            this->tabPageGuild->Text = L"Guild";
+            this->tabPageGuild->UseVisualStyleBackColor = true;
+            // 
+            // tabPageSettings
+            // 
+            this->tabPageSettings->Location = System::Drawing::Point(4, 22);
+            this->tabPageSettings->Name = L"tabPageSettings";
+            this->tabPageSettings->Padding = System::Windows::Forms::Padding(3);
+            this->tabPageSettings->Size = System::Drawing::Size(139, 242);
+            this->tabPageSettings->TabIndex = 2;
+            this->tabPageSettings->Text = L"Settings";
+            this->tabPageSettings->UseVisualStyleBackColor = true;
+            // 
             // MainWindow
             // 
             this->ClientSize = System::Drawing::Size(652, 292);
+            this->Controls->Add(this->tabControl);
+            this->Controls->Add(this->label1);
             this->Controls->Add(this->inputtext);
             this->Controls->Add(this->viewtext);
             this->MaximizeBox = false;
@@ -99,6 +211,8 @@ namespace chb {
             this->ShowIcon = false;
             this->Activated += gcnew System::EventHandler(this, &MainWindow::MainWindow_Activated);
             this->FormClosed += gcnew System::Windows::Forms::FormClosedEventHandler(this, &MainWindow::MainWindow_FormClosed);
+            this->tabControl->ResumeLayout(false);
+            this->tabPageFriends->ResumeLayout(false);
             this->ResumeLayout(false);
             this->PerformLayout();
 
