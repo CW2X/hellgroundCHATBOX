@@ -21,9 +21,6 @@
     <ClCompile Include="source\BaseSocket.cpp">
       <Filter>sockets</Filter>
     </ClCompile>
-    <ClCompile Include="source\CHBSocket.cpp">
-      <Filter>sockets</Filter>
-    </ClCompile>
     <ClCompile Include="source\MainSocket.cpp">
       <Filter>sockets</Filter>
     </ClCompile>
@@ -49,9 +46,6 @@
       <Filter>sockets</Filter>
     </ClInclude>
     <ClInclude Include="source\BaseSocket.h">
-      <Filter>sockets</Filter>
-    </ClInclude>
-    <ClInclude Include="source\CHBSocket.h">
       <Filter>sockets</Filter>
     </ClInclude>
     <ClInclude Include="source\MainSocket.h">

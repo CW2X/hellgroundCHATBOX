@@ -45,7 +45,7 @@ namespace chb {
     private:
         System::Windows::Forms::TextBox^  viewtext;
         System::Windows::Forms::TextBox^  inputtext;
-        System::Windows::Forms::Button^  enterbutton;
+
 		System::ComponentModel::Container ^components;
         Thread^ backThread;
         bool ExitingProgram;
@@ -61,11 +61,13 @@ namespace chb {
 		{
             this->viewtext = (gcnew System::Windows::Forms::TextBox());
             this->inputtext = (gcnew System::Windows::Forms::TextBox());
-            this->enterbutton = (gcnew System::Windows::Forms::Button());
             this->SuspendLayout();
             // 
             // viewtext
             // 
+            this->viewtext->Anchor = static_cast<System::Windows::Forms::AnchorStyles>((((System::Windows::Forms::AnchorStyles::Top | System::Windows::Forms::AnchorStyles::Bottom) 
+                | System::Windows::Forms::AnchorStyles::Left) 
+                | System::Windows::Forms::AnchorStyles::Right));
             this->viewtext->BackColor = System::Drawing::Color::White;
             this->viewtext->ForeColor = System::Drawing::Color::Black;
             this->viewtext->Location = System::Drawing::Point(12, 12);
@@ -78,33 +80,23 @@ namespace chb {
             // 
             // inputtext
             // 
+            this->inputtext->Anchor = static_cast<System::Windows::Forms::AnchorStyles>(((System::Windows::Forms::AnchorStyles::Bottom | System::Windows::Forms::AnchorStyles::Left) 
+                | System::Windows::Forms::AnchorStyles::Right));
             this->inputtext->Location = System::Drawing::Point(12, 260);
             this->inputtext->Name = L"inputtext";
-            this->inputtext->Size = System::Drawing::Size(536, 20);
+            this->inputtext->Size = System::Drawing::Size(628, 20);
             this->inputtext->TabIndex = 1;
-            // 
-            // enterbutton
-            // 
-            this->enterbutton->Location = System::Drawing::Point(554, 260);
-            this->enterbutton->Name = L"enterbutton";
-            this->enterbutton->Size = System::Drawing::Size(85, 19);
-            this->enterbutton->TabIndex = 2;
-            this->enterbutton->Text = L"Enter";
-            this->enterbutton->UseVisualStyleBackColor = true;
-            this->enterbutton->Click += gcnew System::EventHandler(this, &MainWindow::enterbutton_Click);
+            this->inputtext->KeyPress += gcnew System::Windows::Forms::KeyPressEventHandler(this, &MainWindow::inputtext_KeyPress);
+            this->inputtext->PreviewKeyDown += gcnew System::Windows::Forms::PreviewKeyDownEventHandler(this, &MainWindow::inputtext_PreviewKeyDown);
             // 
             // MainWindow
             // 
-            this->AcceptButton = this->enterbutton;
             this->ClientSize = System::Drawing::Size(652, 292);
-            this->Controls->Add(this->enterbutton);
             this->Controls->Add(this->inputtext);
             this->Controls->Add(this->viewtext);
-            this->FormBorderStyle = System::Windows::Forms::FormBorderStyle::FixedSingle;
             this->MaximizeBox = false;
             this->Name = L"MainWindow";
             this->ShowIcon = false;
-            this->Text = (L"Chatbox "+ VERSION +" by HGdev team");
             this->Activated += gcnew System::EventHandler(this, &MainWindow::MainWindow_Activated);
             this->FormClosed += gcnew System::Windows::Forms::FormClosedEventHandler(this, &MainWindow::MainWindow_FormClosed);
             this->ResumeLayout(false);
@@ -113,12 +105,7 @@ namespace chb {
         }
 #pragma endregion
     private:
-        System::Void enterbutton_Click(System::Object^  sender, System::EventArgs^  e)
-        {
-            if (mainDllInputFunction != NULL)
-            mainDllInputFunction(msclr::interop::marshal_as<std::string>(inputtext->Text));
-            inputtext->Text = gcnew System::String("");
-        }
+        void CreateLoginForm();
 
         System::Void MainWindow_FormClosed(System::Object^  sender, System::Windows::Forms::FormClosedEventArgs^  e)
         {
@@ -132,7 +119,22 @@ namespace chb {
             this->inputtext->Focus();
         }
 
-        void CreateLoginForm();
+        System::Void inputtext_PreviewKeyDown(System::Object^  sender, System::Windows::Forms::PreviewKeyDownEventArgs^  e)
+        {
+            if (e->KeyCode == Keys::Enter)
+                e->IsInputKey = true;
+        }
+        
+        System::Void inputtext_KeyPress(System::Object^  sender, System::Windows::Forms::KeyPressEventArgs^  e)
+        {
+            if (e->KeyChar == (char)Keys::Enter)
+            {
+                e->Handled = true;
+                if (mainDllInputFunction != NULL)
+                mainDllInputFunction(msclr::interop::marshal_as<std::string>(inputtext->Text));
+                inputtext->Text = gcnew System::String("");
+            }
+        }
 };
 
 }

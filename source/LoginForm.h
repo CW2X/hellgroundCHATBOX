@@ -123,7 +123,6 @@ namespace chb {
             this->Name = L"LoginForm";
             this->Text = L"Login";
             this->Activated += gcnew System::EventHandler(this, &LoginForm::LoginForm_Activated);
-            this->KeyDown += gcnew System::Windows::Forms::KeyEventHandler(this, &LoginForm::LoginForm_KeyDown);
             this->ResumeLayout(false);
             this->PerformLayout();
 
@@ -144,12 +143,6 @@ namespace chb {
             std::string password = msclr::interop::marshal_as<std::string>(PasswordBox->Text);
             ((MainWindow^)(this->Owner))->LoginFormReturn(username,password);
             this->Close();
-        }
-
-        System::Void LoginForm_KeyDown(System::Object^  sender, System::Windows::Forms::KeyEventArgs^  e)
-        {
-            if (e->KeyCode == Keys::Enter)
-                LoginButton_Click(sender, e);
         }
 
         System::Void LoginForm_Activated(System::Object^  sender, System::EventArgs^  e)
