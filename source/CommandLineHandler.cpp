@@ -10,10 +10,10 @@ void Session::ClUpdate(std::string clData)
         switch (cinredirect)
         {
         case 0:
-            send_cmsg_messagechat(clData);
+            sChatModule.Command("msg",clData);
             break;
         case 1:
-            send_cmsg_login((uint8)clData.c_str()[0]);
+            sLoginModule.send_cmsg_login((uint8)clData.c_str()[0]);
             break;
         }
     }
@@ -34,14 +34,6 @@ void Session::handle_Cl(std::string clData)
     if(clData.size() > space)
         args = clData.substr(space+1,clData.size() - space +1);
 
-    if(cmd[0] >'0' && cmd[0] <='9' && cmd[1] == 0x00)
-    {
-        activechannel = (uint8)cmd[0] - 48;
-        if(args != "")
-            return send_cmsg_messagechat(args);
-        return;
-    }
-
     if (cmd == "login")
     {
         space = 0;
@@ -59,76 +51,21 @@ void Session::handle_Cl(std::string clData)
         }
         return;
     }
-
-    if (cmd == "say" || cmd == "s")
+    
+    if(cmd[0] >'0' && cmd[0] <='9' && cmd[1] == 0x00)
     {
-        activechannel = 21;
-        if(args != "")
-            return send_cmsg_messagechat(args);
-        return;
+        sChatModule.Command(cmd,args);
     }
 
-    if (cmd == "yell" || cmd == "y")
+    if (cmd == "say" || cmd == "s" || cmd == "yell" || cmd == "y" || cmd == "guild" || cmd == "g" ||
+        cmd == "officer" || cmd == "o" || cmd == "r" || cmd == "join" || cmd == "leave")
     {
-        activechannel = 26;
-        if(args != "")
-            return send_cmsg_messagechat(args);
-        return;
-    }
-
-    if (cmd == "guild" || cmd == "g")
-    {
-        activechannel = 24;
-        if(args != "")
-            return send_cmsg_messagechat(args);
-        return;
-    }
-
-    if (cmd == "officer" || cmd == "o")
-    {
-        activechannel = 25;
-        if(args != "")
-            return send_cmsg_messagechat(args);
-        return;
+        sChatModule.Command(cmd,args);
     }
 
     if(cmd == "w" && args != "")
     {
-        activechannel = 27;
-        space = 0;
-
-        while(args.size() > space && args.c_str()[space] != ' ')
-            space++;
-        if(args.size() > space)
-        {
-            whisptarget = args.substr(0,space);
-            std::string what = args.substr(space+1,args.size() - space +1);
-            return send_cmsg_messagechat(what);
-        }
-        return;
+        sChatModule.Command(cmd,args);
     }
 
-    if(cmd == "r")
-    {
-        activechannel = 27;
-        if(args != "")
-            return send_cmsg_messagechat(args);
-        return;
-    }
-
-    if (cmd == "join")
-    {
-        if(args != "")
-            return send_cmsg_join_channel(args);
-        printf("wrong channel name\r\n");
-        return;
-    }
-
-    if (cmd == "leave")
-    {
-        if(args != "")
-            return send_cmsg_leave_channel((uint8)args.c_str()[0]-48);
-        printf("usage: /leave channel number\r\n");
-        return;
-    }
 }

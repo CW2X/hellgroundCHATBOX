@@ -22,6 +22,7 @@ namespace chb {
 		{
             ExitingProgram = false;
 			InitializeComponent();
+            this->FriendsListbox->Items->Add(L"===Offline===");
 
             mainDllUpdateFunction = NULL;
             mainDllInputFunction = NULL;
@@ -56,10 +57,10 @@ namespace chb {
         System::Windows::Forms::TabControl^  tabControl;
         System::Windows::Forms::TabPage^  tabPageFriends;
         System::Windows::Forms::TabPage^  tabPageGuild;
-    private: System::Windows::Forms::Button^  buttonRemoveFriend;
-    private: System::Windows::Forms::Button^  buttonAddFriend;
-    private: System::Windows::Forms::ListBox^  listBox1;
-             System::Windows::Forms::TabPage^  tabPageSettings;
+        System::Windows::Forms::Button^  buttonRemoveFriend;
+        System::Windows::Forms::Button^  buttonAddFriend;
+        System::Windows::Forms::ListBox^  FriendsListbox;
+        System::Windows::Forms::TabPage^  tabPageSettings;
 
 #pragma region Windows Form Designer generated code
 		/// <summary>
@@ -75,7 +76,7 @@ namespace chb {
             this->tabPageFriends = (gcnew System::Windows::Forms::TabPage());
             this->buttonRemoveFriend = (gcnew System::Windows::Forms::Button());
             this->buttonAddFriend = (gcnew System::Windows::Forms::Button());
-            this->listBox1 = (gcnew System::Windows::Forms::ListBox());
+            this->FriendsListbox = (gcnew System::Windows::Forms::ListBox());
             this->tabPageGuild = (gcnew System::Windows::Forms::TabPage());
             this->tabPageSettings = (gcnew System::Windows::Forms::TabPage());
             this->tabControl->SuspendLayout();
@@ -137,7 +138,7 @@ namespace chb {
             // 
             this->tabPageFriends->Controls->Add(this->buttonRemoveFriend);
             this->tabPageFriends->Controls->Add(this->buttonAddFriend);
-            this->tabPageFriends->Controls->Add(this->listBox1);
+            this->tabPageFriends->Controls->Add(this->FriendsListbox);
             this->tabPageFriends->Location = System::Drawing::Point(4, 22);
             this->tabPageFriends->Name = L"tabPageFriends";
             this->tabPageFriends->Padding = System::Windows::Forms::Padding(3);
@@ -166,18 +167,17 @@ namespace chb {
             this->buttonAddFriend->Text = L"Add";
             this->buttonAddFriend->UseVisualStyleBackColor = true;
             // 
-            // listBox1
+            // FriendsListbox
             // 
-            this->listBox1->Anchor = static_cast<System::Windows::Forms::AnchorStyles>(((System::Windows::Forms::AnchorStyles::Top | System::Windows::Forms::AnchorStyles::Bottom) 
+            this->FriendsListbox->Anchor = static_cast<System::Windows::Forms::AnchorStyles>(((System::Windows::Forms::AnchorStyles::Top | System::Windows::Forms::AnchorStyles::Bottom) 
                 | System::Windows::Forms::AnchorStyles::Left));
-            this->listBox1->FormattingEnabled = true;
-            this->listBox1->IntegralHeight = false;
-            this->listBox1->Items->AddRange(gcnew cli::array< System::Object^  >(3) {L"You don\'t have friends", L"", L"... how sad"});
-            this->listBox1->Location = System::Drawing::Point(0, 0);
-            this->listBox1->Name = L"listBox1";
-            this->listBox1->Size = System::Drawing::Size(139, 207);
-            this->listBox1->TabIndex = 0;
-            this->listBox1->TabStop = false;
+            this->FriendsListbox->FormattingEnabled = true;
+            this->FriendsListbox->IntegralHeight = false;
+            this->FriendsListbox->Location = System::Drawing::Point(0, 0);
+            this->FriendsListbox->Name = L"FriendsListbox";
+            this->FriendsListbox->Size = System::Drawing::Size(139, 207);
+            this->FriendsListbox->TabIndex = 0;
+            this->FriendsListbox->TabStop = false;
             // 
             // tabPageGuild
             // 
@@ -218,6 +218,7 @@ namespace chb {
 
         }
 #pragma endregion
+
     private:
         void CreateLoginForm();
 

@@ -51,13 +51,14 @@
     <ClCompile Include="source\Auth\Hmac.cpp" />
     <ClCompile Include="source\Auth\Sha1.cpp" />
     <ClCompile Include="source\BaseSocket.cpp" />
-    <ClCompile Include="source\ChannelHandler.cpp" />
-    <ClCompile Include="source\ChatHandler.cpp" />
+    <ClCompile Include="source\ChatModule.cpp" />
     <ClCompile Include="source\CHBMain.cpp" />
     <ClCompile Include="source\CommandLineHandler.cpp" />
-    <ClCompile Include="source\LoginHandler.cpp" />
+    <ClCompile Include="source\Database.cpp" />
+    <ClCompile Include="source\LoginModule.cpp" />
     <ClCompile Include="source\MainSocket.cpp" />
     <ClCompile Include="source\Session.cpp" />
+    <ClCompile Include="source\SocialModule.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="source\AuthProcessor.h" />
@@ -83,10 +84,15 @@
     <ClInclude Include="source\Auth\symhacks.h" />
     <ClInclude Include="source\BaseSocket.h" />
     <ClInclude Include="source\base_defs.h" />
+    <ClInclude Include="source\ChatModule.h" />
     <ClInclude Include="source\CHBMain.h" />
+    <ClInclude Include="source\Database.h" />
     <ClInclude Include="source\iopackets.h" />
+    <ClInclude Include="source\LoginModule.h" />
     <ClInclude Include="source\MainSocket.h" />
+    <ClInclude Include="source\Module.h" />
     <ClInclude Include="source\Session.h" />
+    <ClInclude Include="source\SocialModule.h" />
     <ClInclude Include="source\Util.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

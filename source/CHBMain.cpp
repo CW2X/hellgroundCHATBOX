@@ -4,6 +4,8 @@ CHBMain::CHBMain()
 {
     firstTick = true;
     initialized = false;
+    m_ret = "";
+    m_comm = "";
 }
 
 void CHBMain::Update(std::string* retstr,std::string* commstr)
@@ -14,13 +16,11 @@ void CHBMain::Update(std::string* retstr,std::string* commstr)
     {
         *retstr = "";
         *commstr = "";
-
         if(firstTick)
         {
             firstTick = false;
             *retstr = std::string("Chatbox v.")+ VERSION +"\r\n";
-            *commstr = std::string("Ln\nCh:xD");
-            
+            *commstr = std::string("Ln\n");
         }
 
         if(!sMainSocket.IsAuthed)
@@ -45,8 +45,14 @@ void CHBMain::Update(std::string* retstr,std::string* commstr)
         else
         {
             sMainSocket.Update(&InPacket,retstr);
-            sSession.Update(&InPacket,retstr);
+            sSession.Update(&InPacket);
         }
+
+        *retstr = m_ret;
+        *commstr = m_comm;
+        m_ret = "";
+        m_comm = "";
+
     }
     catch (std::string error)
     {
@@ -79,9 +85,19 @@ void CHBMain::send_out_pack(out_pack* packet)
     sMainSocket.send_out_pack(packet);
 }
 
-void Session::send_out_pack()
+void Module::send_out_pack()
 {
     sCHBMain->send_out_pack(&OuPack);
+}
+
+void Module::print(std::string s)
+{
+    sCHBMain->print(s);
+}
+
+void Module::command(std::string s)
+{
+    sCHBMain->command(s);
 }
 
 extern "C"

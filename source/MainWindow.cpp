@@ -49,6 +49,19 @@ void MainWindow::BackgroundThread()
             {
                 label1->Text = gcnew String((sub.substr(3,sub.length()-3) + ":").c_str());
             }
+            else if (sub.substr(0,4) == "FrAN")
+            {
+                FriendsListbox->Items->Insert(0,gcnew String(sub.substr(4,sub.length()-4).c_str()));
+            }
+            else if (sub.substr(0,4) == "FrAF")
+            {
+                FriendsListbox->Items->Insert(FriendsListbox->Items->IndexOf(L"===Offline===") + 1
+                    ,gcnew String(sub.substr(4,sub.length()-4).c_str()));
+            }
+            else if (sub.substr(0,3) == "FrR")
+            {
+                FriendsListbox->Items->Remove(gcnew String(sub.substr(3,sub.length()-3).c_str()));
+            }
             else
             {
                 readData = gcnew String("UIC\r\n");

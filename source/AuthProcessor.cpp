@@ -291,7 +291,7 @@ void AuthProcessor::Update(std::string* retstr)
     {
         open_socket();
         send_logon_challenge();
-        *retstr = m_ret;
+        *retstr += m_ret;
         return;
     }
 
@@ -302,7 +302,7 @@ void AuthProcessor::Update(std::string* retstr)
     recv_packet(recvbuff,&datalength);
     if (datalength>0)
         handle_incoming(recvbuff,(uint8)datalength);
-    *retstr = m_ret;
+    *retstr += m_ret;
 }
 
 void AuthProcessor::Initialize(std::string username,std::string password)

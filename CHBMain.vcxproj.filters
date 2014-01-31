@@ -3,18 +3,6 @@
   <ItemGroup>
     <ClCompile Include="source\CHBMain.cpp" />
     <ClCompile Include="source\Session.cpp" />
-    <ClCompile Include="source\LoginHandler.cpp">
-      <Filter>handlers</Filter>
-    </ClCompile>
-    <ClCompile Include="source\CommandLineHandler.cpp">
-      <Filter>handlers</Filter>
-    </ClCompile>
-    <ClCompile Include="source\ChatHandler.cpp">
-      <Filter>handlers</Filter>
-    </ClCompile>
-    <ClCompile Include="source\ChannelHandler.cpp">
-      <Filter>handlers</Filter>
-    </ClCompile>
     <ClCompile Include="source\AuthProcessor.cpp">
       <Filter>sockets</Filter>
     </ClCompile>
@@ -35,6 +23,19 @@
     </ClCompile>
     <ClCompile Include="source\Auth\Sha1.cpp">
       <Filter>auth</Filter>
+    </ClCompile>
+    <ClCompile Include="source\LoginModule.cpp">
+      <Filter>modules</Filter>
+    </ClCompile>
+    <ClCompile Include="source\ChatModule.cpp">
+      <Filter>modules</Filter>
+    </ClCompile>
+    <ClCompile Include="source\CommandLineHandler.cpp" />
+    <ClCompile Include="source\SocialModule.cpp">
+      <Filter>modules</Filter>
+    </ClCompile>
+    <ClCompile Include="source\Database.cpp">
+      <Filter>modules</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -112,16 +113,31 @@
       <Filter>auth</Filter>
     </ClInclude>
     <ClInclude Include="source\CHBMain.h" />
+    <ClInclude Include="source\LoginModule.h">
+      <Filter>modules</Filter>
+    </ClInclude>
+    <ClInclude Include="source\Module.h">
+      <Filter>modules</Filter>
+    </ClInclude>
+    <ClInclude Include="source\ChatModule.h">
+      <Filter>modules</Filter>
+    </ClInclude>
+    <ClInclude Include="source\SocialModule.h">
+      <Filter>modules</Filter>
+    </ClInclude>
+    <ClInclude Include="source\Database.h">
+      <Filter>modules</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="sockets">
       <UniqueIdentifier>{6bf4cf53-1cce-45fb-973c-ded3956a9e3d}</UniqueIdentifier>
     </Filter>
-    <Filter Include="handlers">
-      <UniqueIdentifier>{1091ef38-3457-40a1-9340-fa0b1a801658}</UniqueIdentifier>
-    </Filter>
     <Filter Include="auth">
       <UniqueIdentifier>{7b3b9d40-b935-4436-a2b4-173831e72235}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="modules">
+      <UniqueIdentifier>{c130a5fe-8df1-497e-86e1-9c9f8ab35208}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>
