@@ -14,6 +14,7 @@ void Session::ClUpdate(std::string clData)
             break;
         case 1:
             sLoginModule.send_cmsg_login((uint8)clData.c_str()[0]);
+            cinredirect = 0;
             break;
         }
     }

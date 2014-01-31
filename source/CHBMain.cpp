@@ -20,7 +20,7 @@ void CHBMain::Update(std::string* retstr,std::string* commstr)
         {
             firstTick = false;
             *retstr = std::string("Chatbox v.")+ VERSION +"\r\n";
-            *commstr = std::string("Ln\n");
+            *commstr = std::string("Ln\nCh:Say\n");
         }
 
         if(!sMainSocket.IsAuthed)
@@ -48,8 +48,8 @@ void CHBMain::Update(std::string* retstr,std::string* commstr)
             sSession.Update(&InPacket);
         }
 
-        *retstr = m_ret;
-        *commstr = m_comm;
+        *retstr += m_ret;
+        *commstr += m_comm;
         m_ret = "";
         m_comm = "";
 

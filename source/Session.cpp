@@ -10,10 +10,10 @@ void Session::Update(inc_pack* InPack)
     switch(InPack->gc())
     {
     case 0: break;
-    case 0x003B: cinredirect = 1;    //SMSG_CHAR_ENUM
-    case 0x01EE:                     //SMSG_AUTH_RESPONSE
-    case 0x0236:                     //SMSG_LOGIN_VERIFY_WORLD
-        sLoginModule.Handle(InPack); break;
+    case 0x003B: sLoginModule.Handle(InPack); cinredirect = 1; break; //SMSG_CHAR_ENUM
+    case 0x01EE: sLoginModule.Handle(InPack); break;                  //SMSG_AUTH_RESPONSE
+    case 0x0236: sLoginModule.Handle(InPack);                         //SMSG_LOGIN_VERIFY_WORLD
+        ClUpdate("/join world"); break; 
 
     case 0x0096: //SMSG_MESSAGECHAT
     case 0x0099: //SMSG_CHANNEL_NOTIFY

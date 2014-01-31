@@ -1,5 +1,6 @@
 #include "LoginModule.h"
 #include "Util.h"
+#include "Database.h"
 
 void LoginModule::Handle(inc_pack* InPack)
 {
@@ -72,4 +73,5 @@ void LoginModule::send_cmsg_login(uint8 i)
     OuPack << characters[i].guid;
     OuPack << (uint32)0;
     send_out_pack();
+    sDB->ishordeplayer = (1 << characters[i].race) & 1380? true : false;
 }

@@ -4,9 +4,10 @@
 
 ChatModule::ChatModule()
 {
+    lang = 0;
     for(uint8 i=0;i<9;i++)
         channelson[i] = false;
-    activechannel = 1;
+    activechannel = 21;
 }
 
 void ChatModule::Handle(inc_pack* InPack)
@@ -28,7 +29,6 @@ void ChatModule::Handle(inc_pack* InPack)
 void ChatModule::Command(std::string cmd,std::string args)
 {
     uint8 space;
-
     if (cmd == "msg")
         return send_cmsg_messagechat(args);
 
@@ -37,6 +37,7 @@ void ChatModule::Command(std::string cmd,std::string args)
         activechannel = 21;
         if(args != "")
             send_cmsg_messagechat(args);
+        command("Ch:Say\n");
         return;
     }
 
@@ -45,6 +46,7 @@ void ChatModule::Command(std::string cmd,std::string args)
         activechannel = 26;
         if(args != "")
             send_cmsg_messagechat(args);
+        command("Ch:Yell\n");
         return;
     }
 
@@ -53,6 +55,7 @@ void ChatModule::Command(std::string cmd,std::string args)
         activechannel = 24;
         if(args != "")
             send_cmsg_messagechat(args);
+        command("Ch:Guild\n");
         return;
     }
 
@@ -61,6 +64,7 @@ void ChatModule::Command(std::string cmd,std::string args)
         activechannel = 25;
         if(args != "")
             send_cmsg_messagechat(args);
+        command("Ch:Officer\n");
         return;
     }
 
@@ -77,6 +81,7 @@ void ChatModule::Command(std::string cmd,std::string args)
             std::string what = args.substr(space+1,args.size() - space +1);
             send_cmsg_messagechat(what);
         }
+        command("Ch:Whisper "+whisptarget + "\n");
         return;
     }
 
@@ -85,6 +90,7 @@ void ChatModule::Command(std::string cmd,std::string args)
         activechannel = 27;
         if(args != "")
             send_cmsg_messagechat(args);
+        command("Ch:Whisper "+whisptarget + "\n");
         return;
     }
 
@@ -104,11 +110,12 @@ void ChatModule::Command(std::string cmd,std::string args)
         return;
     }
 
-    if(cmd[0] >'0' && cmd[0] <='9' && cmd[1] == 0x00)
+    if(cmd[0] >'0' && cmd[0] <='9')
     {
         activechannel = (uint8)cmd[0] - 48;
         if(args != "")
             send_cmsg_messagechat(args);
+        command(string_format("Ch:[%s]\n",channels[activechannel-1].c_str()));
         return;
     }  
 }
@@ -135,7 +142,7 @@ void ChatModule::send_cmsg_join_channel(std::string name)
     OuPack << (uint8)0;
     channels[channelid] = name;
     channelson[channelid] = true;
-    print("Joining channel " + name + " [" + utostr(channelid+1) + "]\r\n");
+    print(string_format("Joining channel %s [%u]\r\n",name.c_str(),channelid+1));
     send_out_pack();
 }
 
@@ -148,7 +155,7 @@ void ChatModule::send_cmsg_leave_channel(uint8 no)
     }
     if (channelson[no-1] == false)
         return;
-    print("leaving channel " + channels[no-1] + " [" + utostr(no) + "]\r\n");
+    print(string_format("leaving channel %s [%u]\r\n",channels[no-1].c_str(),no));
     OuPack.reset (0x0098);
     OuPack << (uint32)0;
     OuPack << channels[no-1];
@@ -176,13 +183,13 @@ void ChatModule::handle_smsg_channel_notify(inc_pack* InPack)
         {
             uint32 guid;
             *InPack >> guid;
-            print(channelname + " :owner changed to " + sDB->Guid_to_name(guid,true) + "\r\n");
+            print(string_format("%s :owner changed to %s\r\n",channelname.c_str(),sDB->Guid_to_name(guid,true).c_str()));
             break;
         }
     case 0x0C:
         break;
     default:
-        print("received notify " + utostr(type) + " for channel " + channelname + "\r\n");
+        print(string_format("received notify %u for channel %s",type,channelname.c_str()));
     }
 }
 
@@ -254,18 +261,18 @@ void ChatModule::handle_smsg_messagechat(inc_pack* InPack)
     case 6:     //CHAT_MSG_YELL
     case 17:    //CHAT_MSG_CHANNEL
         {
-            print((std::string)ChatTagIdentifiers[mes.tag] + "[" + mes.channel + "]" + mes.who + " : ");
-            print(((mes.lang <= 2 || mes.lang == 7) ? "":ChatLanguages(mes.lang)) + mes.what + "\r\n");
+            print(string_format("%s[%s]%s : %s%s\r\n",ChatTagIdentifiers[mes.tag],mes.channel.c_str(),mes.who.c_str(),
+                ((mes.lang <= 2 || mes.lang == 7) ? "":ChatLanguages(mes.lang)),mes.what.c_str()));
             break;
         }
     case 7:     //CHAT_MSG_WHISPER
         {
-            print(ChatTagIdentifiers[mes.tag] + mes.who + " whispers : " + mes.what + "\r\n");
+            print(string_format("%s%s whispers: %s\r\n",ChatTagIdentifiers[mes.tag],mes.who.c_str(),mes.what.c_str()));
             break;
         }
     case 9:     //CHAT_MSG_REPLY
         {
-            print("To " + mes.who + " : " + mes.what + "\r\n");
+            print(string_format("To %s : %s\r\n",mes.who.c_str(),mes.what.c_str()));
             break;
         }
     case 0:     //CHAT_MSG_SYSTEM
@@ -275,7 +282,7 @@ void ChatModule::handle_smsg_messagechat(inc_pack* InPack)
         }
     default:
         {
-            print("message type " + utostr(mes.type) + " : " + mes.what + "\r\n");
+            print(string_format("message type %u : %s\r\n",mes.type,mes.what.c_str()));
             break;
         }
     }
@@ -312,13 +319,9 @@ char* ChatModule::ChatLanguages(uint32 lang)
 void ChatModule::send_cmsg_messagechat(std::string data)
 {
     uint32 mtype;
-    uint32 lang;
 
-    if (ishordeplayer)
-        lang = 1;
-    else
-        lang = 7;
-
+    if (lang == 0)
+        lang = sDB->ishordeplayer ? 1:7;
     
     if( activechannel <20)
     {

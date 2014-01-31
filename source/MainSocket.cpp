@@ -73,7 +73,7 @@ void MainSocket::Update(inc_pack* packet,std::string* retstr)
         curs = (uint16)(((uint8)header[0] << 8) | (uint8)header[1]) - 2;
         
         if(curs > BUFFER_SIZE_IN)
-            throw "possible Buffer Overflow! Interrupting\r\n";
+            throw string_format("possible Buffer Overflow! Interrupting (%u %u)\r\n",curc,curs);
 
         datalength = curs;
         if (datalength)
@@ -88,7 +88,7 @@ void MainSocket::Update(inc_pack* packet,std::string* retstr)
         
         if(IsIgnoredOpcode(curc))
             return;
-
+        
         packet->reset(curs,curc);
         packet->set(recvbuff);
     }
@@ -108,6 +108,7 @@ void MainSocket::Update(inc_pack* packet,std::string* retstr)
         loaded = 0;
         if(IsIgnoredOpcode(curc))
             return;
+        
         packet->reset(curs,curc);
     }
 }

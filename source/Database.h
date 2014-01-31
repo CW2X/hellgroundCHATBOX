@@ -37,7 +37,7 @@ public:
     std::map<uint32,PlayerInfo> PlayersInfoMap;
     std::list<uint32> RequestedPlayers;
     std::map<uint32,FriendInfo> FriendInfoMap;
-    
+    bool ishordeplayer;
 private:
     Database() {};
     void send_cmsg_name_query(uint32 guid);

@@ -43,7 +43,7 @@ private:
     bool            channelson[9];
     uint8           activechannel;
     std::string     whisptarget;
-    bool            ishordeplayer;
+    uint32          lang;
 };
 
 #endif
