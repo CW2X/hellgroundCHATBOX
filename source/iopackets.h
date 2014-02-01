@@ -27,7 +27,7 @@ public:
             data[k+offset]=(uint8)buff[k];
     }
 
-    void skip(uint8 i)
+    void skip(uint16 i)
     {
         pos +=i; return;
     }

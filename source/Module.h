@@ -8,12 +8,13 @@ class Module
 {
 public:
     virtual void Handle(inc_pack* InPack) {};
-    virtual void Command(std::string command,std::string args) {};
+    virtual void Command(std::string cmd,std::string args) {};
 protected:
     out_pack OuPack;
     void send_out_pack();
     void print(std::string s);
-    void command(std::string s);
+    void print(const char* c) {print(std::string(c));};
+    void i_comm(std::string s);
 };
 
 #endif

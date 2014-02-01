@@ -10,7 +10,6 @@ MainSocket::MainSocket()
 void MainSocket::Update(inc_pack* packet,std::string* retstr)
 {
     m_ret = "";
-    char recvbuff[BUFFER_SIZE_IN];
     uint16 datalength;
     packet->reset();
 
@@ -178,6 +177,7 @@ bool MainSocket::IsIgnoredOpcode(uint16 opcode)
     case 0x0051: //SMSG_NAME_QUERY_RESPONSE
     case 0x0067: //SMSG_CONTACT_LIST
     case 0x0068: //SMSG_FRIEND_STATUS
+    case 0x008A: //SMSG_GUILD_ROSTER
     case 0x0096: //SMSG_MESSAGECHAT
     case 0x0099: //SMSG_CHANNEL_NOTIFY
     case 0x009B: //SMSG_CHANNEL_LIST

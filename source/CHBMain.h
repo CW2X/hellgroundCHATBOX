@@ -19,7 +19,7 @@ public:
     void Initialize(std::string username,std::string password);
     void send_out_pack(out_pack* packet);
     void print(std::string s) {m_ret += s;};
-    void command(std::string s) {m_comm += s;};
+    void i_comm(std::string s) {m_comm += s;};
 private:
     CHBMain();
     

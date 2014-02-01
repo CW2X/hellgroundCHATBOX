@@ -28,5 +28,7 @@ private:
     uint16      curs,curc,loaded;
     char        header[4];
     uint8       header_loaded;
+    
+    char recvbuff[BUFFER_SIZE_IN];
 };
 #endif

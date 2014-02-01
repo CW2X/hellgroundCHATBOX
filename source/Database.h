@@ -23,7 +23,7 @@ class Database : public Module
 {
 public:
     void Handle(inc_pack* InPack);
-    void Command(std::string command,std::string args) {};
+    void Command(std::string cmd,std::string args) {};
 
     static Database* getInstance()
     {
@@ -35,8 +35,9 @@ public:
     void handle_smsg_name_query_response(inc_pack* InPack);
 
     std::map<uint32,PlayerInfo> PlayersInfoMap;
-    std::list<uint32> RequestedPlayers;
+    std::list<uint32>           RequestedPlayers;
     std::map<uint32,FriendInfo> FriendInfoMap;
+    std::list<uint32>           OnlineGuildMembers;
     bool ishordeplayer;
 private:
     Database() {};

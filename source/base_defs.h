@@ -7,7 +7,7 @@
 #define AUTH_PORT "3724"
 #define SERVER_ADDRESS "logon.hellground.net"
 #define FAKE_OS 'Cha'
-#define BUFFER_SIZE_IN  16384
+#define BUFFER_SIZE_IN  32768
 #define BUFFER_SIZE_OUT 256
 
 #define VERSION "0.2.1"

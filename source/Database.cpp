@@ -57,7 +57,9 @@ void Database::handle_smsg_name_query_response(inc_pack *InPack)
 
     std::map<uint32,FriendInfo>::const_iterator itr = FriendInfoMap.find(guid);
     if (itr != FriendInfoMap.end())
-    {
-        command(string_format("%s%s\n",FriendInfoMap[guid].status ? "FrAN" : "FrAF",PlayersInfoMap[guid].name.c_str()));
-    }
+        i_comm(string_format("%s%s\n",FriendInfoMap[guid].status ? "FrAN" : "FrAF",PlayersInfoMap[guid].name.c_str()));
+    return;
+    for (std::list<uint32>::const_iterator itr = OnlineGuildMembers.begin(); itr !=OnlineGuildMembers.end();itr++)
+        if(*itr == guid)
+            i_comm(string_format("GuR%s\nGuA%s\n",PlayersInfoMap[guid].name.c_str(),PlayersInfoMap[guid].name.c_str()));
 }

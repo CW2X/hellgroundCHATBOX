@@ -47,7 +47,8 @@ void MainWindow::BackgroundThread()
             }
             else if (sub.substr(0,3) == "Ch:")
             {
-                label1->Text = gcnew String((sub.substr(3,sub.length()-3) + ":").c_str());
+                channelLabel = gcnew String((sub.substr(3,sub.length()-3) + ":").c_str());
+                set_channel_label();
             }
             else if (sub.substr(0,4) == "FrAN")
             {
@@ -63,6 +64,14 @@ void MainWindow::BackgroundThread()
             else if (sub.substr(0,3) == "FrR")
             {
                 FriendsListbox->Items->Remove(gcnew String(sub.substr(3,sub.length()-3).c_str()));
+            }
+            else if (sub.substr(0,3) == "GuA")
+            {
+                GuildListbox->Items->Add(gcnew String(sub.substr(3,sub.length()-3).c_str()));
+            }
+            else if (sub.substr(0,3) == "GuR")
+            {
+                GuildListbox->Items->Remove(gcnew String(sub.substr(3,sub.length()-3).c_str()));
             }
             else
             {
@@ -85,6 +94,14 @@ void MainWindow::print_msg()
         viewtext->Select(viewtext->TextLength-1,0);
         viewtext->ScrollToCaret();
     }
+}
+
+void MainWindow::set_channel_label()
+{
+    if (this->InvokeRequired)
+        this->Invoke(gcnew MethodInvoker(this,&chb::MainWindow::set_channel_label));
+    else
+        channel_label->Text = channelLabel;
 }
 
 void MainWindow::LoginFormReturn(std::string username,std::string password)

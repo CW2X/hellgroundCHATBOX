@@ -56,17 +56,26 @@ void Session::handle_Cl(std::string clData)
     if(cmd[0] >'0' && cmd[0] <='9' && cmd[1] == 0x00)
     {
         sChatModule.Command(cmd,args);
+        return;
     }
 
-    if (cmd == "say" || cmd == "s" || cmd == "yell" || cmd == "y" || cmd == "guild" || cmd == "g" ||
+    if(cmd == "say" || cmd == "s" || cmd == "yell" || cmd == "y" || cmd == "guild" || cmd == "g" ||
         cmd == "officer" || cmd == "o" || cmd == "r" || cmd == "join" || cmd == "leave")
     {
         sChatModule.Command(cmd,args);
+        return;
     }
 
     if(cmd == "w" && args != "")
     {
         sChatModule.Command(cmd,args);
+        return;
+    }
+
+    if(cmd == "loadguild")
+    {
+        sSocialModule.Command(cmd,args);
+        return;
     }
 
 }

@@ -95,9 +95,9 @@ void Module::print(std::string s)
     sCHBMain->print(s);
 }
 
-void Module::command(std::string s)
+void Module::i_comm(std::string s)
 {
-    sCHBMain->command(s);
+    sCHBMain->i_comm(s);
 }
 
 extern "C"

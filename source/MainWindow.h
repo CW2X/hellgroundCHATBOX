@@ -40,27 +40,28 @@ namespace chb {
 			}
 		}
         void print_msg();
+        void set_channel_label();
         void BackgroundThread();
         String^ readData;
-	
-    private:
-        System::Windows::Forms::TextBox^  viewtext;
-        System::Windows::Forms::TextBox^  inputtext;
+        String^ channelLabel;
 
-		System::ComponentModel::Container ^components;
-        Thread^ backThread;
+	    Thread^ backThread;
         bool ExitingProgram;
         mainDllUpdateType mainDllUpdateFunction;
         mainDllInputType mainDllInputFunction;
-
-        System::Windows::Forms::Label^  label1;
+    private:
+        System::Windows::Forms::TextBox^  viewtext;
+        System::Windows::Forms::TextBox^  inputtext;
+		System::ComponentModel::Container ^components;
+        System::Windows::Forms::Label^  channel_label;
         System::Windows::Forms::TabControl^  tabControl;
         System::Windows::Forms::TabPage^  tabPageFriends;
         System::Windows::Forms::TabPage^  tabPageGuild;
         System::Windows::Forms::Button^  buttonRemoveFriend;
         System::Windows::Forms::Button^  buttonAddFriend;
         System::Windows::Forms::ListBox^  FriendsListbox;
-        System::Windows::Forms::TabPage^  tabPageSettings;
+    private: System::Windows::Forms::ListBox^  GuildListbox;
+             System::Windows::Forms::TabPage^  tabPageSettings;
 
 #pragma region Windows Form Designer generated code
 		/// <summary>
@@ -71,7 +72,7 @@ namespace chb {
 		{
             this->viewtext = (gcnew System::Windows::Forms::TextBox());
             this->inputtext = (gcnew System::Windows::Forms::TextBox());
-            this->label1 = (gcnew System::Windows::Forms::Label());
+            this->channel_label = (gcnew System::Windows::Forms::Label());
             this->tabControl = (gcnew System::Windows::Forms::TabControl());
             this->tabPageFriends = (gcnew System::Windows::Forms::TabPage());
             this->buttonRemoveFriend = (gcnew System::Windows::Forms::Button());
@@ -79,8 +80,10 @@ namespace chb {
             this->FriendsListbox = (gcnew System::Windows::Forms::ListBox());
             this->tabPageGuild = (gcnew System::Windows::Forms::TabPage());
             this->tabPageSettings = (gcnew System::Windows::Forms::TabPage());
+            this->GuildListbox = (gcnew System::Windows::Forms::ListBox());
             this->tabControl->SuspendLayout();
             this->tabPageFriends->SuspendLayout();
+            this->tabPageGuild->SuspendLayout();
             this->SuspendLayout();
             // 
             // viewtext
@@ -110,15 +113,15 @@ namespace chb {
             this->inputtext->KeyPress += gcnew System::Windows::Forms::KeyPressEventHandler(this, &MainWindow::inputtext_KeyPress);
             this->inputtext->PreviewKeyDown += gcnew System::Windows::Forms::PreviewKeyDownEventHandler(this, &MainWindow::inputtext_PreviewKeyDown);
             // 
-            // label1
+            // channel_label
             // 
-            this->label1->AutoSize = true;
-            this->label1->Location = System::Drawing::Point(9, 263);
-            this->label1->Name = L"label1";
-            this->label1->Size = System::Drawing::Size(48, 13);
-            this->label1->TabIndex = 3;
-            this->label1->Text = L"channel:";
-            this->label1->TextAlign = System::Drawing::ContentAlignment::TopRight;
+            this->channel_label->AutoSize = true;
+            this->channel_label->Location = System::Drawing::Point(9, 263);
+            this->channel_label->Name = L"channel_label";
+            this->channel_label->Size = System::Drawing::Size(48, 13);
+            this->channel_label->TabIndex = 3;
+            this->channel_label->Text = L"channel:";
+            this->channel_label->TextAlign = System::Drawing::ContentAlignment::TopRight;
             // 
             // tabControl
             // 
@@ -181,6 +184,7 @@ namespace chb {
             // 
             // tabPageGuild
             // 
+            this->tabPageGuild->Controls->Add(this->GuildListbox);
             this->tabPageGuild->Location = System::Drawing::Point(4, 22);
             this->tabPageGuild->Name = L"tabPageGuild";
             this->tabPageGuild->Padding = System::Windows::Forms::Padding(3);
@@ -199,11 +203,20 @@ namespace chb {
             this->tabPageSettings->Text = L"Settings";
             this->tabPageSettings->UseVisualStyleBackColor = true;
             // 
+            // GuildListbox
+            // 
+            this->GuildListbox->FormattingEnabled = true;
+            this->GuildListbox->IntegralHeight = false;
+            this->GuildListbox->Location = System::Drawing::Point(0, 0);
+            this->GuildListbox->Name = L"GuildListbox";
+            this->GuildListbox->Size = System::Drawing::Size(139, 242);
+            this->GuildListbox->TabIndex = 0;
+            // 
             // MainWindow
             // 
             this->ClientSize = System::Drawing::Size(652, 292);
             this->Controls->Add(this->tabControl);
-            this->Controls->Add(this->label1);
+            this->Controls->Add(this->channel_label);
             this->Controls->Add(this->inputtext);
             this->Controls->Add(this->viewtext);
             this->MaximizeBox = false;
@@ -213,6 +226,7 @@ namespace chb {
             this->FormClosed += gcnew System::Windows::Forms::FormClosedEventHandler(this, &MainWindow::MainWindow_FormClosed);
             this->tabControl->ResumeLayout(false);
             this->tabPageFriends->ResumeLayout(false);
+            this->tabPageGuild->ResumeLayout(false);
             this->ResumeLayout(false);
             this->PerformLayout();
 

@@ -22,7 +22,7 @@ class ChatModule : public Module
 public:
     ChatModule();
     void Handle(inc_pack* InPack);
-    void Command(std::string command,std::string args);
+    void Command(std::string cmd,std::string args);
 
 private:
     void handle_smsg_messagechat(inc_pack* InPack);

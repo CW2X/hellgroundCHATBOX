@@ -37,7 +37,7 @@ void ChatModule::Command(std::string cmd,std::string args)
         activechannel = 21;
         if(args != "")
             send_cmsg_messagechat(args);
-        command("Ch:Say\n");
+        i_comm("Ch:Say\n");
         return;
     }
 
@@ -46,7 +46,7 @@ void ChatModule::Command(std::string cmd,std::string args)
         activechannel = 26;
         if(args != "")
             send_cmsg_messagechat(args);
-        command("Ch:Yell\n");
+        i_comm("Ch:Yell\n");
         return;
     }
 
@@ -55,7 +55,7 @@ void ChatModule::Command(std::string cmd,std::string args)
         activechannel = 24;
         if(args != "")
             send_cmsg_messagechat(args);
-        command("Ch:Guild\n");
+        i_comm("Ch:Guild\n");
         return;
     }
 
@@ -64,7 +64,7 @@ void ChatModule::Command(std::string cmd,std::string args)
         activechannel = 25;
         if(args != "")
             send_cmsg_messagechat(args);
-        command("Ch:Officer\n");
+        i_comm("Ch:Officer\n");
         return;
     }
 
@@ -81,7 +81,7 @@ void ChatModule::Command(std::string cmd,std::string args)
             std::string what = args.substr(space+1,args.size() - space +1);
             send_cmsg_messagechat(what);
         }
-        command("Ch:Whisper "+whisptarget + "\n");
+        i_comm("Ch:Whisper "+whisptarget + "\n");
         return;
     }
 
@@ -90,7 +90,7 @@ void ChatModule::Command(std::string cmd,std::string args)
         activechannel = 27;
         if(args != "")
             send_cmsg_messagechat(args);
-        command("Ch:Whisper "+whisptarget + "\n");
+        i_comm("Ch:Whisper "+whisptarget + "\n");
         return;
     }
 
@@ -98,7 +98,7 @@ void ChatModule::Command(std::string cmd,std::string args)
     {
         if(args != "")
             return send_cmsg_join_channel(args);
-        printf("wrong channel name\r\n");
+        print("wrong channel name\r\n");
         return;
     }
 
@@ -106,7 +106,7 @@ void ChatModule::Command(std::string cmd,std::string args)
     {
         if(args != "")
             return send_cmsg_leave_channel((uint8)args.c_str()[0]-48);
-        printf("usage: /leave channel number\r\n");
+        print("usage: /leave channel number\r\n");
         return;
     }
 
@@ -115,7 +115,7 @@ void ChatModule::Command(std::string cmd,std::string args)
         activechannel = (uint8)cmd[0] - 48;
         if(args != "")
             send_cmsg_messagechat(args);
-        command(string_format("Ch:[%s]\n",channels[activechannel-1].c_str()));
+        i_comm(string_format("Ch:[%s]\n",channels[activechannel-1].c_str()));
         return;
     }  
 }
@@ -131,7 +131,7 @@ void ChatModule::send_cmsg_join_channel(std::string name)
 
     if (channelid == 9)
     {
-        print("too many chanels, leave one to join next");
+        print("too many chanels, leave one to join next\r\n");
         return;
     }
     OuPack.reset(0x097);
@@ -189,7 +189,7 @@ void ChatModule::handle_smsg_channel_notify(inc_pack* InPack)
     case 0x0C:
         break;
     default:
-        print(string_format("received notify %u for channel %s",type,channelname.c_str()));
+        print(string_format("received notify %u for channel %s\r\n",type,channelname.c_str()));
     }
 }
 

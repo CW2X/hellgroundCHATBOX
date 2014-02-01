@@ -20,7 +20,7 @@ class LoginModule : public Module
 {
 public:
     void Handle(inc_pack* InPack);
-    void Command(std::string command,std::string args) {};
+    void Command(std::string cmd,std::string args) {};
 
     void send_cmsg_login(uint8 i);
 private:

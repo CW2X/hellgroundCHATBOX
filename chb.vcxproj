@@ -79,7 +79,7 @@
       <EntryPointSymbol>main</EntryPointSymbol>
     </Link>
     <PostBuildEvent>
-      <Command>if exist $(TargetPath) move $(TargetPath) $(OutDir)..</Command>
+      <Command>if exist $(TargetPath) copy $(TargetPath) $(OutDir)..</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
