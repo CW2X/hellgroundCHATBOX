@@ -177,6 +177,7 @@ bool MainSocket::IsIgnoredOpcode(uint16 opcode)
     case 0x003B: //SMSG_CHAR_ENUM
     case 0x0051: //SMSG_NAME_QUERY_RESPONSE
     case 0x0067: //SMSG_CONTACT_LIST
+    case 0x0068: //SMSG_FRIEND_STATUS
     case 0x0096: //SMSG_MESSAGECHAT
     case 0x0099: //SMSG_CHANNEL_NOTIFY
     case 0x009B: //SMSG_CHANNEL_LIST

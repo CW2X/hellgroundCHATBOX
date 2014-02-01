@@ -10,6 +10,7 @@ public:
     void Command(std::string command,std::string args) {};
 private:
     void handle_smsg_contact_list(inc_pack* InPack);
+    void handle_smsg_friend_status(inc_pack* InPack);
 };
 
 #endif

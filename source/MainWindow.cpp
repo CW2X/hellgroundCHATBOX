@@ -51,10 +51,12 @@ void MainWindow::BackgroundThread()
             }
             else if (sub.substr(0,4) == "FrAN")
             {
+                FriendsListbox->Items->Remove(gcnew String(sub.substr(4,sub.length()-4).c_str()));
                 FriendsListbox->Items->Insert(0,gcnew String(sub.substr(4,sub.length()-4).c_str()));
             }
             else if (sub.substr(0,4) == "FrAF")
             {
+                FriendsListbox->Items->Remove(gcnew String(sub.substr(4,sub.length()-4).c_str()));
                 FriendsListbox->Items->Insert(FriendsListbox->Items->IndexOf(L"===Offline===") + 1
                     ,gcnew String(sub.substr(4,sub.length()-4).c_str()));
             }

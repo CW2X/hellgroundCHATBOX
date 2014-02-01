@@ -25,6 +25,7 @@ void Session::Update(inc_pack* InPack)
         sChatModule.Handle(InPack); break;
     
     case 0x0067: //SMSG_CONTACT_LIST
+    case 0x0068: //SMSG_FRIEND_STATUS
         sSocialModule.Handle(InPack); break;
 
     case 0x0051: //SMSG_NAME_QUERY_RESPONSE
