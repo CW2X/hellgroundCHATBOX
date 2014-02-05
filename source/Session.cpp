@@ -29,6 +29,7 @@ void Session::Update(inc_pack* InPack)
     case 0x0067: //SMSG_CONTACT_LIST
     case 0x0068: //SMSG_FRIEND_STATUS
     case 0x008A: //SMSG_GUILD_ROSTER
+    case 0x0092: //SMSG_GUILD_EVENT
         sSocialModule.Handle(InPack); break;
 
     case 0x0051: //SMSG_NAME_QUERY_RESPONSE

@@ -9,6 +9,7 @@ void SocialModule::Handle(inc_pack* InPack)
     case 0x0067: handle_smsg_contact_list(InPack);break; //SMSG_CONTACT_LIST
     case 0x0068: handle_smsg_friend_status(InPack);break;//SMSG_FRIEND_STATUS
     case 0x008A: handle_smsg_guild_roster(InPack);break; //SMSG_GUILD_ROSTER
+    case 0x0092: handle_smsg_guild_event(InPack);break;  //SMSG_GUILD_EVENT
     default:
         break;
     }
@@ -107,8 +108,53 @@ void SocialModule::handle_smsg_guild_roster(inc_pack* InPack)
             InPack->skip(4);
         *InPack >> spam >> spam;
         if(online)
-            i_comm(string_format("GuA%s %u\n",name.c_str(),guid));
+        {
+            i_comm(string_format("GuA%s\n",name.c_str()));
+            sDB->OnlineGuildMembers.push_back(guid);
+        }
         sDB->Guid_to_name(guid,false);
+    }
+}
+
+void SocialModule::handle_smsg_guild_event(inc_pack* InPack)
+{
+    uint8 Event;
+    *InPack >> Event;
+    switch (Event)
+    {
+    case GE_SIGNED_ON:
+        {
+            std::string name;
+            uint32 guid;
+
+            InPack->skip(1);
+            *InPack >> name;
+            *InPack >> guid;
+            InPack->skip(4);
+            
+            sDB->OnlineGuildMembers.push_back(guid);
+            i_comm(string_format("GuR%s\nGuA%s\n",name.c_str(),name.c_str()));
+            print(string_format("[%s] has come online\r\n",name.c_str()));
+            sDB->Guid_to_name(guid,false);
+            break;
+        }
+    case GE_SIGNED_OFF:
+        {
+            std::string name;
+            uint32 guid;
+
+            InPack->skip(1);
+            *InPack >> name;
+            *InPack >> guid;
+            InPack->skip(4);
+
+            sDB->OnlineGuildMembers.remove(guid);
+            i_comm(string_format("GuR%s\n",name.c_str()));
+            print(string_format("[%s] has gone offline\r\n",name.c_str()));
+            break;
+        }
+    default:
+        print(string_format("Guild event %u\r\n",Event));
     }
 }
 

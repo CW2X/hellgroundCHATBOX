@@ -178,6 +178,7 @@ bool MainSocket::IsIgnoredOpcode(uint16 opcode)
     case 0x0067: //SMSG_CONTACT_LIST
     case 0x0068: //SMSG_FRIEND_STATUS
     case 0x008A: //SMSG_GUILD_ROSTER
+    case 0x0092: //SMSG_GUILD_EVENT
     case 0x0096: //SMSG_MESSAGECHAT
     case 0x0099: //SMSG_CHANNEL_NOTIFY
     case 0x009B: //SMSG_CHANNEL_LIST
