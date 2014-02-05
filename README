@@ -1,6 +1,6 @@
 project chb - chatbox client for World of Warcraft:The Burning Crusade 2.4.3
 created by koostosh (koostosh@gmail.com) with wide support from Hellground team
-distribution 0.2.0 under GNU General Public Licence
+distribution 0.3.0 under GNU General Public Licence
 
 based on WoW:TBC 2.4.3 server code from MaNGOS, Trinity and Hellground projets
 (http://www.mangosproject.org/ ; http://www.trinitycore.org/ ; http://www.hellground.net)

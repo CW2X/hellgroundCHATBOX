@@ -57,10 +57,12 @@ namespace chb {
         System::Windows::Forms::TabControl^  tabControl;
         System::Windows::Forms::TabPage^  tabPageFriends;
         System::Windows::Forms::TabPage^  tabPageGuild;
-        System::Windows::Forms::Button^  buttonRemoveFriend;
-        System::Windows::Forms::Button^  buttonAddFriend;
+
+
         System::Windows::Forms::ListBox^  FriendsListbox;
     private: System::Windows::Forms::ListBox^  GuildListbox;
+
+    private: System::Windows::Forms::CheckBox^  scrollingCheckbox;
              System::Windows::Forms::TabPage^  tabPageSettings;
 
 #pragma region Windows Form Designer generated code
@@ -75,15 +77,15 @@ namespace chb {
             this->channel_label = (gcnew System::Windows::Forms::Label());
             this->tabControl = (gcnew System::Windows::Forms::TabControl());
             this->tabPageFriends = (gcnew System::Windows::Forms::TabPage());
-            this->buttonRemoveFriend = (gcnew System::Windows::Forms::Button());
-            this->buttonAddFriend = (gcnew System::Windows::Forms::Button());
             this->FriendsListbox = (gcnew System::Windows::Forms::ListBox());
             this->tabPageGuild = (gcnew System::Windows::Forms::TabPage());
             this->GuildListbox = (gcnew System::Windows::Forms::ListBox());
             this->tabPageSettings = (gcnew System::Windows::Forms::TabPage());
+            this->scrollingCheckbox = (gcnew System::Windows::Forms::CheckBox());
             this->tabControl->SuspendLayout();
             this->tabPageFriends->SuspendLayout();
             this->tabPageGuild->SuspendLayout();
+            this->tabPageSettings->SuspendLayout();
             this->SuspendLayout();
             // 
             // viewtext
@@ -140,8 +142,6 @@ namespace chb {
             // 
             // tabPageFriends
             // 
-            this->tabPageFriends->Controls->Add(this->buttonRemoveFriend);
-            this->tabPageFriends->Controls->Add(this->buttonAddFriend);
             this->tabPageFriends->Controls->Add(this->FriendsListbox);
             this->tabPageFriends->Location = System::Drawing::Point(4, 22);
             this->tabPageFriends->Name = L"tabPageFriends";
@@ -151,26 +151,6 @@ namespace chb {
             this->tabPageFriends->Text = L"Friends";
             this->tabPageFriends->UseVisualStyleBackColor = true;
             // 
-            // buttonRemoveFriend
-            // 
-            this->buttonRemoveFriend->Anchor = static_cast<System::Windows::Forms::AnchorStyles>((System::Windows::Forms::AnchorStyles::Bottom | System::Windows::Forms::AnchorStyles::Left));
-            this->buttonRemoveFriend->Location = System::Drawing::Point(72, 213);
-            this->buttonRemoveFriend->Name = L"buttonRemoveFriend";
-            this->buttonRemoveFriend->Size = System::Drawing::Size(61, 23);
-            this->buttonRemoveFriend->TabIndex = 2;
-            this->buttonRemoveFriend->Text = L"Remove";
-            this->buttonRemoveFriend->UseVisualStyleBackColor = true;
-            // 
-            // buttonAddFriend
-            // 
-            this->buttonAddFriend->Anchor = static_cast<System::Windows::Forms::AnchorStyles>((System::Windows::Forms::AnchorStyles::Bottom | System::Windows::Forms::AnchorStyles::Left));
-            this->buttonAddFriend->Location = System::Drawing::Point(6, 213);
-            this->buttonAddFriend->Name = L"buttonAddFriend";
-            this->buttonAddFriend->Size = System::Drawing::Size(61, 23);
-            this->buttonAddFriend->TabIndex = 1;
-            this->buttonAddFriend->Text = L"Add";
-            this->buttonAddFriend->UseVisualStyleBackColor = true;
-            // 
             // FriendsListbox
             // 
             this->FriendsListbox->Anchor = static_cast<System::Windows::Forms::AnchorStyles>(((System::Windows::Forms::AnchorStyles::Top | System::Windows::Forms::AnchorStyles::Bottom) 
@@ -179,7 +159,7 @@ namespace chb {
             this->FriendsListbox->IntegralHeight = false;
             this->FriendsListbox->Location = System::Drawing::Point(0, 0);
             this->FriendsListbox->Name = L"FriendsListbox";
-            this->FriendsListbox->Size = System::Drawing::Size(139, 207);
+            this->FriendsListbox->Size = System::Drawing::Size(139, 242);
             this->FriendsListbox->TabIndex = 0;
             this->FriendsListbox->TabStop = false;
             this->FriendsListbox->DoubleClick += gcnew System::EventHandler(this, &MainWindow::FriendsListbox_DoubleClick);
@@ -207,6 +187,7 @@ namespace chb {
             // 
             // tabPageSettings
             // 
+            this->tabPageSettings->Controls->Add(this->scrollingCheckbox);
             this->tabPageSettings->Location = System::Drawing::Point(4, 22);
             this->tabPageSettings->Name = L"tabPageSettings";
             this->tabPageSettings->Padding = System::Windows::Forms::Padding(3);
@@ -214,6 +195,18 @@ namespace chb {
             this->tabPageSettings->TabIndex = 2;
             this->tabPageSettings->Text = L"Settings";
             this->tabPageSettings->UseVisualStyleBackColor = true;
+            // 
+            // scrollingCheckbox
+            // 
+            this->scrollingCheckbox->AutoSize = true;
+            this->scrollingCheckbox->Checked = true;
+            this->scrollingCheckbox->CheckState = System::Windows::Forms::CheckState::Checked;
+            this->scrollingCheckbox->Location = System::Drawing::Point(6, 3);
+            this->scrollingCheckbox->Name = L"scrollingCheckbox";
+            this->scrollingCheckbox->Size = System::Drawing::Size(100, 17);
+            this->scrollingCheckbox->TabIndex = 0;
+            this->scrollingCheckbox->Text = L"Enable scrolling";
+            this->scrollingCheckbox->UseVisualStyleBackColor = true;
             // 
             // MainWindow
             // 
@@ -230,6 +223,8 @@ namespace chb {
             this->tabControl->ResumeLayout(false);
             this->tabPageFriends->ResumeLayout(false);
             this->tabPageGuild->ResumeLayout(false);
+            this->tabPageSettings->ResumeLayout(false);
+            this->tabPageSettings->PerformLayout();
             this->ResumeLayout(false);
             this->PerformLayout();
 
