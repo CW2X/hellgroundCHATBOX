@@ -79,8 +79,8 @@ namespace chb {
             this->buttonAddFriend = (gcnew System::Windows::Forms::Button());
             this->FriendsListbox = (gcnew System::Windows::Forms::ListBox());
             this->tabPageGuild = (gcnew System::Windows::Forms::TabPage());
-            this->tabPageSettings = (gcnew System::Windows::Forms::TabPage());
             this->GuildListbox = (gcnew System::Windows::Forms::ListBox());
+            this->tabPageSettings = (gcnew System::Windows::Forms::TabPage());
             this->tabControl->SuspendLayout();
             this->tabPageFriends->SuspendLayout();
             this->tabPageGuild->SuspendLayout();
@@ -106,15 +106,16 @@ namespace chb {
             // 
             this->inputtext->Anchor = static_cast<System::Windows::Forms::AnchorStyles>(((System::Windows::Forms::AnchorStyles::Bottom | System::Windows::Forms::AnchorStyles::Left) 
                 | System::Windows::Forms::AnchorStyles::Right));
-            this->inputtext->Location = System::Drawing::Point(85, 260);
+            this->inputtext->Location = System::Drawing::Point(115, 260);
             this->inputtext->Name = L"inputtext";
-            this->inputtext->Size = System::Drawing::Size(402, 20);
+            this->inputtext->Size = System::Drawing::Size(372, 20);
             this->inputtext->TabIndex = 1;
             this->inputtext->KeyPress += gcnew System::Windows::Forms::KeyPressEventHandler(this, &MainWindow::inputtext_KeyPress);
             this->inputtext->PreviewKeyDown += gcnew System::Windows::Forms::PreviewKeyDownEventHandler(this, &MainWindow::inputtext_PreviewKeyDown);
             // 
             // channel_label
             // 
+            this->channel_label->Anchor = static_cast<System::Windows::Forms::AnchorStyles>((System::Windows::Forms::AnchorStyles::Bottom | System::Windows::Forms::AnchorStyles::Left));
             this->channel_label->AutoSize = true;
             this->channel_label->Location = System::Drawing::Point(9, 263);
             this->channel_label->Name = L"channel_label";
@@ -181,6 +182,7 @@ namespace chb {
             this->FriendsListbox->Size = System::Drawing::Size(139, 207);
             this->FriendsListbox->TabIndex = 0;
             this->FriendsListbox->TabStop = false;
+            this->FriendsListbox->DoubleClick += gcnew System::EventHandler(this, &MainWindow::FriendsListbox_DoubleClick);
             // 
             // tabPageGuild
             // 
@@ -193,6 +195,16 @@ namespace chb {
             this->tabPageGuild->Text = L"Guild";
             this->tabPageGuild->UseVisualStyleBackColor = true;
             // 
+            // GuildListbox
+            // 
+            this->GuildListbox->FormattingEnabled = true;
+            this->GuildListbox->IntegralHeight = false;
+            this->GuildListbox->Location = System::Drawing::Point(0, 0);
+            this->GuildListbox->Name = L"GuildListbox";
+            this->GuildListbox->Size = System::Drawing::Size(139, 242);
+            this->GuildListbox->TabIndex = 0;
+            this->GuildListbox->DoubleClick += gcnew System::EventHandler(this, &MainWindow::GuildListbox_DoubleClick);
+            // 
             // tabPageSettings
             // 
             this->tabPageSettings->Location = System::Drawing::Point(4, 22);
@@ -202,15 +214,6 @@ namespace chb {
             this->tabPageSettings->TabIndex = 2;
             this->tabPageSettings->Text = L"Settings";
             this->tabPageSettings->UseVisualStyleBackColor = true;
-            // 
-            // GuildListbox
-            // 
-            this->GuildListbox->FormattingEnabled = true;
-            this->GuildListbox->IntegralHeight = false;
-            this->GuildListbox->Location = System::Drawing::Point(0, 0);
-            this->GuildListbox->Name = L"GuildListbox";
-            this->GuildListbox->Size = System::Drawing::Size(139, 242);
-            this->GuildListbox->TabIndex = 0;
             // 
             // MainWindow
             // 
@@ -263,6 +266,25 @@ namespace chb {
                 mainDllInputFunction(msclr::interop::marshal_as<std::string>(inputtext->Text));
                 inputtext->Text = gcnew System::String("");
             }
+        }
+
+        System::Void FriendsListbox_DoubleClick(System::Object^  sender, System::EventArgs^  e)
+        {
+            String^ s = FriendsListbox->SelectedItem->ToString();
+            if (s == L"===Offline===")
+                return;
+            if (mainDllInputFunction != NULL)
+                mainDllInputFunction("/w " +
+                    msclr::interop::marshal_as<std::string>(s));
+            this->inputtext->Focus();
+        }
+        
+        System::Void GuildListbox_DoubleClick(System::Object^  sender, System::EventArgs^  e)
+        {
+            if (mainDllInputFunction != NULL)
+                mainDllInputFunction("/w " +
+                    msclr::interop::marshal_as<std::string>(GuildListbox->SelectedItem->ToString()));
+            this->inputtext->Focus();
         }
 };
 

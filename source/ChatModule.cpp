@@ -81,6 +81,8 @@ void ChatModule::Command(std::string cmd,std::string args)
             std::string what = args.substr(space+1,args.size() - space +1);
             send_cmsg_messagechat(what);
         }
+        if(args.size() == space)
+            whisptarget = args;
         i_comm("Ch:Whisper "+whisptarget + "\n");
         return;
     }

@@ -108,4 +108,5 @@ void MainWindow::LoginFormReturn(std::string username,std::string password)
 {
     if (mainDllInputFunction != NULL)
         mainDllInputFunction(std::string("/login ") + username + std::string(" ") + password);
+    this->inputtext->Focus();
 }

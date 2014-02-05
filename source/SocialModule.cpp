@@ -84,7 +84,6 @@ void SocialModule::handle_smsg_friend_status(inc_pack* InPack)
 
 void SocialModule::handle_smsg_guild_roster(inc_pack* InPack)
 {
-    print("Received Guild Rooster!\r\n");
     uint32 size;
     std::string Gmotd;
     std::string Ginfo;
@@ -122,6 +121,8 @@ void SocialModule::handle_smsg_guild_event(inc_pack* InPack)
     *InPack >> Event;
     switch (Event)
     {
+    case GE_MOTD:
+        break;
     case GE_SIGNED_ON:
         {
             std::string name;
