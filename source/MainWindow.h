@@ -41,9 +41,14 @@ namespace chb {
 		}
         void print_msg();
         void set_channel_label();
+        void friend_add_online();
+        void friend_add_offline();
+        void friend_remove();
+        void guild_add();
+        void guild_remove();
+
         void BackgroundThread();
         String^ readData;
-        String^ channelLabel;
 
 	    Thread^ backThread;
         bool ExitingProgram;

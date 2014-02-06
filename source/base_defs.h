@@ -10,7 +10,7 @@
 #define BUFFER_SIZE_IN  32768
 #define BUFFER_SIZE_OUT 256
 
-#define VERSION "0.3.0"
+#define VERSION "0.3.1"
 typedef unsigned char    uint8;
 typedef unsigned short   uint16;
 typedef unsigned int     uint32;

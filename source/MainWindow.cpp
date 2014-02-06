@@ -47,31 +47,33 @@ void MainWindow::BackgroundThread()
             }
             else if (sub.substr(0,3) == "Ch:")
             {
-                channelLabel = gcnew String((sub.substr(3,sub.length()-3) + ":").c_str());
+                readData = gcnew String((sub.substr(3,sub.length()-3) + ":").c_str());
                 set_channel_label();
             }
             else if (sub.substr(0,4) == "FrAN")
             {
-                FriendsListbox->Items->Remove(gcnew String(sub.substr(4,sub.length()-4).c_str()));
-                FriendsListbox->Items->Insert(0,gcnew String(sub.substr(4,sub.length()-4).c_str()));
+                readData = gcnew String(sub.substr(4,sub.length()-4).c_str());
+                friend_add_online();
             }
             else if (sub.substr(0,4) == "FrAF")
             {
-                FriendsListbox->Items->Remove(gcnew String(sub.substr(4,sub.length()-4).c_str()));
-                FriendsListbox->Items->Insert(FriendsListbox->Items->IndexOf(L"===Offline===") + 1
-                    ,gcnew String(sub.substr(4,sub.length()-4).c_str()));
+                readData = gcnew String(sub.substr(4,sub.length()-4).c_str());
+                friend_add_offline();
             }
             else if (sub.substr(0,3) == "FrR")
             {
-                FriendsListbox->Items->Remove(gcnew String(sub.substr(3,sub.length()-3).c_str()));
+                readData = gcnew String(sub.substr(3,sub.length()-3).c_str());
+                friend_remove();
             }
             else if (sub.substr(0,3) == "GuA")
             {
-                GuildListbox->Items->Add(gcnew String(sub.substr(3,sub.length()-3).c_str()));
+                readData = gcnew String(sub.substr(3,sub.length()-3).c_str());
+                guild_add();
             }
             else if (sub.substr(0,3) == "GuR")
             {
-                GuildListbox->Items->Remove(gcnew String(sub.substr(3,sub.length()-3).c_str()));
+                readData = gcnew String(sub.substr(3,sub.length()-3).c_str());
+                guild_remove();
             }
             else
             {
@@ -104,9 +106,54 @@ void MainWindow::set_channel_label()
     if (this->InvokeRequired)
         this->Invoke(gcnew MethodInvoker(this,&chb::MainWindow::set_channel_label));
     else
-        channel_label->Text = channelLabel;
+        channel_label->Text = readData;
 }
 
+void MainWindow::friend_add_online()
+{
+    if (this->InvokeRequired)
+        this->Invoke(gcnew MethodInvoker(this,&chb::MainWindow::friend_add_online));
+    else
+    {
+        FriendsListbox->Items->Remove(readData);
+        FriendsListbox->Items->Insert(0,readData);
+    }
+}
+
+void MainWindow::friend_add_offline()
+{
+    if (this->InvokeRequired)
+        this->Invoke(gcnew MethodInvoker(this,&chb::MainWindow::friend_add_offline));
+    else
+    {
+        FriendsListbox->Items->Remove(readData);
+        FriendsListbox->Items->Insert(FriendsListbox->Items->IndexOf(L"===Offline===") + 1,readData);
+    }
+}
+
+void MainWindow::friend_remove()
+{
+    if (this->InvokeRequired)
+        this->Invoke(gcnew MethodInvoker(this,&chb::MainWindow::friend_remove));
+    else
+        FriendsListbox->Items->Remove(readData);
+}
+
+void MainWindow::guild_add()
+{
+    if (this->InvokeRequired)
+        this->Invoke(gcnew MethodInvoker(this,&chb::MainWindow::guild_add));
+    else
+        GuildListbox->Items->Add(readData);
+}
+
+void MainWindow::guild_remove()
+{
+    if (this->InvokeRequired)
+        this->Invoke(gcnew MethodInvoker(this,&chb::MainWindow::guild_remove));
+    else
+        GuildListbox->Items->Remove(readData);
+}
 void MainWindow::LoginFormReturn(std::string username,std::string password)
 {
     if (mainDllInputFunction != NULL)
