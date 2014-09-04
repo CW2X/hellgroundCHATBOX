@@ -2,7 +2,6 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <ClCompile Include="source\CHBMain.cpp" />
-    <ClCompile Include="source\Session.cpp" />
     <ClCompile Include="source\AuthProcessor.cpp">
       <Filter>sockets</Filter>
     </ClCompile>
@@ -24,24 +23,24 @@
     <ClCompile Include="source\Auth\Sha1.cpp">
       <Filter>auth</Filter>
     </ClCompile>
-    <ClCompile Include="source\LoginModule.cpp">
-      <Filter>modules</Filter>
-    </ClCompile>
+    <ClCompile Include="source\CommandLineHandler.cpp" />
+    <ClCompile Include="source\Session.cpp" />
     <ClCompile Include="source\ChatModule.cpp">
       <Filter>modules</Filter>
     </ClCompile>
-    <ClCompile Include="source\CommandLineHandler.cpp" />
-    <ClCompile Include="source\SocialModule.cpp">
+    <ClCompile Include="source\Database.cpp">
       <Filter>modules</Filter>
     </ClCompile>
-    <ClCompile Include="source\Database.cpp">
+    <ClCompile Include="source\LoginModule.cpp">
+      <Filter>modules</Filter>
+    </ClCompile>
+    <ClCompile Include="source\SocialModule.cpp">
       <Filter>modules</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="source\base_defs.h" />
     <ClInclude Include="source\iopackets.h" />
-    <ClInclude Include="source\Session.h" />
     <ClInclude Include="source\Util.h" />
     <ClInclude Include="source\AuthProcessor.h">
       <Filter>sockets</Filter>
@@ -113,19 +112,20 @@
       <Filter>auth</Filter>
     </ClInclude>
     <ClInclude Include="source\CHBMain.h" />
-    <ClInclude Include="source\LoginModule.h">
-      <Filter>modules</Filter>
-    </ClInclude>
-    <ClInclude Include="source\Module.h">
-      <Filter>modules</Filter>
-    </ClInclude>
+    <ClInclude Include="source\Session.h" />
     <ClInclude Include="source\ChatModule.h">
+      <Filter>modules</Filter>
+    </ClInclude>
+    <ClInclude Include="source\Database.h">
+      <Filter>modules</Filter>
+    </ClInclude>
+    <ClInclude Include="source\LoginModule.h">
       <Filter>modules</Filter>
     </ClInclude>
     <ClInclude Include="source\SocialModule.h">
       <Filter>modules</Filter>
     </ClInclude>
-    <ClInclude Include="source\Database.h">
+    <ClInclude Include="source\Module.h">
       <Filter>modules</Filter>
     </ClInclude>
   </ItemGroup>

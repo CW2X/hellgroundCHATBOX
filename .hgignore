@@ -8,3 +8,5 @@ Release/
 chb.exe
 CHBMain.vcxproj.user
 CHBMain.dll
+*.suo
+*.orig
