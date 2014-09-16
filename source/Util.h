@@ -6,7 +6,7 @@
 
 inline std::string string_format(const std::string fmt, ...)
 {
-    int size = 100;
+    int size = 300; //max message length is 255, leave some space
     std::string str;
     va_list ap;
     while (1) 
