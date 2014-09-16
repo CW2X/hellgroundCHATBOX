@@ -1,7 +1,6 @@
 #ifndef AUTH_PROCESSOR_H
 #define AUTH_PROCESSOR_H
 
-#include "Auth\bn.h"
 #include "Auth\Sha1.h"
 #include "BaseSocket.h"
 

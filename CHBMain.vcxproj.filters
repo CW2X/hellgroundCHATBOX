@@ -11,13 +11,7 @@
     <ClCompile Include="source\MainSocket.cpp">
       <Filter>sockets</Filter>
     </ClCompile>
-    <ClCompile Include="source\Auth\AuthCrypt.cpp">
-      <Filter>auth</Filter>
-    </ClCompile>
     <ClCompile Include="source\Auth\BigNumber.cpp">
-      <Filter>auth</Filter>
-    </ClCompile>
-    <ClCompile Include="source\Auth\Hmac.cpp">
       <Filter>auth</Filter>
     </ClCompile>
     <ClCompile Include="source\Auth\Sha1.cpp">
@@ -37,6 +31,9 @@
     <ClCompile Include="source\SocialModule.cpp">
       <Filter>modules</Filter>
     </ClCompile>
+    <ClCompile Include="source\Auth\MySha.cpp">
+      <Filter>auth</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="source\base_defs.h" />
@@ -51,40 +48,13 @@
     <ClInclude Include="source\MainSocket.h">
       <Filter>sockets</Filter>
     </ClInclude>
-    <ClInclude Include="source\Auth\asn1.h">
-      <Filter>auth</Filter>
-    </ClInclude>
-    <ClInclude Include="source\Auth\AuthCrypt.h">
-      <Filter>auth</Filter>
-    </ClInclude>
     <ClInclude Include="source\Auth\BigNumber.h">
-      <Filter>auth</Filter>
-    </ClInclude>
-    <ClInclude Include="source\Auth\bio.h">
       <Filter>auth</Filter>
     </ClInclude>
     <ClInclude Include="source\Auth\bn.h">
       <Filter>auth</Filter>
     </ClInclude>
-    <ClInclude Include="source\Auth\crypto.h">
-      <Filter>auth</Filter>
-    </ClInclude>
     <ClInclude Include="source\Auth\e_os2.h">
-      <Filter>auth</Filter>
-    </ClInclude>
-    <ClInclude Include="source\Auth\evp.h">
-      <Filter>auth</Filter>
-    </ClInclude>
-    <ClInclude Include="source\Auth\Hmac.h">
-      <Filter>auth</Filter>
-    </ClInclude>
-    <ClInclude Include="source\Auth\hmac(OpenSSL).h">
-      <Filter>auth</Filter>
-    </ClInclude>
-    <ClInclude Include="source\Auth\obj_mac.h">
-      <Filter>auth</Filter>
-    </ClInclude>
-    <ClInclude Include="source\Auth\objects.h">
       <Filter>auth</Filter>
     </ClInclude>
     <ClInclude Include="source\Auth\opensslconf.h">
@@ -96,19 +66,10 @@
     <ClInclude Include="source\Auth\ossl_typ.h">
       <Filter>auth</Filter>
     </ClInclude>
-    <ClInclude Include="source\Auth\safestack.h">
-      <Filter>auth</Filter>
-    </ClInclude>
     <ClInclude Include="source\Auth\sha.h">
       <Filter>auth</Filter>
     </ClInclude>
     <ClInclude Include="source\Auth\Sha1.h">
-      <Filter>auth</Filter>
-    </ClInclude>
-    <ClInclude Include="source\Auth\stack.h">
-      <Filter>auth</Filter>
-    </ClInclude>
-    <ClInclude Include="source\Auth\symhacks.h">
       <Filter>auth</Filter>
     </ClInclude>
     <ClInclude Include="source\CHBMain.h" />
@@ -127,6 +88,9 @@
     </ClInclude>
     <ClInclude Include="source\Module.h">
       <Filter>modules</Filter>
+    </ClInclude>
+    <ClInclude Include="source\Auth\MySha.h">
+      <Filter>auth</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

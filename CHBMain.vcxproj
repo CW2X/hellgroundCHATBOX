@@ -49,9 +49,8 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="source\AuthProcessor.cpp" />
-    <ClCompile Include="source\Auth\AuthCrypt.cpp" />
     <ClCompile Include="source\Auth\BigNumber.cpp" />
-    <ClCompile Include="source\Auth\Hmac.cpp" />
+    <ClCompile Include="source\Auth\MySha.cpp" />
     <ClCompile Include="source\Auth\Sha1.cpp" />
     <ClCompile Include="source\BaseSocket.cpp" />
     <ClCompile Include="source\ChatModule.cpp" />
@@ -65,26 +64,15 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="source\AuthProcessor.h" />
-    <ClInclude Include="source\Auth\asn1.h" />
-    <ClInclude Include="source\Auth\AuthCrypt.h" />
     <ClInclude Include="source\Auth\BigNumber.h" />
-    <ClInclude Include="source\Auth\bio.h" />
     <ClInclude Include="source\Auth\bn.h" />
-    <ClInclude Include="source\Auth\crypto.h" />
-    <ClInclude Include="source\Auth\evp.h" />
     <ClInclude Include="source\Auth\e_os2.h" />
-    <ClInclude Include="source\Auth\hmac(OpenSSL).h" />
-    <ClInclude Include="source\Auth\Hmac.h" />
-    <ClInclude Include="source\Auth\objects.h" />
-    <ClInclude Include="source\Auth\obj_mac.h" />
+    <ClInclude Include="source\Auth\MySha.h" />
     <ClInclude Include="source\Auth\opensslconf.h" />
     <ClInclude Include="source\Auth\opensslv.h" />
     <ClInclude Include="source\Auth\ossl_typ.h" />
-    <ClInclude Include="source\Auth\safestack.h" />
     <ClInclude Include="source\Auth\sha.h" />
     <ClInclude Include="source\Auth\Sha1.h" />
-    <ClInclude Include="source\Auth\stack.h" />
-    <ClInclude Include="source\Auth\symhacks.h" />
     <ClInclude Include="source\BaseSocket.h" />
     <ClInclude Include="source\base_defs.h" />
     <ClInclude Include="source\ChatModule.h" />

@@ -1,10 +1,13 @@
 #include "MainSocket.h"
 #include "Util.h"
+#include "Auth\Sha1.h"
 
 MainSocket::MainSocket()
 {
     loaded  = 0;
     header_loaded = 0;
+    _send_i = _send_j = _recv_i = _recv_j = 0;
+    BigKey = NULL;
 }
 
 void MainSocket::Update(inc_pack* packet,std::string* retstr)
@@ -15,8 +18,7 @@ void MainSocket::Update(inc_pack* packet,std::string* retstr)
 
     if(!IsConnected)
     {
-        m_crypt.SetKey(&K);
-        m_crypt.Init();
+        generate_key();
         open_socket();
         *retstr += m_ret;
         return;
@@ -144,13 +146,14 @@ void MainSocket::send_auth_session()
     sha.UpdateData((uint8 *) & t, 4);
     sha.UpdateData((uint8 *) & clientSeed, 4);
     sha.UpdateData((uint8 *) & seed, 4);
-    sha.UpdateBigNumbers(&K, NULL);
+    sha.UpdateData(BigKey, 40);
     sha.Finalize();
     // end of little magic
     for(i = 0;i<20;i++)
     lbuf[i+19+m_username.length()] = sha.GetDigest()[i];
     send_packet((char*)lbuf,m_username.length()+39);
     IsAuthed = true;
+    delete[] BigKey;
 }
 
 void MainSocket::send_out_pack(out_pack* packet)
@@ -192,4 +195,52 @@ bool MainSocket::IsIgnoredOpcode(uint16 opcode)
     default:
         return true;
     }
+}
+
+void MainSocket::encrypt_header(uint8* header)
+{
+    for (size_t t = 0; t < 6; t++)
+    {
+        _send_i %= SHA_DIGEST_LENGTH;
+        uint8 x = (header[t] ^ SmallKey[_send_i]) + _send_j;
+        ++_send_i;
+        header[t] = _send_j = x;
+    }
+}
+
+void MainSocket::decrypt_header(uint8* header)
+{
+    for (size_t t = 0; t < 4; t++)
+    {
+        _recv_i %= SHA_DIGEST_LENGTH;
+        uint8 x = (header[t] - _recv_j) ^ SmallKey[_recv_i];
+        ++_recv_i;
+        _recv_j = header[t];
+        header[t] = x;
+    }
+}
+
+void MainSocket::generate_key()
+{
+    uint8 temp[16] = { 0x38, 0xA7, 0x83, 0x15, 0xF8, 0x92, 0x25, 0x30, 0x71, 0x98, 0x67, 0xB1, 0x8C, 0x4, 0xE2, 0xAA };
+    uint8 inner[64], outer[64];
+    memset(inner, 0x00, 64);
+    memset(outer, 0x00, 64);
+    memcpy(inner, temp, 16);
+    memcpy(outer, temp, 16);
+    for (uint8 i = 0; i < 64; i++)
+    {
+        inner[i] ^= 0x36;
+        outer[i] ^= 0x5C;
+    }
+    Sha1Hash sha;
+    sha.UpdateData(inner, 64);
+    sha.UpdateData(BigKey, 40);
+    sha.Finalize();
+    memcpy(inner, sha.GetDigest(), SHA_DIGEST_LENGTH);
+    sha.Initialize();
+    sha.UpdateData(outer, 64);
+    sha.UpdateData(inner, 20);
+    sha.Finalize();
+    memcpy(SmallKey, sha.GetDigest(), SHA_DIGEST_LENGTH);
 }
