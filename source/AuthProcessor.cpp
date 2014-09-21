@@ -1,6 +1,6 @@
 #include "AuthProcessor.h"
 #include "Util.h"
-#include <iostream>
+#include "Auth\MySha.h"
 
 AuthProcessor::AuthProcessor()
 {
@@ -35,26 +35,27 @@ void AuthProcessor::handle_incoming(char buffer[BUFFER_SIZE_IN],uint8 datalength
 
 void AuthProcessor::MagicVoid()
 {
-    Sha1Hash sha;
+    MySha sha;
     sha.UpdateData(m_username);
     sha.UpdateData(":");
     sha.UpdateData(m_password);
     sha.Finalize();
     BigNumber I;
-    I.SetBinary(sha.GetDigest(),sha.GetLength());
+    I.SetBinary(sha.GetDigest(),20);
 
     sha.Initialize();
     sha.UpdateData(s.AsByteArray(), s.GetNumBytes());
     sha.UpdateData(I.AsByteArray(), I.GetNumBytes());
     sha.Finalize();
-    x.SetBinary(sha.GetDigest(), sha.GetLength());
+    x.SetBinary(sha.GetDigest(), 20);
     v = g.ModExp(x, N);
     a.SetRand(8 * 19);
     A = g.ModExp(a,N);
     
     sha.Initialize();
-    sha.UpdateBigNumbers(&A,&B,NULL);
-    sha.Finalize();
+    sha.UpdateData(A.AsByteArray(), A.GetNumBytes());
+    sha.UpdateData(B.AsByteArray(), B.GetNumBytes());
+    sha.Finalize(); 
     BigNumber u;
     u.SetBinary(sha.GetDigest(), 20);
     BigNumber S = (B - (v*3)).ModExp((a + (u*x)),N);
@@ -89,11 +90,11 @@ void AuthProcessor::MagicVoid()
     uint8 hash[20];
 
     sha.Initialize();
-    sha.UpdateBigNumbers(&N, NULL);
+    sha.UpdateData(N.AsByteArray(), N.GetNumBytes());
     sha.Finalize();
     memcpy(hash, sha.GetDigest(), 20);
     sha.Initialize();
-    sha.UpdateBigNumbers(&g, NULL);
+    sha.UpdateData(g.AsByteArray(), g.GetNumBytes());
     sha.Finalize();
     for (int i = 0; i < 20; ++i)
     {
@@ -105,18 +106,23 @@ void AuthProcessor::MagicVoid()
     sha.Initialize();
     sha.UpdateData(m_username);
     sha.Finalize();
-    uint8 t4[SHA_DIGEST_LENGTH];
-    memcpy(t4, sha.GetDigest(), SHA_DIGEST_LENGTH);
+    uint8 t4[20];
+    memcpy(t4, sha.GetDigest(), 20);
 
     sha.Initialize();
-    sha.UpdateBigNumbers(&t3, NULL);
-    sha.UpdateData(t4, SHA_DIGEST_LENGTH);
-    sha.UpdateBigNumbers(&s, &A, &B, &K, NULL);
+    sha.UpdateData(t3.AsByteArray(), t3.GetNumBytes());
+    sha.UpdateData(t4, 20);
+    sha.UpdateData(s.AsByteArray(), s.GetNumBytes());
+    sha.UpdateData(A.AsByteArray(), A.GetNumBytes());
+    sha.UpdateData(B.AsByteArray(), B.GetNumBytes());
+    sha.UpdateData(K.AsByteArray(), K.GetNumBytes());
     sha.Finalize();
     M.SetBinary(sha.GetDigest(), 20);
 
     sha.Initialize();
-    sha.UpdateBigNumbers(&A,&M,&K,NULL);
+    sha.UpdateData(A.AsByteArray(), A.GetNumBytes());
+    sha.UpdateData(M.AsByteArray(), M.GetNumBytes());
+    sha.UpdateData(K.AsByteArray(), K.GetNumBytes());
     sha.Finalize();
 
     M2.SetBinary(sha.GetDigest(),20);

@@ -1,7 +1,7 @@
 #ifndef AUTH_PROCESSOR_H
 #define AUTH_PROCESSOR_H
 
-#include "Auth\Sha1.h"
+#include "Auth\BigNumber.h"
 #include "BaseSocket.h"
 
 enum eAuthCmd

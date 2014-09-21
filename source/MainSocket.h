@@ -29,7 +29,7 @@ private:
     uint8       header_loaded;
     uint8       SmallKey[20];
     uint8*      BigKey;
-    uint8       _send_i, _send_j, _recv_i, _recv_j;
+    uint8       index_s, index_r, last_s, last_r;
     
     char recvbuff[BUFFER_SIZE_IN];
 };

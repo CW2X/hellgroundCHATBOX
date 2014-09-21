@@ -14,9 +14,6 @@
     <ClCompile Include="source\Auth\BigNumber.cpp">
       <Filter>auth</Filter>
     </ClCompile>
-    <ClCompile Include="source\Auth\Sha1.cpp">
-      <Filter>auth</Filter>
-    </ClCompile>
     <ClCompile Include="source\CommandLineHandler.cpp" />
     <ClCompile Include="source\Session.cpp" />
     <ClCompile Include="source\ChatModule.cpp">
@@ -60,16 +57,7 @@
     <ClInclude Include="source\Auth\opensslconf.h">
       <Filter>auth</Filter>
     </ClInclude>
-    <ClInclude Include="source\Auth\opensslv.h">
-      <Filter>auth</Filter>
-    </ClInclude>
     <ClInclude Include="source\Auth\ossl_typ.h">
-      <Filter>auth</Filter>
-    </ClInclude>
-    <ClInclude Include="source\Auth\sha.h">
-      <Filter>auth</Filter>
-    </ClInclude>
-    <ClInclude Include="source\Auth\Sha1.h">
       <Filter>auth</Filter>
     </ClInclude>
     <ClInclude Include="source\CHBMain.h" />

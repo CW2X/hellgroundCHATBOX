@@ -51,7 +51,6 @@
     <ClCompile Include="source\AuthProcessor.cpp" />
     <ClCompile Include="source\Auth\BigNumber.cpp" />
     <ClCompile Include="source\Auth\MySha.cpp" />
-    <ClCompile Include="source\Auth\Sha1.cpp" />
     <ClCompile Include="source\BaseSocket.cpp" />
     <ClCompile Include="source\ChatModule.cpp" />
     <ClCompile Include="source\CHBMain.cpp" />
@@ -69,10 +68,7 @@
     <ClInclude Include="source\Auth\e_os2.h" />
     <ClInclude Include="source\Auth\MySha.h" />
     <ClInclude Include="source\Auth\opensslconf.h" />
-    <ClInclude Include="source\Auth\opensslv.h" />
     <ClInclude Include="source\Auth\ossl_typ.h" />
-    <ClInclude Include="source\Auth\sha.h" />
-    <ClInclude Include="source\Auth\Sha1.h" />
     <ClInclude Include="source\BaseSocket.h" />
     <ClInclude Include="source\base_defs.h" />
     <ClInclude Include="source\ChatModule.h" />

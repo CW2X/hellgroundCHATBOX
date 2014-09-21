@@ -1,24 +1,31 @@
+/*
+ * This implementations works iff data is given in whole bytes and total data size is < 2^32 bits
+ */
+
 #ifndef _AUTH_MYSHA_H
 #define _AUTH_MYSHA_H
 
 #include "..\base_defs.h"
 
-#define DIGEST_SIZE 20
 class MySha
 {
 public:
-    MySha() { Init(); };
-    void AppendData(const uint8 *input, int length);
-    void Init();
-    void End();
-    uint8 *GetDigest() { return (uint8*)h; };
+    MySha() { Initialize(); };
+    void UpdateData(uint8 *input, uint32 length);
+    void UpdateData(const std::string &str)
+    {
+        UpdateData((uint8*)str.c_str(), str.length());
+    }
+    void Initialize();
+    void Finalize();
+    uint8 *GetDigest() { return digest; };
 private:
     void    Process();
-    void    FillUp();
 
     uint32  h[5];
-    uint32  data[16];
-    uint16  counter;
+    uint8   data[64];
+    uint32  counter;
+    uint8   digest[20];
 };
 
 #endif
