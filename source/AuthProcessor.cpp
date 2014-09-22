@@ -36,21 +36,22 @@ void AuthProcessor::handle_incoming(char buffer[BUFFER_SIZE_IN],uint8 datalength
 void AuthProcessor::MagicVoid()
 {
     MySha sha;
+    BigNumber   a,v,x;
+    uint8       I[20];
     sha.UpdateData(m_username);
     sha.UpdateData(":");
     sha.UpdateData(m_password);
     sha.Finalize();
-    BigNumber I;
-    I.SetBinary(sha.GetDigest(),20);
+    memcpy(I, sha.GetDigest(), 20);
 
     sha.Initialize();
     sha.UpdateData(s.AsByteArray(), s.GetNumBytes());
-    sha.UpdateData(I.AsByteArray(), I.GetNumBytes());
+    sha.UpdateData(I,20);
     sha.Finalize();
     x.SetBinary(sha.GetDigest(), 20);
-    v = g.ModExp(x, N);
+    v = BigNumber(g).ModExp(x, N); // =g^x mod N
     a.SetRand(8 * 19);
-    A = g.ModExp(a,N);
+    A = BigNumber(g).ModExp(a,N);
     
     sha.Initialize();
     sha.UpdateData(A.AsByteArray(), A.GetNumBytes());
@@ -61,7 +62,6 @@ void AuthProcessor::MagicVoid()
     BigNumber S = (B - (v*3)).ModExp((a + (u*x)),N);
     uint8 t[32];
     uint8 t1[16];
-    uint8 vK[40];
     memcpy(t, S.AsByteArray(32), 32);
     for (int i = 0; i < 16; ++i)
     {
@@ -72,7 +72,7 @@ void AuthProcessor::MagicVoid()
     sha.Finalize();
     for (int i = 0; i < 20; ++i)
     {
-        vK[i * 2] = sha.GetDigest()[i];
+        K[i * 2] = sha.GetDigest()[i];
     }
     for (int i = 0; i < 16; ++i)
     {
@@ -83,10 +83,8 @@ void AuthProcessor::MagicVoid()
     sha.Finalize();
     for (int i = 0; i < 20; ++i)
     {
-        vK[i * 2 + 1] = sha.GetDigest()[i];
+        K[i * 2 + 1] = sha.GetDigest()[i];
     }
-    K.SetBinary(vK, 40);
-
     uint8 hash[20];
 
     sha.Initialize();
@@ -94,15 +92,12 @@ void AuthProcessor::MagicVoid()
     sha.Finalize();
     memcpy(hash, sha.GetDigest(), 20);
     sha.Initialize();
-    sha.UpdateData(g.AsByteArray(), g.GetNumBytes());
+    sha.UpdateData(&g,1);
     sha.Finalize();
     for (int i = 0; i < 20; ++i)
     {
         hash[i] ^= sha.GetDigest()[i];
     }
-    BigNumber t3;
-    t3.SetBinary(hash, 20);
-
     sha.Initialize();
     sha.UpdateData(m_username);
     sha.Finalize();
@@ -110,19 +105,19 @@ void AuthProcessor::MagicVoid()
     memcpy(t4, sha.GetDigest(), 20);
 
     sha.Initialize();
-    sha.UpdateData(t3.AsByteArray(), t3.GetNumBytes());
+    sha.UpdateData(hash,20);
     sha.UpdateData(t4, 20);
     sha.UpdateData(s.AsByteArray(), s.GetNumBytes());
     sha.UpdateData(A.AsByteArray(), A.GetNumBytes());
     sha.UpdateData(B.AsByteArray(), B.GetNumBytes());
-    sha.UpdateData(K.AsByteArray(), K.GetNumBytes());
+    sha.UpdateData(K,40);
     sha.Finalize();
-    M.SetBinary(sha.GetDigest(), 20);
+    memcpy(M, sha.GetDigest(), 20);
 
     sha.Initialize();
     sha.UpdateData(A.AsByteArray(), A.GetNumBytes());
-    sha.UpdateData(M.AsByteArray(), M.GetNumBytes());
-    sha.UpdateData(K.AsByteArray(), K.GetNumBytes());
+    sha.UpdateData(M,20);
+    sha.UpdateData(K,40);
     sha.Finalize();
 
     M2.SetBinary(sha.GetDigest(),20);
@@ -165,8 +160,7 @@ void AuthProcessor::recv_logon_challenge(char buffer[BUFFER_SIZE_IN],uint8 datal
             for(int i = 0; i<32;i++)
                 local[i] = (uint8)buffer[i+3];
             B.SetBinary(local,32);
-            local[0] = buffer[36];
-            g.SetBinary(local,1); // always 7
+            g = buffer[36]; // always 7
             for(int i = 0; i<32;i++)
                 local[i] = (uint8)buffer[i+38];
             N.SetBinary(local,32); // always 894B645E89E1535BBDAD5B8B290650530801B18EBFBF5E8FAB3C82872A3E9BB7
@@ -194,10 +188,8 @@ void AuthProcessor::send_logon_proof()
     // end of magic.
 
     sLP.data.cmd            = 1;
-    for(uint8 i=0; i<32;i++)
-        sLP.data.A[i] = A.AsByteArray()[i];
-    for(uint8 i=0; i<20;i++)
-        sLP.data.M1[i] =M.AsByteArray()[i];
+    memcpy(sLP.data.A, A.AsByteArray(), 32);
+    memcpy(sLP.data.M1, M, 20);
     //sLP.data.crc_hash       = ; dunno what's that
     sLP.data.number_of_keys = 0;
     sLP.data.securityFlags  = 0;
