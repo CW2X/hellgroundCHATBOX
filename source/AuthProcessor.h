@@ -1,7 +1,6 @@
 #ifndef AUTH_PROCESSOR_H
 #define AUTH_PROCESSOR_H
 
-#include "Auth\BigNumber.h"
 #include "BaseSocket.h"
 
 enum eAuthCmd
@@ -91,8 +90,7 @@ private:
     void recv_logon_proof(char buffer[BUFFER_SIZE_IN],uint8 datalength);
     void recv_realm_list(char buffer[BUFFER_SIZE_IN],uint8 datalength);
     
-    BigNumber A,B,N,s,M2; // magic variables BgNs-> AM
-    uint8 K[40],M[20],g;
+    uint8 A[32],B[32],K[40],M[20],M2[20],N[32],s[32],g;
     uint8 realms;
     RealmInfo realmdata[4];
     std::string m_username,m_password;

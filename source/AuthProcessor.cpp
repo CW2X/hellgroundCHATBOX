@@ -1,6 +1,7 @@
 #include "AuthProcessor.h"
 #include "Util.h"
 #include "Auth\MySha.h"
+#include "Auth\BigNumber.h"
 
 AuthProcessor::AuthProcessor()
 {
@@ -36,8 +37,7 @@ void AuthProcessor::handle_incoming(char buffer[BUFFER_SIZE_IN],uint8 datalength
 void AuthProcessor::MagicVoid()
 {
     MySha sha;
-    BigNumber   a,v,x;
-    uint8       I[20];
+    uint8       I[20], x[20], a[19], v[32], t[32], u[20];;
     sha.UpdateData(m_username);
     sha.UpdateData(":");
     sha.UpdateData(m_password);
@@ -45,24 +45,24 @@ void AuthProcessor::MagicVoid()
     memcpy(I, sha.GetDigest(), 20);
 
     sha.Initialize();
-    sha.UpdateData(s.AsByteArray(), s.GetNumBytes());
+    sha.UpdateData(s,32);
     sha.UpdateData(I,20);
     sha.Finalize();
-    x.SetBinary(sha.GetDigest(), 20);
-    v = BigNumber(g).ModExp(x, N); // =g^x mod N
-    a.SetRand(8 * 19);
-    A = BigNumber(g).ModExp(a,N);
-    
+    memcpy(x, sha.GetDigest(), 20);
+
+    MySha::SetRand(a);
+    MySha::ModExpSimple(v, g, x, N);
+    MySha::ModExpSimple(A, g, a, N);
+
     sha.Initialize();
-    sha.UpdateData(A.AsByteArray(), A.GetNumBytes());
-    sha.UpdateData(B.AsByteArray(), B.GetNumBytes());
+    sha.UpdateData(A,32);
+    sha.UpdateData(B,32);
     sha.Finalize(); 
-    BigNumber u;
-    u.SetBinary(sha.GetDigest(), 20);
-    BigNumber S = (B - (v*3)).ModExp((a + (u*x)),N);
-    uint8 t[32];
+    memcpy(u, sha.GetDigest(), 20);
+
+    MySha::ModExpFull(t, B, v, a, u, x, N);
+
     uint8 t1[16];
-    memcpy(t, S.AsByteArray(32), 32);
     for (int i = 0; i < 16; ++i)
     {
         t1[i] = t[i * 2];
@@ -85,42 +85,40 @@ void AuthProcessor::MagicVoid()
     {
         K[i * 2 + 1] = sha.GetDigest()[i];
     }
-    uint8 hash[20];
 
     sha.Initialize();
-    sha.UpdateData(N.AsByteArray(), N.GetNumBytes());
+    sha.UpdateData(N,32);
     sha.Finalize();
-    memcpy(hash, sha.GetDigest(), 20);
+    memcpy(u, sha.GetDigest(), 20);
     sha.Initialize();
     sha.UpdateData(&g,1);
     sha.Finalize();
     for (int i = 0; i < 20; ++i)
     {
-        hash[i] ^= sha.GetDigest()[i];
+        u[i] ^= sha.GetDigest()[i];
     }
     sha.Initialize();
     sha.UpdateData(m_username);
     sha.Finalize();
-    uint8 t4[20];
-    memcpy(t4, sha.GetDigest(), 20);
+    memcpy(M, sha.GetDigest(), 20);
 
     sha.Initialize();
-    sha.UpdateData(hash,20);
-    sha.UpdateData(t4, 20);
-    sha.UpdateData(s.AsByteArray(), s.GetNumBytes());
-    sha.UpdateData(A.AsByteArray(), A.GetNumBytes());
-    sha.UpdateData(B.AsByteArray(), B.GetNumBytes());
+    sha.UpdateData(u,20);
+    sha.UpdateData(M, 20);
+    sha.UpdateData(s,32);
+    sha.UpdateData(A,32);
+    sha.UpdateData(B,32);
     sha.UpdateData(K,40);
     sha.Finalize();
     memcpy(M, sha.GetDigest(), 20);
 
     sha.Initialize();
-    sha.UpdateData(A.AsByteArray(), A.GetNumBytes());
+    sha.UpdateData(A,32);
     sha.UpdateData(M,20);
     sha.UpdateData(K,40);
     sha.Finalize();
 
-    M2.SetBinary(sha.GetDigest(),20);
+    memcpy(M2, sha.GetDigest(), 20);
 }
 
 void AuthProcessor::send_logon_challenge()
@@ -156,18 +154,10 @@ void AuthProcessor::recv_logon_challenge(char buffer[BUFFER_SIZE_IN],uint8 datal
             if (buffer[35] != 1 || buffer[37] != 32 || datalength < 119)
                 throw string_format("logon challenge: invalid response from server\r\n");
             
-            uint8 local[32];
-            for(int i = 0; i<32;i++)
-                local[i] = (uint8)buffer[i+3];
-            B.SetBinary(local,32);
+            memcpy(B, buffer + 3, 32);
             g = buffer[36]; // always 7
-            for(int i = 0; i<32;i++)
-                local[i] = (uint8)buffer[i+38];
-            N.SetBinary(local,32); // always 894B645E89E1535BBDAD5B8B290650530801B18EBFBF5E8FAB3C82872A3E9BB7
-            for(int i = 0; i<32;i++)
-                local[i] = (uint8)buffer[i+70];
-            s.SetBinary(local,32);
-            // unk3.setbinary ?
+            memcpy(N, buffer + 38, 32); // always 894B645E89E1535BBDAD5B8B290650530801B18EBFBF5E8FAB3C82872A3E9BB7
+            memcpy(s,buffer+70,32);
             return;
         }
     case 0x03:
@@ -188,7 +178,7 @@ void AuthProcessor::send_logon_proof()
     // end of magic.
 
     sLP.data.cmd            = 1;
-    memcpy(sLP.data.A, A.AsByteArray(), 32);
+    memcpy(sLP.data.A, A, 32);
     memcpy(sLP.data.M1, M, 20);
     //sLP.data.crc_hash       = ; dunno what's that
     sLP.data.number_of_keys = 0;
@@ -209,9 +199,8 @@ void AuthProcessor::recv_logon_proof(char buffer[BUFFER_SIZE_IN],uint8 datalengt
         if((uint8)buffer[24] != 128 || sum != 128)
             throw string_format("logon proof: invalid response from server %u %u\r\n",sum,(uint8)buffer[24]);
         
-        for(uint8 i=0;i<20;i++)
-            if ((uint8)buffer[i+2] != (uint8)M2.AsByteArray()[i])
-                throw "logon proof: invalid M2 key\r\n";
+        if (memcmp(buffer + 2, M2, 20))
+            throw "logon proof: invalid M2 key\r\n";
         
         return;
     }

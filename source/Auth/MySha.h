@@ -19,6 +19,10 @@ public:
     void Initialize();
     void Finalize();
     uint8 *GetDigest() { return digest; };
+
+    static void ModExpSimple(uint8* r,uint8 g,uint8* p,uint8* N);
+    static void ModExpFull(uint8* S,uint8* B,uint8* v,uint8* a,uint8* u,uint8* x,uint8* N);
+    static void SetRand(uint8* a);
 private:
     void    Process();
 
