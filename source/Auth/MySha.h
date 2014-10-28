@@ -2,8 +2,8 @@
  * This implementations works iff data is given in whole bytes and total data size is < 2^32 bits
  */
 
-#ifndef _AUTH_MYSHA_H
-#define _AUTH_MYSHA_H
+#ifndef AUTH_MYSHA_H
+#define AUTH_MYSHA_H
 
 #include "..\base_defs.h"
 
@@ -20,9 +20,6 @@ public:
     void Finalize();
     uint8 *GetDigest() { return digest; };
 
-    static void ModExpSimple(uint8* r,uint8 g,uint8* p,uint8* N);
-    static void ModExpFull(uint8* S,uint8* B,uint8* v,uint8* a,uint8* u,uint8* x,uint8* N);
-    static void SetRand(uint8* a);
 private:
     void    Process();
 

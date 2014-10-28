@@ -11,9 +11,6 @@
     <ClCompile Include="source\MainSocket.cpp">
       <Filter>sockets</Filter>
     </ClCompile>
-    <ClCompile Include="source\Auth\BigNumber.cpp">
-      <Filter>auth</Filter>
-    </ClCompile>
     <ClCompile Include="source\CommandLineHandler.cpp" />
     <ClCompile Include="source\Session.cpp" />
     <ClCompile Include="source\ChatModule.cpp">
@@ -31,6 +28,10 @@
     <ClCompile Include="source\Auth\MySha.cpp">
       <Filter>auth</Filter>
     </ClCompile>
+    <ClCompile Include="source\Util.cpp" />
+    <ClCompile Include="source\Auth\MontgomeryExp.cpp">
+      <Filter>auth</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="source\base_defs.h" />
@@ -44,21 +45,6 @@
     </ClInclude>
     <ClInclude Include="source\MainSocket.h">
       <Filter>sockets</Filter>
-    </ClInclude>
-    <ClInclude Include="source\Auth\BigNumber.h">
-      <Filter>auth</Filter>
-    </ClInclude>
-    <ClInclude Include="source\Auth\bn.h">
-      <Filter>auth</Filter>
-    </ClInclude>
-    <ClInclude Include="source\Auth\e_os2.h">
-      <Filter>auth</Filter>
-    </ClInclude>
-    <ClInclude Include="source\Auth\opensslconf.h">
-      <Filter>auth</Filter>
-    </ClInclude>
-    <ClInclude Include="source\Auth\ossl_typ.h">
-      <Filter>auth</Filter>
     </ClInclude>
     <ClInclude Include="source\CHBMain.h" />
     <ClInclude Include="source\Session.h" />
@@ -78,6 +64,9 @@
       <Filter>modules</Filter>
     </ClInclude>
     <ClInclude Include="source\Auth\MySha.h">
+      <Filter>auth</Filter>
+    </ClInclude>
+    <ClInclude Include="source\Auth\MontgomeryExp.h">
       <Filter>auth</Filter>
     </ClInclude>
   </ItemGroup>

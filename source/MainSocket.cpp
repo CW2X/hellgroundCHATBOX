@@ -141,11 +141,10 @@ void MainSocket::send_auth_session()
     // begining of little magic
     MySha sha;
     uint32 t = 0;
-    uint32 seed = serverSeed;
     sha.UpdateData(m_username);
     sha.UpdateData((uint8 *) & t, 4);
     sha.UpdateData((uint8 *) & clientSeed, 4);
-    sha.UpdateData((uint8 *) & seed, 4);
+    sha.UpdateData((uint8 *) & serverSeed, 4);
     sha.UpdateData(BigKey, 40);
     sha.Finalize();
     // end of little magic

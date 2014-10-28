@@ -1,7 +1,7 @@
 #include "AuthProcessor.h"
 #include "Util.h"
 #include "Auth\MySha.h"
-#include "Auth\BigNumber.h"
+#include "Auth\MontgomeryExp.h"
 
 AuthProcessor::AuthProcessor()
 {
@@ -37,7 +37,8 @@ void AuthProcessor::handle_incoming(char buffer[BUFFER_SIZE_IN],uint8 datalength
 void AuthProcessor::MagicVoid()
 {
     MySha sha;
-    uint8       I[20], x[20], a[19], v[32], t[32], u[20];;
+    MontgomeryExp mexp;
+    uint8       I[20], x[20], a[20], v[32], t[32], u[20];;
     sha.UpdateData(m_username);
     sha.UpdateData(":");
     sha.UpdateData(m_password);
@@ -50,9 +51,15 @@ void AuthProcessor::MagicVoid()
     sha.Finalize();
     memcpy(x, sha.GetDigest(), 20);
 
-    MySha::SetRand(a);
-    MySha::ModExpSimple(v, g, x, N);
-    MySha::ModExpSimple(A, g, a, N);
+    uint32 randomSeed = getMsTime();
+    sha.Initialize();
+    sha.UpdateData((uint8*)&randomSeed, 4);
+    sha.Finalize();
+    memcpy(a, sha.GetDigest(), 20);
+
+    mexp.init(N);
+    mexp.ModExpSimple(v, g, x);
+    mexp.ModExpSimple(A, g, a);
 
     sha.Initialize();
     sha.UpdateData(A,32);
@@ -60,7 +67,7 @@ void AuthProcessor::MagicVoid()
     sha.Finalize(); 
     memcpy(u, sha.GetDigest(), 20);
 
-    MySha::ModExpFull(t, B, v, a, u, x, N);
+    mexp.ModExpFull(t, B, v, a, u, x);
 
     uint8 t1[16];
     for (int i = 0; i < 16; ++i)

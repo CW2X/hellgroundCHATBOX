@@ -254,6 +254,8 @@ void ChatModule::handle_smsg_messagechat(inc_pack* InPack)
     *InPack >> mes.what;
     *InPack >> mes.tag;
     mes.who = sDB->Guid_to_name(mes.guid,true);
+    
+    convert_codepages(&mes.what, false);
 
     switch(mes.type)
     {
@@ -261,7 +263,7 @@ void ChatModule::handle_smsg_messagechat(inc_pack* InPack)
     case 4:     //CHAT_MSG_GUILD
     case 5:     //CHAT_MSG_OFFICER
     case 6:     //CHAT_MSG_YELL
-    case 17:    //CHAT_MSG_CHANNEL
+    case 17:    //CHAT_MSG_CHANNEL c4 85 | b9
         {
             print(string_format("%s[%s]%s : %s%s\r\n",ChatTagIdentifiers[mes.tag],mes.channel.c_str(),mes.who.c_str(),
                 ((mes.lang <= 2 || mes.lang == 7) ? "":ChatLanguages(mes.lang)),mes.what.c_str()));
@@ -321,6 +323,7 @@ char* ChatModule::ChatLanguages(uint32 lang)
 void ChatModule::send_cmsg_messagechat(std::string data)
 {
     uint32 mtype;
+    convert_codepages(&data, true);
 
     if (lang == 0)
         lang = sDB->ishordeplayer ? 1:7;

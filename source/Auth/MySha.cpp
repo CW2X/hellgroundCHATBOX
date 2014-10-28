@@ -1,5 +1,5 @@
 #include "MySha.h"
-#include "BigNumber.h"
+#include "../Util.h"
 
 void MySha::Initialize()
 {
@@ -87,37 +87,4 @@ void MySha::Process()
     h[0] += a[0]; h[1] += a[1]; h[2] += a[2]; h[3] += a[3]; h[4] += a[4];
 
     memset(data, 0, sizeof(data));
-}
-
-void MySha::ModExpSimple(uint8* r, uint8 g, uint8* p, uint8* N)
-{
-    // r=g^p mod N
-    BigNumber R,P,NN;
-    NN.SetBinary(N, 32);
-    P.SetBinary(p, 20);
-    R = BigNumber(g).ModExp(P, NN);
-    memcpy(r, R.AsByteArray(), 32);
-}
-
-void MySha::ModExpFull(uint8* S, uint8* B, uint8* v, uint8* a, uint8* u, uint8* x, uint8* N)
-{
-    // S= (B-3v)^(a+u*x) mod N
-    BigNumber R,BB,V,A,U,X,NN;
-
-    BB.SetBinary(B, 32);
-    V.SetBinary(v, 32);
-    A.SetBinary(a, 20);
-    U.SetBinary(u, 20);
-    X.SetBinary(x, 20);
-    NN.SetBinary(N, 32);
-    
-    R = (BB - (V * 3)).ModExp((A + (U*X)), NN);
-    memcpy(S, R.AsByteArray(), 32);
-}
-
-void MySha::SetRand(uint8* a)
-{
-    BigNumber A;
-    A.SetRand(8 * 19);
-    memcpy(a, A.AsByteArray(), 19);
 }
