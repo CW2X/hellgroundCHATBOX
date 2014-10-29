@@ -93,10 +93,14 @@ void MainWindow::print_msg()
     else
     {
         
-        if(this->scrollingCheckbox->Checked)
+        if (this->scrollingCheckbox->Checked)
+        {
             viewtext->AppendText(readData);
+            viewtext->SelectionStart = viewtext->Text->Length;
+            viewtext->ScrollToCaret();
+        }
         else
-            viewtext->Text = viewtext->Text + readData;
+            viewtext->AppendText(readData);
     }
 }
 

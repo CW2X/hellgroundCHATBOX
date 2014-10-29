@@ -55,20 +55,17 @@ namespace chb {
         mainDllUpdateType mainDllUpdateFunction;
         mainDllInputType mainDllInputFunction;
     private:
-        System::Windows::Forms::RichTextBox^  viewtext;
-        System::Windows::Forms::TextBox^  inputtext;
-		System::ComponentModel::Container ^components;
-        System::Windows::Forms::Label^  channel_label;
-        System::Windows::Forms::TabControl^  tabControl;
-        System::Windows::Forms::TabPage^  tabPageFriends;
-        System::Windows::Forms::TabPage^  tabPageGuild;
-
-
-        System::Windows::Forms::ListBox^  FriendsListbox;
-    private: System::Windows::Forms::ListBox^  GuildListbox;
-
-    private: System::Windows::Forms::CheckBox^  scrollingCheckbox;
-             System::Windows::Forms::TabPage^  tabPageSettings;
+        System::Windows::Forms::RichTextBox^    viewtext;
+        System::Windows::Forms::TextBox^        inputtext;
+		System::ComponentModel::Container^      components;
+        System::Windows::Forms::Label^          channel_label;
+        System::Windows::Forms::TabControl^     tabControl;
+        System::Windows::Forms::TabPage^        tabPageFriends;
+        System::Windows::Forms::TabPage^        tabPageGuild;
+        System::Windows::Forms::ListBox^        FriendsListbox;
+        System::Windows::Forms::ListBox^        GuildListbox;
+        System::Windows::Forms::CheckBox^       scrollingCheckbox;
+        System::Windows::Forms::TabPage^        tabPageSettings;
 
 #pragma region Windows Form Designer generated code
 		/// <summary>
@@ -99,15 +96,16 @@ namespace chb {
                 | System::Windows::Forms::AnchorStyles::Left)
                 | System::Windows::Forms::AnchorStyles::Right));
             this->viewtext->BackColor = System::Drawing::Color::White;
+            this->viewtext->DetectUrls = false;
             this->viewtext->ForeColor = System::Drawing::Color::Black;
             this->viewtext->Location = System::Drawing::Point(12, 12);
-            this->viewtext->Multiline = true;
             this->viewtext->Name = L"viewtext";
             this->viewtext->ReadOnly = true;
             this->viewtext->ScrollBars = System::Windows::Forms::RichTextBoxScrollBars::Vertical;
             this->viewtext->Size = System::Drawing::Size(475, 242);
             this->viewtext->TabIndex = 0;
             this->viewtext->TabStop = false;
+            this->viewtext->Text = L"";
             // 
             // inputtext
             // 
@@ -204,12 +202,15 @@ namespace chb {
             // scrollingCheckbox
             // 
             this->scrollingCheckbox->AutoSize = true;
+            this->scrollingCheckbox->Checked = true;
+            this->scrollingCheckbox->CheckState = System::Windows::Forms::CheckState::Checked;
             this->scrollingCheckbox->Location = System::Drawing::Point(6, 3);
             this->scrollingCheckbox->Name = L"scrollingCheckbox";
             this->scrollingCheckbox->Size = System::Drawing::Size(100, 17);
             this->scrollingCheckbox->TabIndex = 0;
             this->scrollingCheckbox->Text = L"Enable scrolling";
             this->scrollingCheckbox->UseVisualStyleBackColor = true;
+            this->scrollingCheckbox->CheckedChanged += gcnew System::EventHandler(this, &MainWindow::scrollingCheckbox_CheckedChanged);
             // 
             // MainWindow
             // 
@@ -274,7 +275,7 @@ namespace chb {
             if (mainDllInputFunction != NULL)
                 mainDllInputFunction("/w " +
                     msclr::interop::marshal_as<std::string>(s));
-            this->inputtext->Focus();
+            inputtext->Focus();
         }
         
         System::Void GuildListbox_DoubleClick(System::Object^  sender, System::EventArgs^  e)
@@ -282,7 +283,16 @@ namespace chb {
             if (mainDllInputFunction != NULL)
                 mainDllInputFunction("/w " +
                     msclr::interop::marshal_as<std::string>(GuildListbox->SelectedItem->ToString()));
-            this->inputtext->Focus();
+            inputtext->Focus();
+        }
+
+        System::Void scrollingCheckbox_CheckedChanged(System::Object^  sender, System::EventArgs^  e)
+        {
+            if (scrollingCheckbox->Checked)
+            {
+                viewtext->SelectionStart = viewtext->Text->Length;
+                viewtext->ScrollToCaret();
+            }
         }
 };
 

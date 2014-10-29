@@ -1,12 +1,27 @@
 project chb - chatbox client for World of Warcraft:The Burning Crusade 2.4.3
 created by koostosh (koostosh@gmail.com) with wide support from Hellground team
-distribution 0.3.0 under GNU General Public Licence
+version 0.4.0 ( build 68, 29.10.2014 )
 
 based on WoW:TBC 2.4.3 server code from MaNGOS, Trinity and Hellground projets
 (http://www.mangosproject.org/ ; http://www.trinitycore.org/ ; http://www.hellground.net)
-Includes parts of code from openSSL project (http://www.openssl.org/)
-This product includes cryptographic software written by Eric Young (eay@cryptsoft.com)
-This product includes software written by Tim Hudson (tjh@cryptsoft.com)
 
 Warning: using this product requires server-side support; author does not take
 ANY responsibility for ANY losses resulting from use of this software.
+
+CHANGELOG:
+=== v 0.4.0 ===
+- Properly parse characters from latin alphabet
+- Fix autoscroll feature
+- Fix crashes on too long chat messages
+- Major structural changes - remove openssl
+=== v 0.3.2 ===
+- Structural changes - switch to new compiler, use latest openssl version
+=== v 0.3.1 ===
+- Many crashfixes on some machines
+=== v 0.3.0 ===
+- Add guild rooster
+- Add friend list
+=== v 0.2.0 ===
+- Graphical user interface
+=== v 0.1.0 ===
+- First release, nothing interesting at all
