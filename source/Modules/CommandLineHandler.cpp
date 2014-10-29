@@ -1,5 +1,5 @@
-#include "CHBMain.h"
-#include "Util.h"
+#include "..\CHBMain.h"
+#include "..\Util.h"
 
 void Session::ClUpdate(std::string clData)
 {

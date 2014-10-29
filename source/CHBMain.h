@@ -2,8 +2,8 @@
 #define CHBMAIN_H
 
 #include "Session.h"
-#include "MainSocket.h"
-#include "AuthProcessor.h"
+#include "Sockets\MainSocket.h"
+#include "Sockets\AuthProcessor.h"
 
 class CHBMain
 {

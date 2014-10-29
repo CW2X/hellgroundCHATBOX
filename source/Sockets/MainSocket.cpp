@@ -1,6 +1,6 @@
 #include "MainSocket.h"
-#include "Util.h"
-#include "Auth\MySha.h"
+#include "..\Util.h"
+#include "MySha.h"
 
 MainSocket::MainSocket()
 {

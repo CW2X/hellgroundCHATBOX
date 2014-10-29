@@ -1,10 +1,10 @@
 #ifndef SESSION_H
 #define SESSION_H
 
-#include "LoginModule.h"
-#include "ChatModule.h"
-#include "SocialModule.h"
-#include "Database.h"
+#include "Modules/LoginModule.h"
+#include "Modules/ChatModule.h"
+#include "Modules/SocialModule.h"
+#include "Modules/Database.h"
 
 class MainSocket;
 

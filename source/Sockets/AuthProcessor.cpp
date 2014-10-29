@@ -1,7 +1,7 @@
 #include "AuthProcessor.h"
-#include "Util.h"
-#include "Auth\MySha.h"
-#include "Auth\MontgomeryExp.h"
+#include "..\Util.h"
+#include "MySha.h"
+#include "MontgomeryExp.h"
 
 AuthProcessor::AuthProcessor()
 {

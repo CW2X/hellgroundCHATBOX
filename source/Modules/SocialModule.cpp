@@ -1,5 +1,5 @@
 #include "SocialModule.h"
-#include "Util.h"
+#include "..\Util.h"
 #include "Database.h"
 
 void SocialModule::Handle(inc_pack* InPack)

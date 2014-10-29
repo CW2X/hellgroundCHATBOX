@@ -1,5 +1,5 @@
 #include "LoginModule.h"
-#include "Util.h"
+#include "..\Util.h"
 #include "Database.h"
 
 void LoginModule::Handle(inc_pack* InPack)

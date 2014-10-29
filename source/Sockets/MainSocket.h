@@ -2,7 +2,7 @@
 #define MAIN_SOCKET_H
 
 #include "BaseSocket.h"
-#include "iopackets.h"
+#include "..\iopackets.h"
 
 class MainSocket : public BaseSocket
 {

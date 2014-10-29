@@ -92,12 +92,11 @@ void MainWindow::print_msg()
     }
     else
     {
-        viewtext->Text = viewtext->Text + readData;
+        
         if(this->scrollingCheckbox->Checked)
-        {
-            viewtext->Select(viewtext->TextLength-1,0);
-            viewtext->ScrollToCaret();
-        }
+            viewtext->AppendText(readData);
+        else
+            viewtext->Text = viewtext->Text + readData;
     }
 }
 

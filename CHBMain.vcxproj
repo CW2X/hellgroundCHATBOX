@@ -41,42 +41,42 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalDependencies>source\libeay32.lib;Ws2_32.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>Ws2_32.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>if exist $(TargetPath) copy $(TargetPath) $(OutDir)..</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="source\AuthProcessor.cpp" />
-    <ClCompile Include="source\Auth\MontgomeryExp.cpp" />
-    <ClCompile Include="source\Auth\MySha.cpp" />
-    <ClCompile Include="source\BaseSocket.cpp" />
-    <ClCompile Include="source\ChatModule.cpp" />
+    <ClCompile Include="source\Sockets\AuthProcessor.cpp" />
+    <ClCompile Include="source\Sockets\MontgomeryExp.cpp" />
+    <ClCompile Include="source\Sockets\MySha.cpp" />
+    <ClCompile Include="source\Sockets\BaseSocket.cpp" />
+    <ClCompile Include="source\Modules\ChatModule.cpp" />
     <ClCompile Include="source\CHBMain.cpp" />
-    <ClCompile Include="source\CommandLineHandler.cpp" />
-    <ClCompile Include="source\Database.cpp" />
-    <ClCompile Include="source\LoginModule.cpp" />
-    <ClCompile Include="source\MainSocket.cpp" />
+    <ClCompile Include="source\Modules\CommandLineHandler.cpp" />
+    <ClCompile Include="source\Modules\Database.cpp" />
+    <ClCompile Include="source\Modules\LoginModule.cpp" />
+    <ClCompile Include="source\Sockets\MainSocket.cpp" />
     <ClCompile Include="source\Session.cpp" />
-    <ClCompile Include="source\SocialModule.cpp" />
+    <ClCompile Include="source\Modules\SocialModule.cpp" />
     <ClCompile Include="source\Util.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="source\AuthProcessor.h" />
-    <ClInclude Include="source\Auth\MontgomeryExp.h" />
-    <ClInclude Include="source\Auth\MySha.h" />
-    <ClInclude Include="source\BaseSocket.h" />
+    <ClInclude Include="source\Sockets\AuthProcessor.h" />
+    <ClInclude Include="source\Sockets\MontgomeryExp.h" />
+    <ClInclude Include="source\Sockets\MySha.h" />
+    <ClInclude Include="source\Sockets\BaseSocket.h" />
     <ClInclude Include="source\base_defs.h" />
-    <ClInclude Include="source\ChatModule.h" />
+    <ClInclude Include="source\Modules\ChatModule.h" />
     <ClInclude Include="source\CHBMain.h" />
-    <ClInclude Include="source\Database.h" />
+    <ClInclude Include="source\Modules\Database.h" />
     <ClInclude Include="source\iopackets.h" />
-    <ClInclude Include="source\LoginModule.h" />
-    <ClInclude Include="source\MainSocket.h" />
-    <ClInclude Include="source\Module.h" />
+    <ClInclude Include="source\Modules\LoginModule.h" />
+    <ClInclude Include="source\Sockets\MainSocket.h" />
+    <ClInclude Include="source\Modules\Module.h" />
     <ClInclude Include="source\Session.h" />
-    <ClInclude Include="source\SocialModule.h" />
+    <ClInclude Include="source\Modules\SocialModule.h" />
     <ClInclude Include="source\Util.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

@@ -1,8 +1,8 @@
 #ifndef MODULE_H
 #define MODULE_H
 
-#include "base_defs.h"
-#include "iopackets.h"
+#include "..\base_defs.h"
+#include "..\iopackets.h"
 
 class Module
 {

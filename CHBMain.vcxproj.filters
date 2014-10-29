@@ -2,83 +2,93 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <ClCompile Include="source\CHBMain.cpp" />
-    <ClCompile Include="source\AuthProcessor.cpp">
-      <Filter>sockets</Filter>
-    </ClCompile>
-    <ClCompile Include="source\BaseSocket.cpp">
-      <Filter>sockets</Filter>
-    </ClCompile>
-    <ClCompile Include="source\MainSocket.cpp">
-      <Filter>sockets</Filter>
-    </ClCompile>
-    <ClCompile Include="source\CommandLineHandler.cpp" />
     <ClCompile Include="source\Session.cpp" />
-    <ClCompile Include="source\ChatModule.cpp">
+    <ClCompile Include="source\Sockets\AuthProcessor.cpp">
+      <Filter>sockets</Filter>
+    </ClCompile>
+    <ClCompile Include="source\Sockets\BaseSocket.cpp">
+      <Filter>sockets</Filter>
+    </ClCompile>
+    <ClCompile Include="source\Sockets\MainSocket.cpp">
+      <Filter>sockets</Filter>
+    </ClCompile>
+    <ClCompile Include="source\Sockets\MontgomeryExp.cpp">
+      <Filter>sockets</Filter>
+    </ClCompile>
+    <ClCompile Include="source\Sockets\MySha.cpp">
+      <Filter>sockets</Filter>
+    </ClCompile>
+    <ClCompile Include="source\Util.cpp">
+      <Filter>utils</Filter>
+    </ClCompile>
+    <ClCompile Include="source\Modules\ChatModule.cpp">
       <Filter>modules</Filter>
     </ClCompile>
-    <ClCompile Include="source\Database.cpp">
+    <ClCompile Include="source\Modules\Database.cpp">
       <Filter>modules</Filter>
     </ClCompile>
-    <ClCompile Include="source\LoginModule.cpp">
+    <ClCompile Include="source\Modules\CommandLineHandler.cpp">
       <Filter>modules</Filter>
     </ClCompile>
-    <ClCompile Include="source\SocialModule.cpp">
+    <ClCompile Include="source\Modules\LoginModule.cpp">
       <Filter>modules</Filter>
     </ClCompile>
-    <ClCompile Include="source\Auth\MySha.cpp">
-      <Filter>auth</Filter>
-    </ClCompile>
-    <ClCompile Include="source\Util.cpp" />
-    <ClCompile Include="source\Auth\MontgomeryExp.cpp">
-      <Filter>auth</Filter>
+    <ClCompile Include="source\Modules\SocialModule.cpp">
+      <Filter>modules</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="source\base_defs.h" />
-    <ClInclude Include="source\iopackets.h" />
-    <ClInclude Include="source\Util.h" />
-    <ClInclude Include="source\AuthProcessor.h">
-      <Filter>sockets</Filter>
-    </ClInclude>
-    <ClInclude Include="source\BaseSocket.h">
-      <Filter>sockets</Filter>
-    </ClInclude>
-    <ClInclude Include="source\MainSocket.h">
-      <Filter>sockets</Filter>
-    </ClInclude>
     <ClInclude Include="source\CHBMain.h" />
     <ClInclude Include="source\Session.h" />
-    <ClInclude Include="source\ChatModule.h">
+    <ClInclude Include="source\Sockets\AuthProcessor.h">
+      <Filter>sockets</Filter>
+    </ClInclude>
+    <ClInclude Include="source\Sockets\BaseSocket.h">
+      <Filter>sockets</Filter>
+    </ClInclude>
+    <ClInclude Include="source\Sockets\MainSocket.h">
+      <Filter>sockets</Filter>
+    </ClInclude>
+    <ClInclude Include="source\Sockets\MontgomeryExp.h">
+      <Filter>sockets</Filter>
+    </ClInclude>
+    <ClInclude Include="source\Sockets\MySha.h">
+      <Filter>sockets</Filter>
+    </ClInclude>
+    <ClInclude Include="source\base_defs.h">
+      <Filter>utils</Filter>
+    </ClInclude>
+    <ClInclude Include="source\iopackets.h">
+      <Filter>utils</Filter>
+    </ClInclude>
+    <ClInclude Include="source\Util.h">
+      <Filter>utils</Filter>
+    </ClInclude>
+    <ClInclude Include="source\Modules\ChatModule.h">
       <Filter>modules</Filter>
     </ClInclude>
-    <ClInclude Include="source\Database.h">
+    <ClInclude Include="source\Modules\Database.h">
       <Filter>modules</Filter>
     </ClInclude>
-    <ClInclude Include="source\LoginModule.h">
+    <ClInclude Include="source\Modules\LoginModule.h">
       <Filter>modules</Filter>
     </ClInclude>
-    <ClInclude Include="source\SocialModule.h">
+    <ClInclude Include="source\Modules\SocialModule.h">
       <Filter>modules</Filter>
     </ClInclude>
-    <ClInclude Include="source\Module.h">
+    <ClInclude Include="source\Modules\Module.h">
       <Filter>modules</Filter>
-    </ClInclude>
-    <ClInclude Include="source\Auth\MySha.h">
-      <Filter>auth</Filter>
-    </ClInclude>
-    <ClInclude Include="source\Auth\MontgomeryExp.h">
-      <Filter>auth</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="sockets">
       <UniqueIdentifier>{6bf4cf53-1cce-45fb-973c-ded3956a9e3d}</UniqueIdentifier>
     </Filter>
-    <Filter Include="auth">
-      <UniqueIdentifier>{7b3b9d40-b935-4436-a2b4-173831e72235}</UniqueIdentifier>
-    </Filter>
     <Filter Include="modules">
       <UniqueIdentifier>{c130a5fe-8df1-497e-86e1-9c9f8ab35208}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="utils">
+      <UniqueIdentifier>{62848841-6eef-4b20-8ca8-9f8ba35286a3}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

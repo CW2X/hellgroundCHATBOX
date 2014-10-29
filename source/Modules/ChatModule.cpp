@@ -1,5 +1,5 @@
 #include "ChatModule.h"
-#include "Util.h"
+#include "..\Util.h"
 #include "Database.h"
 
 ChatModule::ChatModule()

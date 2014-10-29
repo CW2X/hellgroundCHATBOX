@@ -1,5 +1,5 @@
 #pragma once
-#include "base_defs.h"
+#include "..\base_defs.h"
 #include <msclr\marshal_cppstd.h>
 
 namespace chb {
@@ -55,7 +55,7 @@ namespace chb {
         mainDllUpdateType mainDllUpdateFunction;
         mainDllInputType mainDllInputFunction;
     private:
-        System::Windows::Forms::TextBox^  viewtext;
+        System::Windows::Forms::RichTextBox^  viewtext;
         System::Windows::Forms::TextBox^  inputtext;
 		System::ComponentModel::Container ^components;
         System::Windows::Forms::Label^  channel_label;
@@ -77,7 +77,7 @@ namespace chb {
 		/// </summary>
 		void InitializeComponent(void)
 		{
-            this->viewtext = (gcnew System::Windows::Forms::TextBox());
+            this->viewtext = (gcnew System::Windows::Forms::RichTextBox());
             this->inputtext = (gcnew System::Windows::Forms::TextBox());
             this->channel_label = (gcnew System::Windows::Forms::Label());
             this->tabControl = (gcnew System::Windows::Forms::TabControl());
@@ -95,8 +95,8 @@ namespace chb {
             // 
             // viewtext
             // 
-            this->viewtext->Anchor = static_cast<System::Windows::Forms::AnchorStyles>((((System::Windows::Forms::AnchorStyles::Top | System::Windows::Forms::AnchorStyles::Bottom) 
-                | System::Windows::Forms::AnchorStyles::Left) 
+            this->viewtext->Anchor = static_cast<System::Windows::Forms::AnchorStyles>((((System::Windows::Forms::AnchorStyles::Top | System::Windows::Forms::AnchorStyles::Bottom)
+                | System::Windows::Forms::AnchorStyles::Left)
                 | System::Windows::Forms::AnchorStyles::Right));
             this->viewtext->BackColor = System::Drawing::Color::White;
             this->viewtext->ForeColor = System::Drawing::Color::Black;
@@ -104,14 +104,14 @@ namespace chb {
             this->viewtext->Multiline = true;
             this->viewtext->Name = L"viewtext";
             this->viewtext->ReadOnly = true;
-            this->viewtext->ScrollBars = System::Windows::Forms::ScrollBars::Vertical;
+            this->viewtext->ScrollBars = System::Windows::Forms::RichTextBoxScrollBars::Vertical;
             this->viewtext->Size = System::Drawing::Size(475, 242);
             this->viewtext->TabIndex = 0;
             this->viewtext->TabStop = false;
             // 
             // inputtext
             // 
-            this->inputtext->Anchor = static_cast<System::Windows::Forms::AnchorStyles>(((System::Windows::Forms::AnchorStyles::Bottom | System::Windows::Forms::AnchorStyles::Left) 
+            this->inputtext->Anchor = static_cast<System::Windows::Forms::AnchorStyles>(((System::Windows::Forms::AnchorStyles::Bottom | System::Windows::Forms::AnchorStyles::Left)
                 | System::Windows::Forms::AnchorStyles::Right));
             this->inputtext->Location = System::Drawing::Point(115, 260);
             this->inputtext->Name = L"inputtext";
@@ -133,7 +133,7 @@ namespace chb {
             // 
             // tabControl
             // 
-            this->tabControl->Anchor = static_cast<System::Windows::Forms::AnchorStyles>(((System::Windows::Forms::AnchorStyles::Top | System::Windows::Forms::AnchorStyles::Bottom) 
+            this->tabControl->Anchor = static_cast<System::Windows::Forms::AnchorStyles>(((System::Windows::Forms::AnchorStyles::Top | System::Windows::Forms::AnchorStyles::Bottom)
                 | System::Windows::Forms::AnchorStyles::Right));
             this->tabControl->Controls->Add(this->tabPageFriends);
             this->tabControl->Controls->Add(this->tabPageGuild);
@@ -158,7 +158,7 @@ namespace chb {
             // 
             // FriendsListbox
             // 
-            this->FriendsListbox->Anchor = static_cast<System::Windows::Forms::AnchorStyles>(((System::Windows::Forms::AnchorStyles::Top | System::Windows::Forms::AnchorStyles::Bottom) 
+            this->FriendsListbox->Anchor = static_cast<System::Windows::Forms::AnchorStyles>(((System::Windows::Forms::AnchorStyles::Top | System::Windows::Forms::AnchorStyles::Bottom)
                 | System::Windows::Forms::AnchorStyles::Left));
             this->FriendsListbox->FormattingEnabled = true;
             this->FriendsListbox->IntegralHeight = false;
@@ -204,8 +204,6 @@ namespace chb {
             // scrollingCheckbox
             // 
             this->scrollingCheckbox->AutoSize = true;
-            this->scrollingCheckbox->Checked = true;
-            this->scrollingCheckbox->CheckState = System::Windows::Forms::CheckState::Checked;
             this->scrollingCheckbox->Location = System::Drawing::Point(6, 3);
             this->scrollingCheckbox->Name = L"scrollingCheckbox";
             this->scrollingCheckbox->Size = System::Drawing::Size(100, 17);

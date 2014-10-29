@@ -3,7 +3,7 @@
 
 #include <ws2tcpip.h>
 #include <WinSock2.h>
-#include "base_defs.h"
+#include "../base_defs.h"
 
 class BaseSocket
 {
