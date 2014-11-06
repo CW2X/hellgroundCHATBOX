@@ -1,5 +1,5 @@
-#ifndef BASE_DEFINES
-#define BASE_DEFINES
+#ifndef BASE_DEFS_H
+#define BASE_DEFS_H
 
 #include <stdio.h>
 #include <string>
