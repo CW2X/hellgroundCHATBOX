@@ -1,5 +1,4 @@
 #pragma once
-#include "..\base_defs.h"
 #include <msclr\marshal_cppstd.h>
 
 namespace chb {
@@ -40,6 +39,7 @@ namespace chb {
 			}
 		}
         void print_msg();
+        void parse_commands();
         void set_channel_label();
         void friend_add_online();
         void friend_add_offline();
@@ -49,6 +49,7 @@ namespace chb {
 
         void BackgroundThread();
         String^ readData;
+        String^ commandData;
 
 	    Thread^ backThread;
         bool ExitingProgram;

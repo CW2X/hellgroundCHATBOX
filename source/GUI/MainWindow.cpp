@@ -6,6 +6,7 @@ void MainWindow::BackgroundThread()
     std::string retstr;
     std::string commstr;
 
+    Thread::Sleep(500);// wait for everything to get ready
     while(1)
     {
         //Load functions if nesescary
@@ -24,92 +25,93 @@ void MainWindow::BackgroundThread()
         mainDllUpdateFunction(&retstr,&commstr);
 
         //print output
-        if (retstr != "")
+        if (!retstr.empty())
         {
-            readData = gcnew String(retstr.c_str());
-            print_msg();
+            readData = %String(retstr.c_str());
+            this->Invoke(gcnew MethodInvoker(this, &chb::MainWindow::print_msg));
         }
-        
-        //parse internal commands
-        while(!commstr.empty())
-        {
-            size_t siz = commstr.find("\n");
-            std::string sub= commstr.substr(0,siz);
-            if (siz != std::string::npos)
-                commstr.erase(0,siz+1);
-            else
-                commstr.clear();
 
-            if (sub == "Ln")
-            {
-                Thread::Sleep(500);
-                CreateLoginForm();
-            }
-            else if (sub.substr(0,3) == "Ch:")
-            {
-                readData = gcnew String((sub.substr(3,sub.length()-3) + ":").c_str());
-                set_channel_label();
-            }
-            else if (sub.substr(0,4) == "FrAN")
-            {
-                readData = gcnew String(sub.substr(4,sub.length()-4).c_str());
-                friend_add_online();
-            }
-            else if (sub.substr(0,4) == "FrAF")
-            {
-                readData = gcnew String(sub.substr(4,sub.length()-4).c_str());
-                friend_add_offline();
-            }
-            else if (sub.substr(0,3) == "FrR")
-            {
-                readData = gcnew String(sub.substr(3,sub.length()-3).c_str());
-                friend_remove();
-            }
-            else if (sub.substr(0,3) == "GuA")
-            {
-                readData = gcnew String(sub.substr(3,sub.length()-3).c_str());
-                guild_add();
-            }
-            else if (sub.substr(0,3) == "GuR")
-            {
-                readData = gcnew String(sub.substr(3,sub.length()-3).c_str());
-                guild_remove();
-            }
-            else
-            {
-                readData = gcnew String("UIC\r\n");
-                print_msg();
-            }
+        //parse internal commands
+        if (!commstr.empty())
+        {
+            commandData = %String(commstr.c_str());
+            parse_commands();
         }
     }
 }
 
 void MainWindow::print_msg()
 {
-    if (this->InvokeRequired)
+    if (this->scrollingCheckbox->Checked)
     {
-        this->Invoke(gcnew MethodInvoker(this,&chb::MainWindow::print_msg));
+        viewtext->AppendText(readData);
+        viewtext->SelectionStart = viewtext->Text->Length;
+        viewtext->ScrollToCaret();
     }
     else
+        viewtext->AppendText(readData);
+}
+
+void MainWindow::parse_commands()
+{
+    while (!String::IsNullOrEmpty(commandData))
     {
-        
-        if (this->scrollingCheckbox->Checked)
+        int siz = commandData->IndexOf("\n");
+        String^ sub = commandData->Substring(0, siz);
+        if (siz != commandData->Length)
+            commandData = commandData->Remove(0,siz+1);
+        else
+            commandData->Remove(commandData->Length);
+
+        if (sub == "Ln")
         {
-            viewtext->AppendText(readData);
-            viewtext->SelectionStart = viewtext->Text->Length;
-            viewtext->ScrollToCaret();
+            CreateLoginForm();
+        }
+        else if (sub->Substring(0, 3) == "Ch:")
+        {
+            readData = sub->Substring(3, sub->Length - 3);
+            set_channel_label();
+        }
+        else if (sub->Substring(0, 4) == "FrAN")
+        {
+            readData = sub->Substring(4, sub->Length - 4);
+            friend_add_online();
+        }
+        else if (sub->Substring(0, 4) == "FrAF")
+        {
+            readData = sub->Substring(4, sub->Length - 4);
+            friend_add_offline();
+        }
+        else if (sub->Substring(0, 3) == "FrR")
+        {
+            readData = sub->Substring(3, sub->Length - 3);
+            friend_remove();
+        }
+        else if (sub->Substring(0, 3) == "GuA")
+        {
+            readData = sub->Substring(3, sub->Length - 3);
+            guild_add();
+        }
+        else if (sub->Substring(0, 3) == "GuR")
+        {
+            readData = sub->Substring(3, sub->Length - 3);
+            guild_remove();
         }
         else
-            viewtext->AppendText(readData);
+        {
+            readData = gcnew String("UIC\r\n");
+            print_msg();
+        }
     }
 }
+
 
 void MainWindow::set_channel_label()
 {
     if (this->InvokeRequired)
         this->Invoke(gcnew MethodInvoker(this,&chb::MainWindow::set_channel_label));
     else
-        channel_label->Text = readData;
+        channel_label->Text = readData->Concat(":");
 }
 
 void MainWindow::friend_add_online()
