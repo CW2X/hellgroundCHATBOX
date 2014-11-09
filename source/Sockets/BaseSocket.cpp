@@ -73,7 +73,7 @@ void BaseSocket::recv_packet(char* buffer, uint16* datalength)
     FD_ZERO(&recvset);
     FD_SET(MySocket,&recvset);
     tv.tv_sec  = 0;
-    tv.tv_usec = 0;
+    tv.tv_usec = 5;
     if (select(MySocket+1,&recvset,NULL,NULL,& tv) == 1)
     {
         if (*datalength == 0)
