@@ -69,7 +69,7 @@ void MainWindow::parse_commands()
         }
         else if (sub->Substring(0, 3) == "Ch:")
         {
-            readData = sub->Substring(3, sub->Length - 3);
+            readData = String::Concat(sub->Substring(3, sub->Length - 3), ":");
             set_channel_label();
         }
         else if (sub->Substring(0, 4) == "FrAN")
@@ -111,7 +111,7 @@ void MainWindow::set_channel_label()
     if (this->InvokeRequired)
         this->Invoke(gcnew MethodInvoker(this,&chb::MainWindow::set_channel_label));
     else
-        channel_label->Text = readData->Concat(":");
+        channel_label->Text = readData;
 }
 
 void MainWindow::friend_add_online()
