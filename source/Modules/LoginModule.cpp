@@ -29,7 +29,6 @@ void LoginModule::handle_smsg_char_enum(inc_pack* InPack)
     // data: |number of characters|char 1|char2|...
     // character struct: |guid(8)|name|0|race(1)|class(1)|gender(1)|look(5)|level(1)|zone(4)|map(4)|xyz floats(12)|
     // |guild(4)|flags(4)|1|petdisplay(4)|petlvl(4)|petfamily(4)|items (20*9)| = 239 + name
-    uint16 point = 1;
     uint8  nofchars;
 
     *InPack >> nofchars;

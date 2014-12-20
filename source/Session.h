@@ -14,7 +14,6 @@ public:
     Session();
     void Update(inc_pack* InPack);
     void ClUpdate(std::string clData);
-    void InitializeSocket(std::string username, std::string password);
 private:
     void handle_Cl(std::string clData);
 

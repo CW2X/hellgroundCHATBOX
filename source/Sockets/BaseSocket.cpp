@@ -21,7 +21,6 @@ void BaseSocket::open_socket()
     hints.ai_protocol = IPPROTO_TCP;
     IsError = getaddrinfo(AddressString.c_str(),PortString.c_str(), &hints, &result);
     if ( IsError != 0 ) {
-        WSACleanup();
         throw string_format("getaddrinfo failed with error: %d\r\n", IsError);
     }
     
@@ -30,7 +29,6 @@ void BaseSocket::open_socket()
             ptr->ai_protocol);
         
         if (MySocket == INVALID_SOCKET) {
-            WSACleanup();
             throw string_format("socket failed with error: %ld\r\n", WSAGetLastError());
         }
         
@@ -46,7 +44,6 @@ void BaseSocket::open_socket()
     freeaddrinfo(result);
 
     if (MySocket == INVALID_SOCKET) {
-        WSACleanup();
         throw "Unable to connect to server!\r\n";
     }
     
@@ -59,7 +56,6 @@ void BaseSocket::send_packet(char buffer[BUFFER_SIZE_OUT],uint16 datalength)
     int IsError = send( MySocket,buffer, datalength, 0 );
     if (IsError == SOCKET_ERROR) {
         closesocket(MySocket);
-        WSACleanup();
         throw string_format("send failed with error: %d\r\n", WSAGetLastError());
     }
 }
@@ -73,7 +69,7 @@ void BaseSocket::recv_packet(char* buffer, uint16* datalength)
     FD_ZERO(&recvset);
     FD_SET(MySocket,&recvset);
     tv.tv_sec  = 0;
-    tv.tv_usec = 5;
+    tv.tv_usec = 0;
     if (select(MySocket+1,&recvset,NULL,NULL,& tv) == 1)
     {
         if (*datalength == 0)
@@ -92,6 +88,5 @@ void BaseSocket::recv_packet(char* buffer, uint16* datalength)
 void BaseSocket::close_socket()
 {
     closesocket(MySocket);
-    WSACleanup();
     return;
 }

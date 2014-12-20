@@ -10,6 +10,7 @@ void chb::MainWindow::CreateLoginForm()
     {
         Form^ form = gcnew LoginForm;
         form->Owner = this;
+        form->ShowInTaskbar = false;
         form->Show();
     }
 }
