@@ -46,6 +46,7 @@ namespace chb {
         void friend_remove();
         void guild_add();
         void guild_remove();
+        void clear_screen();
 
         void BackgroundThread();
         String^ readData;

@@ -78,4 +78,9 @@ void Session::handle_Cl(std::string clData)
         return;
     }
 
+    if (cmd == "cls")
+    {
+        sCHBMain->i_comm("Cls\n");
+        return;
+    }
 }

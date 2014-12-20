@@ -24,17 +24,20 @@ void MainWindow::BackgroundThread()
         //call function
         mainDllUpdateFunction(&retstr,&commstr);
 
+        if (retstr.empty() && commstr.empty())
+            Thread::Sleep(5);
+
         //print output
         if (!retstr.empty())
         {
-            readData = %String(retstr.c_str());
+            readData = gcnew String(retstr.c_str());
             this->Invoke(gcnew MethodInvoker(this, &chb::MainWindow::print_msg));
         }
 
         //parse internal commands
         if (!commstr.empty())
         {
-            commandData = %String(commstr.c_str());
+            commandData = gcnew String(commstr.c_str());
             parse_commands();
         }
     }
@@ -66,6 +69,10 @@ void MainWindow::parse_commands()
         if (sub == "Ln")
         {
             CreateLoginForm();
+        }
+        else if (sub == "Cls")
+        {
+            clear_screen();
         }
         else if (sub->Substring(0, 3) == "Ch:")
         {
@@ -159,6 +166,15 @@ void MainWindow::guild_remove()
     else
         GuildListbox->Items->Remove(readData);
 }
+
+void MainWindow::clear_screen()
+{
+    if (this->InvokeRequired)
+        this->Invoke(gcnew MethodInvoker(this, &chb::MainWindow::set_channel_label));
+    else
+        viewtext->Clear();
+}
+
 void MainWindow::LoginFormReturn(std::string username,std::string password)
 {
     if (mainDllInputFunction != NULL)
