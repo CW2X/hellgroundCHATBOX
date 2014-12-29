@@ -17,8 +17,16 @@ void SocialModule::Handle(inc_pack* InPack)
 
 void SocialModule::Command(std::string cmd,std::string args)
 {
-    if(cmd == "loadguild")
+    if (cmd == "loadguild")
         send_cmsg_guild_roster();
+    else if (cmd == "friend" && !args.empty())
+        cmd_friend(args);
+    else if (cmd == "unfriend" && !args.empty())
+        cmd_unfriend(args);
+    else if (cmd == "ignore" && !args.empty())
+        cmd_ignore(args);
+    else if (cmd == "unignore" && !args.empty())
+        cmd_unignore(args);
 }
 
 void SocialModule::handle_smsg_contact_list(inc_pack* InPack)
@@ -65,21 +73,73 @@ void SocialModule::handle_smsg_friend_status(inc_pack* InPack)
     *InPack >> result >> guid;
     InPack->skip(4);
     if (result == 6 || result == 7)
+    {
         *InPack >> note;
+        print("Friend added\r\n");
+    }
     if (result == 2 || result == 6)
     {
         *InPack >> status;
         InPack->skip(12);
     }
-    if (result == 2 || result == 3 || result == 6 || result == 7)
+
+    switch (result)
     {
+    case 0:
+        print("Friend database error\r\n");
+        break;
+    case 1:
+        print("Friend list full\r\n");
+        break;
+    case 2:
+    case 3:
+    case 6:
+    case 7:
         if (note != "")
             sDB->FriendInfoMap[guid].note = note;
         sDB->FriendInfoMap[guid].status = status;
-        name = sDB->Guid_to_name(guid,false);
+        name = sDB->Guid_to_name(guid, false);
         if (name[0] != '#')
-            i_comm(string_format("%s%s\n",status ? "FrAN" : "FrAF",name.c_str()));
+            i_comm(string_format("%s%s\n", status ? "FrAN" : "FrAF", name.c_str()));
+        break;
+    case 4:
+        print("Friend not found\r\n");
+        break;
+    case 5:
+        i_comm(string_format("FrR%s\n", sDB->PlayersInfoMap[guid].name.c_str()));
+        sDB->FriendInfoMap.erase(guid);
+        print("Friend removed\r\n");
+        break;
+    case 8:
+        print("Already a friend\r\n");
+        break;
+    case 9:
+        print("Cannot add yourself as friend\r\n");
+        break;
+    case 10:
+        print("Cannot add enemy as a friend\r\n");
+        break;
+    case 11:
+        print("Ignore list full\r\n");
+        break;
+    case 12:
+        print("Cannot add yourself as ignore\r\n");
+        break;
+    case 13:
+        print("Ignore target not found\r\n");
+        break;
+    case 14:
+        print("Already ignored\r\n");
+        break;
+    case 15:
+        print("Ignore added\r\n");
+        break;
+    case 16:
+        print("Ignore removed\r\n");
+        break;
+
     }
+
 }
 
 void SocialModule::handle_smsg_guild_roster(inc_pack* InPack)
@@ -162,5 +222,62 @@ void SocialModule::handle_smsg_guild_event(inc_pack* InPack)
 void SocialModule::send_cmsg_guild_roster()
 {
     OuPack.reset( 0x0089);
+    send_out_pack();
+}
+
+void SocialModule::cmd_friend(std::string args)
+{
+    OuPack.reset(0x0069);
+    OuPack << args;
+    OuPack << uint8(0);
+    send_out_pack();
+}
+
+void SocialModule::cmd_unfriend(std::string args)
+{
+    string_to_uppercase(args);
+    std::string curentname;
+    uint32 guid = 0;
+    for (std::map<uint32, PlayerInfo>::iterator itr = sDB->PlayersInfoMap.begin(); itr != sDB->PlayersInfoMap.end(); itr++)
+    {
+        curentname = itr->second.name;
+        string_to_uppercase(curentname);
+        if (curentname == args)
+            guid = itr->first;
+    }
+
+    if (guid == 0)
+        return;
+
+    OuPack.reset(0x006A);
+    OuPack << guid << uint32(0);
+    send_out_pack();
+}
+
+void SocialModule::cmd_ignore(std::string args)
+{
+    OuPack.reset(0x006C);
+    OuPack << args;
+    send_out_pack();
+}
+
+void SocialModule::cmd_unignore(std::string args)
+{
+    string_to_uppercase(args);
+    std::string curentname;
+    uint32 guid = 0;
+    for (std::map<uint32, PlayerInfo>::iterator itr = sDB->PlayersInfoMap.begin(); itr != sDB->PlayersInfoMap.end(); itr++)
+    {
+        curentname = itr->second.name;
+        string_to_uppercase(curentname);
+        if (curentname == args)
+            guid = itr->first;
+    }
+
+    if (guid == 0)
+        return;
+
+    OuPack.reset(0x006D);
+    OuPack << guid << uint32(0);
     send_out_pack();
 }

@@ -33,6 +33,10 @@ private:
 
     void send_cmsg_guild_roster();
 
+    void cmd_friend(std::string args);
+    void cmd_unfriend(std::string args);
+    void cmd_ignore(std::string args);
+    void cmd_unignore(std::string args);
 };
 
 #endif

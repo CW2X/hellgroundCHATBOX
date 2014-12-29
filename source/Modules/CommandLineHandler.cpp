@@ -72,7 +72,7 @@ void Session::handle_Cl(std::string clData)
         return;
     }
 
-    if(cmd == "loadguild")
+    if(cmd == "loadguild" || cmd == "friend" || cmd == "unfriend" || cmd == "ignore" || cmd == "unignore")
     {
         sSocialModule.Command(cmd,args);
         return;
