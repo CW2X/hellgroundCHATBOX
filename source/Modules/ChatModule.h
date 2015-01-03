@@ -29,6 +29,7 @@ private:
     void handle_smsg_channel_notify(inc_pack* InPack);
     void handle_smsg_channel_list(inc_pack* InPack);
     void handle_smsg_notification(inc_pack* InPack);
+    void handle_smsg_server_message(inc_pack* InPack);
     void handle_smsg_chat_player_not_found(inc_pack* InPack);
     void handle_smsg_userlist_add(inc_pack*);
 

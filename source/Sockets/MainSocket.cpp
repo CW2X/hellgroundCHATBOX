@@ -235,6 +235,7 @@ bool MainSocket::IsIgnoredOpcode(uint16 opcode)
     case 0x01CB: //SMSG_NOTIFICATION
     case 0x01EE: //SMSG_AUTH_RESPONSE
     case 0x0236: //SMSG_LOGIN_VERIFY_WORLD
+    case 0x0291: //SMSG_SERVER_MESSAGE
     case 0x02A9: //SMSG_CHAT_PLAYER_NOT_FOUND
     case 0x03EF: //SMSG_USERLIST_ADD
     case 0x03F1: //SMSG_USERLIST_UPDATE

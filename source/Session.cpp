@@ -22,6 +22,7 @@ void Session::Update(inc_pack* InPack)
     case 0x009B: //SMSG_CHANNEL_LIST
     case 0x01CB: //SMSG_NOTIFICATION
     case 0x02A9: //SMSG_CHAT_PLAYER_NOT_FOUND
+    case 0x0291: //SMSG_SERVER_MESSAGE
     case 0x03EF: //SMSG_USERLIST_ADD
     case 0x03F1: //SMSG_USERLIST_UPDATE
         sChatModule.Handle(InPack); break;

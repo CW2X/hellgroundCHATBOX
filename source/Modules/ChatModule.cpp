@@ -17,7 +17,8 @@ void ChatModule::Handle(inc_pack* InPack)
     case 0x0096: handle_smsg_messagechat(InPack); break;                //SMSG_MESSAGECHAT
     case 0x0099: handle_smsg_channel_notify(InPack); break;             //SMSG_CHANNEL_NOTIFY
     case 0x009B: handle_smsg_channel_list(InPack); break;               //SMSG_CHANNEL_LIST
-    case 0x01CB: handle_smsg_notification(InPack);break;                //SMSG_NOTIFICATION
+    case 0x01CB: handle_smsg_notification(InPack); break;               //SMSG_NOTIFICATION
+    case 0x0291: handle_smsg_server_message(InPack); break;             //SMSG_SERVER_MESSAGE
     case 0x02A9: handle_smsg_chat_player_not_found(InPack);break;       //SMSG_CHAT_PLAYER_NOT_FOUND
     case 0x03EF:                                                        //SMSG_USERLIST_ADD
     case 0x03F1: handle_smsg_userlist_add(InPack); break;               //SMSG_USERLIST_UPDATE
@@ -347,16 +348,29 @@ void ChatModule::send_cmsg_messagechat(std::string data)
     send_out_pack();
 }
 
-void ChatModule::handle_smsg_chat_player_not_found(inc_pack *InPack)
+void ChatModule::handle_smsg_chat_player_not_found(inc_pack* InPack)
 {
     std::string playername;
     *InPack >> playername;
     print("Player " + playername + " not found\r\n");
 }
 
-void ChatModule::handle_smsg_notification(inc_pack *InPack)
+void ChatModule::handle_smsg_notification(inc_pack* InPack)
 {
     std::string notification;
     *InPack >> notification;
     print("NOTIFICATION: " + notification + "\r\n");
+}
+
+void ChatModule::handle_smsg_server_message(inc_pack* InPack)
+{
+    uint32 type;
+    std::string message;
+    *InPack >> type;
+    if (type <= 3)
+        *InPack >> message;
+    else
+        message = (type == 4) ? "shutdown canceled" : "restart canceled";
+
+    print("SERVER MESSAGE: " + message + "\r\n");
 }
