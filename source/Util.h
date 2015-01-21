@@ -13,8 +13,8 @@ inline void string_to_uppercase(std::string& str)
 
 inline std::string utostr(uint32 u)
 {
-    char buf[10];
-    _itoa_s(u,buf,10,10);
+    char buf[16];
+    _itoa_s(u,buf,16,10);
     return std::string(buf);
 }
 
