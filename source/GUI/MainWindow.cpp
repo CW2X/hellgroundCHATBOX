@@ -27,152 +27,9 @@ void MainWindow::BackgroundThread()
         if (retstr.empty() && commstr.empty())
             Thread::Sleep(5);
 
-        //print output
-        if (!retstr.empty())
-        {
-            readData = gcnew String(retstr.c_str());
-            this->Invoke(gcnew MethodInvoker(this, &chb::MainWindow::print_msg));
-        }
-
-        //parse internal commands
-        if (!commstr.empty())
-        {
-            commandData = gcnew String(commstr.c_str());
-            parse_commands();
-        }
+        array<Object^>^myStringArray = { gcnew String(retstr.c_str()), gcnew String(commstr.c_str()) };
+        this->Invoke(this->mPD, myStringArray);
     }
-}
-
-void MainWindow::print_msg()
-{
-    if (this->scrollingCheckbox->Checked)
-    {
-        viewtext->AppendText(readData);
-        viewtext->SelectionStart = viewtext->Text->Length;
-        viewtext->ScrollToCaret();
-    }
-    else
-        viewtext->AppendText(readData);
-}
-
-void MainWindow::parse_commands()
-{
-    while (!String::IsNullOrEmpty(commandData))
-    {
-        int siz = commandData->IndexOf("\n");
-        String^ sub = commandData->Substring(0, siz);
-        if (siz != commandData->Length)
-            commandData = commandData->Remove(0,siz+1);
-        else
-            commandData->Remove(commandData->Length);
-
-        if (sub == "Ln")
-        {
-            CreateLoginForm();
-        }
-        else if (sub == "Cls")
-        {
-            clear_screen();
-        }
-        else if (sub->Substring(0, 3) == "Ch:")
-        {
-            readData = String::Concat(sub->Substring(3, sub->Length - 3), ":");
-            set_channel_label();
-        }
-        else if (sub->Substring(0, 4) == "FrAN")
-        {
-            readData = sub->Substring(4, sub->Length - 4);
-            friend_add_online();
-        }
-        else if (sub->Substring(0, 4) == "FrAF")
-        {
-            readData = sub->Substring(4, sub->Length - 4);
-            friend_add_offline();
-        }
-        else if (sub->Substring(0, 3) == "FrR")
-        {
-            readData = sub->Substring(3, sub->Length - 3);
-            friend_remove();
-        }
-        else if (sub->Substring(0, 3) == "GuA")
-        {
-            readData = sub->Substring(3, sub->Length - 3);
-            guild_add();
-        }
-        else if (sub->Substring(0, 3) == "GuR")
-        {
-            readData = sub->Substring(3, sub->Length - 3);
-            guild_remove();
-        }
-        else
-        {
-            readData = gcnew String("UIC\r\n");
-            print_msg();
-        }
-    }
-}
-
-
-void MainWindow::set_channel_label()
-{
-    if (this->InvokeRequired)
-        this->Invoke(gcnew MethodInvoker(this,&chb::MainWindow::set_channel_label));
-    else
-        channel_label->Text = readData;
-}
-
-void MainWindow::friend_add_online()
-{
-    if (this->InvokeRequired)
-        this->Invoke(gcnew MethodInvoker(this,&chb::MainWindow::friend_add_online));
-    else
-    {
-        FriendsListbox->Items->Remove(readData);
-        FriendsListbox->Items->Insert(0,readData);
-    }
-}
-
-void MainWindow::friend_add_offline()
-{
-    if (this->InvokeRequired)
-        this->Invoke(gcnew MethodInvoker(this,&chb::MainWindow::friend_add_offline));
-    else
-    {
-        FriendsListbox->Items->Remove(readData);
-        FriendsListbox->Items->Insert(FriendsListbox->Items->IndexOf(L"===Offline===") + 1,readData);
-    }
-}
-
-void MainWindow::friend_remove()
-{
-    if (this->InvokeRequired)
-        this->Invoke(gcnew MethodInvoker(this,&chb::MainWindow::friend_remove));
-    else
-        FriendsListbox->Items->Remove(readData);
-}
-
-void MainWindow::guild_add()
-{
-    if (this->InvokeRequired)
-        this->Invoke(gcnew MethodInvoker(this,&chb::MainWindow::guild_add));
-    else
-        GuildListbox->Items->Add(readData);
-}
-
-void MainWindow::guild_remove()
-{
-    if (this->InvokeRequired)
-        this->Invoke(gcnew MethodInvoker(this,&chb::MainWindow::guild_remove));
-    else
-        GuildListbox->Items->Remove(readData);
-}
-
-void MainWindow::clear_screen()
-{
-    if (this->InvokeRequired)
-        this->Invoke(gcnew MethodInvoker(this, &chb::MainWindow::set_channel_label));
-    else
-        viewtext->Clear();
 }
 
 void MainWindow::LoginFormReturn(std::string username,std::string password)
@@ -180,4 +37,68 @@ void MainWindow::LoginFormReturn(std::string username,std::string password)
     if (mainDllInputFunction != NULL)
         mainDllInputFunction(std::string("/login ") + username + std::string(" ") + password);
     this->inputtext->Focus();
+}
+
+void MainWindow::ProcessMethod(String^ print, String^ command)
+{
+    if (!String::IsNullOrEmpty(print))
+    {
+        if (this->scrollingCheckbox->Checked)
+        {
+            viewtext->AppendText(print);
+            viewtext->SelectionStart = viewtext->Text->Length;
+            viewtext->ScrollToCaret();
+        }
+        else
+            viewtext->AppendText(print);
+    }
+    while (!String::IsNullOrEmpty(command))
+    {
+        int siz = command->IndexOf("\n");
+        String^ sub = command->Substring(0, siz);
+        if (siz != command->Length)
+            command = command->Remove(0, siz + 1);
+        else
+            command->Remove(command->Length);
+
+        if (sub == "Ln")
+        {
+            CreateLoginForm();
+        }
+        else if (sub == "Cls")
+        {
+            viewtext->Clear();
+        }
+        else if (sub->Substring(0, 3) == "Ch:")
+        {
+            channel_label->Text = String::Concat(sub->Substring(3, sub->Length - 3), ":");
+        }
+        else if (sub->Substring(0, 4) == "FrAN")
+        {
+            FriendsListbox->Items->Remove(sub->Substring(4, sub->Length - 4));
+            FriendsListbox->Items->Insert(0, sub->Substring(4, sub->Length - 4));
+        }
+        else if (sub->Substring(0, 4) == "FrAF")
+        {
+            FriendsListbox->Items->Remove(sub->Substring(4, sub->Length - 4));
+            FriendsListbox->Items->Insert(FriendsListbox->Items->IndexOf(L"===Offline===") + 1, sub->Substring(4, sub->Length - 4));
+        }
+        else if (sub->Substring(0, 3) == "FrR")
+        {
+            FriendsListbox->Items->Remove(sub->Substring(3, sub->Length - 3));
+        }
+        else if (sub->Substring(0, 3) == "GuA")
+        {
+            GuildListbox->Items->Add(sub->Substring(3, sub->Length - 3));
+        }
+        else if (sub->Substring(0, 3) == "GuR")
+        {
+            GuildListbox->Items->Remove(sub->Substring(3, sub->Length - 3));
+        }
+        else
+        {
+            viewtext->AppendText("UIC!\r\n");
+        }
+    }
+
 }

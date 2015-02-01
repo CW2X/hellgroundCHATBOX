@@ -25,6 +25,7 @@ namespace chb {
 
             mainDllUpdateFunction = NULL;
             mainDllInputFunction = NULL;
+            mPD = gcnew ProcessData(this, &MainWindow::ProcessMethod);
 			backThread = gcnew Thread(gcnew ThreadStart(this,&MainWindow::BackgroundThread));
             backThread->Start();
 		}
@@ -38,25 +39,17 @@ namespace chb {
 				delete components;
 			}
 		}
-        void print_msg();
-        void parse_commands();
-        void set_channel_label();
-        void friend_add_online();
-        void friend_add_offline();
-        void friend_remove();
-        void guild_add();
-        void guild_remove();
-        void clear_screen();
-
-        void BackgroundThread();
-        String^ readData;
-        String^ commandData;
 
 	    Thread^ backThread;
         bool ExitingProgram;
         mainDllUpdateType mainDllUpdateFunction;
         mainDllInputType mainDllInputFunction;
     private:
+        void BackgroundThread();
+        delegate void ProcessData(String^ print, String^ command);
+        ProcessData^ mPD;
+        void ProcessMethod(String^ print, String^ command);
+
         System::Windows::Forms::RichTextBox^    viewtext;
         System::Windows::Forms::TextBox^        inputtext;
 		System::ComponentModel::Container^      components;
