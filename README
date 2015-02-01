@@ -1,14 +1,30 @@
 project chb - chatbox client for World of Warcraft:The Burning Crusade 2.4.3
 created by koostosh (koostosh@gmail.com) with wide support from Hellground team
-version 0.4.0 ( build 68, 29.10.2014 )
-
+version 0.5.0 ( build 80, 01.02.2015 )
 based on WoW:TBC 2.4.3 server code from MaNGOS, Trinity and Hellground projets
 (http://www.mangosproject.org/ ; http://www.trinitycore.org/ ; http://www.hellground.net)
 
 Warning: using this product requires server-side support; author does not take
 ANY responsibility for ANY losses resulting from use of this software.
 
+About licensing: You may use code/binary for any purpose, but:
+1. You must not claim that you wrote the original software.
+2. If you derive anything from this work it is required to provide
+   proper acknowledgment about it in documentation, for example:
+    "This software is derived from chb project by koostosh (koostosh@gmail.com)"
+3. Altered versions of this work must be plainly marked as such,
+   and may not be presented as being the original work.
+
+Code can be downloaded from https://bitbucket.org/koostosh/chb
+I would be happy to get any feedback from people using software/code in any way.
+Enjoy!
+
 CHANGELOG:
+=== v 0.5.0 ===
+- Greatly decreased CPU usage
+- Add/remove friend
+- Screen clearing (/cls)
+- Possibly complete stability
 === v 0.4.0 ===
 - Properly parse characters from latin alphabet
 - Fix autoscroll feature

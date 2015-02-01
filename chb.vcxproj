@@ -29,10 +29,14 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="source\GUI\LoginForm.resx" />
+    <EmbeddedResource Include="source\GUI\InputDialog.resx">
+      <DependentUpon>source\GUI\InputDialog.h</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="source\GUI\LoginForm.resx">
+      <DependentUpon>source\GUI\LoginForm.h</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="source\GUI\MainWindow.resx">
-      <DependentUpon>MainWindow.h</DependentUpon>
-      <SubType>Designer</SubType>
+      <DependentUpon>source\GUI\MainWindow.h</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup Label="Globals">

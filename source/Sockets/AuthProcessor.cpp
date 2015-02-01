@@ -1,3 +1,6 @@
+/* This source file is part of koostosh's chb project
+see README for copyright notice */
+
 #include "AuthProcessor.h"
 #include "..\Util.h"
 #include "MySha.h"

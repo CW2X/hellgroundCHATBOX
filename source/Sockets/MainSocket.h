@@ -1,3 +1,6 @@
+/* This source file is part of koostosh's chb project
+see README for copyright notice */
+
 #ifndef MAIN_SOCKET_H
 #define MAIN_SOCKET_H
 

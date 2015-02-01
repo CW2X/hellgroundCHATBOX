@@ -1,3 +1,6 @@
+/* This source file is part of koostosh's chb project
+see README for copyright notice */
+
 /*
  * This implementations works iff data is given in whole bytes and total data size is < 2^32 bits
  */

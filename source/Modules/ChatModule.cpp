@@ -1,3 +1,6 @@
+/* This source file is part of koostosh's chb project
+see README for copyright notice */
+
 #include "ChatModule.h"
 #include "..\Util.h"
 #include "Database.h"

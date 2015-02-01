@@ -1,3 +1,6 @@
+/* This source file is part of koostosh's chb project
+see README for copyright notice */
+
 #ifndef IN_OUT_PACKETS
 #define IN_OUT_PACKETS
 

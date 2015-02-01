@@ -1,3 +1,6 @@
+/* This source file is part of koostosh's chb project
+see README for copyright notice */
+
 #include "BaseSocket.h"
 #include "..\Util.h"
 

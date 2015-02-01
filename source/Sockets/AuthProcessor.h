@@ -1,3 +1,6 @@
+/* This source file is part of koostosh's chb project
+see README for copyright notice */
+
 #ifndef AUTH_PROCESSOR_H
 #define AUTH_PROCESSOR_H
 

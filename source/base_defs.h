@@ -1,3 +1,6 @@
+/* This source file is part of koostosh's chb project
+see README for copyright notice */
+
 #ifndef BASE_DEFS_H
 #define BASE_DEFS_H
 
@@ -10,7 +13,7 @@
 #define BUFFER_SIZE_IN  32768
 #define BUFFER_SIZE_OUT 256
 
-#define VERSION "0.4.0"
+#define VERSION "0.5.0"
 typedef unsigned char    uint8;
 typedef unsigned short   uint16;
 typedef unsigned int     uint32;
