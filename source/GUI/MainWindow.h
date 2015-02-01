@@ -31,6 +31,7 @@ namespace chb {
 		}
 
         void LoginFormReturn(std::string username,std::string password);
+        void InputDialogReturn(std::string value,String^ type);
     protected:
 		~MainWindow()
 		{
@@ -44,12 +45,16 @@ namespace chb {
         bool ExitingProgram;
         mainDllUpdateType mainDllUpdateFunction;
         mainDllInputType mainDllInputFunction;
+
     private:
         void BackgroundThread();
         delegate void ProcessData(String^ print, String^ command);
         ProcessData^ mPD;
         void ProcessMethod(String^ print, String^ command);
+        Form^ dialog;
 
+        System::Windows::Forms::Button^         FriendRemoveButton;
+        System::Windows::Forms::Button^         FriendAddButton;
         System::Windows::Forms::RichTextBox^    viewtext;
         System::Windows::Forms::TextBox^        inputtext;
 		System::ComponentModel::Container^      components;
@@ -79,6 +84,8 @@ namespace chb {
             this->GuildListbox = (gcnew System::Windows::Forms::ListBox());
             this->tabPageSettings = (gcnew System::Windows::Forms::TabPage());
             this->scrollingCheckbox = (gcnew System::Windows::Forms::CheckBox());
+            this->FriendAddButton = (gcnew System::Windows::Forms::Button());
+            this->FriendRemoveButton = (gcnew System::Windows::Forms::Button());
             this->tabControl->SuspendLayout();
             this->tabPageFriends->SuspendLayout();
             this->tabPageGuild->SuspendLayout();
@@ -140,6 +147,8 @@ namespace chb {
             // 
             // tabPageFriends
             // 
+            this->tabPageFriends->Controls->Add(this->FriendRemoveButton);
+            this->tabPageFriends->Controls->Add(this->FriendAddButton);
             this->tabPageFriends->Controls->Add(this->FriendsListbox);
             this->tabPageFriends->Location = System::Drawing::Point(4, 22);
             this->tabPageFriends->Name = L"tabPageFriends";
@@ -157,7 +166,7 @@ namespace chb {
             this->FriendsListbox->IntegralHeight = false;
             this->FriendsListbox->Location = System::Drawing::Point(0, 0);
             this->FriendsListbox->Name = L"FriendsListbox";
-            this->FriendsListbox->Size = System::Drawing::Size(139, 242);
+            this->FriendsListbox->Size = System::Drawing::Size(139, 213);
             this->FriendsListbox->TabIndex = 0;
             this->FriendsListbox->TabStop = false;
             this->FriendsListbox->DoubleClick += gcnew System::EventHandler(this, &MainWindow::FriendsListbox_DoubleClick);
@@ -207,6 +216,26 @@ namespace chb {
             this->scrollingCheckbox->UseVisualStyleBackColor = true;
             this->scrollingCheckbox->CheckedChanged += gcnew System::EventHandler(this, &MainWindow::scrollingCheckbox_CheckedChanged);
             // 
+            // FriendAddButton
+            // 
+            this->FriendAddButton->Location = System::Drawing::Point(3, 216);
+            this->FriendAddButton->Name = L"FriendAddButton";
+            this->FriendAddButton->Size = System::Drawing::Size(63, 23);
+            this->FriendAddButton->TabIndex = 1;
+            this->FriendAddButton->Text = L"Add";
+            this->FriendAddButton->UseVisualStyleBackColor = true;
+            this->FriendAddButton->Click += gcnew System::EventHandler(this, &MainWindow::FriendAddButton_Click);
+            // 
+            // FriendRemoveButton
+            // 
+            this->FriendRemoveButton->Location = System::Drawing::Point(73, 216);
+            this->FriendRemoveButton->Name = L"FriendRemoveButton";
+            this->FriendRemoveButton->Size = System::Drawing::Size(63, 23);
+            this->FriendRemoveButton->TabIndex = 2;
+            this->FriendRemoveButton->Text = L"Remove";
+            this->FriendRemoveButton->UseVisualStyleBackColor = true;
+            this->FriendRemoveButton->Click += gcnew System::EventHandler(this, &MainWindow::FriendRemoveButton_Click);
+            // 
             // MainWindow
             // 
             this->ClientSize = System::Drawing::Size(652, 292);
@@ -231,7 +260,7 @@ namespace chb {
 #pragma endregion
 
     private:
-        void CreateLoginForm();
+        System::Void FriendAddButton_Click(System::Object^ sender, System::EventArgs^  e);
 
         System::Void MainWindow_FormClosed(System::Object^  sender, System::Windows::Forms::FormClosedEventArgs^  e)
         {
@@ -288,6 +317,17 @@ namespace chb {
                 viewtext->SelectionStart = viewtext->Text->Length;
                 viewtext->ScrollToCaret();
             }
+        }
+
+        System::Void FriendRemoveButton_Click(System::Object^  sender, System::EventArgs^  e)
+        {
+            String^ s = FriendsListbox->SelectedItem->ToString();
+            if (String::IsNullOrEmpty(s))
+                return;
+            if (mainDllInputFunction != NULL)
+                mainDllInputFunction("/unfriend " +
+                msclr::interop::marshal_as<std::string>(s));
+            inputtext->Focus();
         }
 };
 

@@ -7,6 +7,9 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="source\GUI\InputDialog.h">
+      <FileType>CppForm</FileType>
+    </ClInclude>
     <ClInclude Include="source\GUI\LoginForm.h">
       <FileType>CppForm</FileType>
     </ClInclude>
@@ -16,7 +19,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\GUI\chb.cpp" />
-    <ClCompile Include="source\GUI\LoginForm.cpp" />
     <ClCompile Include="source\GUI\MainWindow.cpp" />
   </ItemGroup>
   <ItemGroup>

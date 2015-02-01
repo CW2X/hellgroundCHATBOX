@@ -1,4 +1,6 @@
 #include "MainWindow.h"
+#include "LoginForm.h"
+#include "InputDialog.h"
 using namespace chb;
 
 void MainWindow::BackgroundThread()
@@ -39,6 +41,15 @@ void MainWindow::LoginFormReturn(std::string username,std::string password)
     this->inputtext->Focus();
 }
 
+void MainWindow::InputDialogReturn(std::string value, String^ type)
+{
+    if (type == "Add Friend")
+    {
+        if (!value.empty() && mainDllInputFunction != NULL)
+            mainDllInputFunction(std::string("/friend ") + value);
+    }
+}
+
 void MainWindow::ProcessMethod(String^ print, String^ command)
 {
     if (!String::IsNullOrEmpty(print))
@@ -63,7 +74,9 @@ void MainWindow::ProcessMethod(String^ print, String^ command)
 
         if (sub == "Ln")
         {
-            CreateLoginForm();
+            Form^ form = gcnew LoginForm;
+            form->Owner = this;
+            form->Show();
         }
         else if (sub == "Cls")
         {
@@ -101,4 +114,13 @@ void MainWindow::ProcessMethod(String^ print, String^ command)
         }
     }
 
+}
+
+System::Void MainWindow::FriendAddButton_Click(System::Object^  sender, System::EventArgs^  e)
+{
+    if (dialog && !dialog->IsDisposed)
+        return;
+    dialog = gcnew InputDialog("Add Friend");
+    dialog->Owner = this;
+    dialog->Show();
 }

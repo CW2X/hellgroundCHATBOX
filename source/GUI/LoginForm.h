@@ -120,6 +120,7 @@ namespace chb {
             this->KeyPreview = true;
             this->MaximizeBox = false;
             this->MinimizeBox = false;
+            this->ShowInTaskbar = false;
             this->Name = L"LoginForm";
             this->Text = L"Login";
             this->Activated += gcnew System::EventHandler(this, &LoginForm::LoginForm_Activated);
