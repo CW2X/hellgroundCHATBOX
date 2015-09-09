@@ -73,14 +73,17 @@ void CHBMain::Update(std::string* retstr,std::string* commstr)
     catch (std::string error)
     {
         *retstr += error;
+        stopWorking = true;
     }
     catch (char* error)
     {
         *retstr += error;
+        stopWorking = true;
     }
     catch(...)
     {
         *retstr += "Unhandled error!";
+        stopWorking = true;
     }
 }
 
