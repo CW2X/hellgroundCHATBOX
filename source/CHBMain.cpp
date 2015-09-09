@@ -7,12 +7,16 @@ CHBMain::CHBMain()
 {
     firstTick = true;
     initialized = false;
+    stopWorking = false;
     m_ret = "";
     m_comm = "";
 }
 
 void CHBMain::Update(std::string* retstr,std::string* commstr)
 {
+    if (stopWorking)
+        return;
+
     inc_pack InPacket;
 
     try
@@ -22,8 +26,17 @@ void CHBMain::Update(std::string* retstr,std::string* commstr)
         if(firstTick)
         {
             firstTick = false;
-            *retstr = std::string("Chatbox v.")+ VERSION +"\r\n";
+            *retstr = std::string("Chatbox v.") + VERSION + "\r\n";
             *commstr = std::string("Ln\nCh:Say\n");
+
+            WSADATA wsa_data;
+            int err = WSAStartup(MAKEWORD(2, 2), &wsa_data);
+            if (err != 0)
+            {
+                *retstr += std::string("Unable to init winsock\r\n");
+                stopWorking = true;
+                return;
+            }
         }
 
         if(!sMainSocket.IsAuthed)

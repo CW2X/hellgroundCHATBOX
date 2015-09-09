@@ -28,6 +28,7 @@ private:
     
     bool firstTick;
     bool initialized;
+    bool stopWorking;
     MainSocket    sMainSocket;
     AuthProcessor sAProcessor;
     Session       sSession;

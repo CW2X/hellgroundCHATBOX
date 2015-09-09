@@ -24,7 +24,6 @@ protected:
 
     std::string m_ret;
 private:
-    WSADATA wsa_data;
     int MySocket;
 };
 

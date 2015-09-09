@@ -14,7 +14,6 @@ void BaseSocket::open_socket()
 {
     m_ret += string_format("initializing connection: %s:%s\r\n",AddressString.c_str(),PortString.c_str());
     
-    WSAStartup(MAKEWORD(2,2),& wsa_data);
     struct addrinfo *result = NULL,*ptr = NULL,hints;
     int IsError;
 
