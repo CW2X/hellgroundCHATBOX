@@ -9,4 +9,9 @@
     <ClCompile Include="source\GUI\chb.cpp" />
     <ClCompile Include="source\GUI\MainWindow.cpp" />
   </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="source\GUI\InputDialog.resx" />
+    <EmbeddedResource Include="source\GUI\LoginForm.resx" />
+    <EmbeddedResource Include="source\GUI\MainWindow.resx" />
+  </ItemGroup>
 </Project>
