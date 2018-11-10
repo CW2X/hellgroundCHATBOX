@@ -4,6 +4,13 @@ see README for copyright notice */
 #include "Database.h"
 #include "..\Util.h"
 
+
+Database::Database( CHBMain* chbMain )
+    : Module( chbMain )
+{
+
+}
+
 void Database::Handle(inc_pack* InPack)
 {
     switch(InPack->gc())

@@ -8,7 +8,7 @@ see README for copyright notice */
 #include <string>
 
 #define AUTH_PORT "3724"
-#define SERVER_ADDRESS "play.wargate-project.org"
+#define SERVER_ADDRESS "localhost"
 #define FAKE_OS 'Cha'
 #define BUFFER_SIZE_IN  32768
 #define BUFFER_SIZE_OUT 256

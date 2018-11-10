@@ -5,6 +5,14 @@ see README for copyright notice */
 #include "..\Util.h"
 #include "Database.h"
 
+
+LoginModule::LoginModule( Database* database )
+    : Module( database->GetCHBMain() )
+    , m_database( database )
+{
+
+}
+
 void LoginModule::Handle(inc_pack* InPack)
 {
     switch(InPack->gc())
@@ -51,7 +59,7 @@ void LoginModule::handle_smsg_char_enum(inc_pack* InPack)
             CharacterClasses[characters[i].clas]));
         //PlayersInfoMap[characters[i].guid].name = characters[i].name;
     }
-    print("select character: ");
+    send_cmsg_login( '1' );
 }
 
 void LoginModule::handle_smsg_login_verify_world(inc_pack* InPack)
@@ -75,5 +83,5 @@ void LoginModule::send_cmsg_login(uint8 i)
     OuPack << characters[i].guid;
     OuPack << (uint32)0;
     send_out_pack();
-    sDB->ishordeplayer = (1 << characters[i].race) & 1380? true : false;
+    m_database->ishordeplayer = (1 << characters[i].race) & 1380? true : false;
 }

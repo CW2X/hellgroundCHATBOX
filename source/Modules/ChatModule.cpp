@@ -5,7 +5,9 @@ see README for copyright notice */
 #include "..\Util.h"
 #include "Database.h"
 
-ChatModule::ChatModule()
+ChatModule::ChatModule( Database* database )
+    : Module( database->GetCHBMain() )
+    , m_database( database )
 {
     lang = 0;
     for(uint8 i=0;i<9;i++)
@@ -189,7 +191,7 @@ void ChatModule::handle_smsg_channel_notify(inc_pack* InPack)
         {
             uint32 guid;
             *InPack >> guid;
-            print(string_format("%s :owner changed to %s\r\n",channelname.c_str(),sDB->Guid_to_name(guid,true).c_str()));
+            print(string_format("%s :owner changed to %s\r\n",channelname.c_str(),m_database->Guid_to_name(guid,true).c_str()));
             break;
         }
     case 0x0C:
@@ -223,7 +225,7 @@ void ChatModule::handle_smsg_channel_list(inc_pack* InPack)
     {
         *InPack >> guid;
         InPack->skip(5);
-        sDB->Guid_to_name(guid,false);
+        m_database->Guid_to_name(guid,false);
     }
 }
 
@@ -231,7 +233,7 @@ void ChatModule::handle_smsg_userlist_add(inc_pack* InPack)
 {
     uint32 guid;
     *InPack >> guid;
-    sDB->Guid_to_name(guid,false);
+    m_database->Guid_to_name(guid,false);
 }
 
 void ChatModule::handle_smsg_messagechat(inc_pack* InPack)
@@ -257,7 +259,7 @@ void ChatModule::handle_smsg_messagechat(inc_pack* InPack)
     *InPack >> mes.length;
     *InPack >> mes.what;
     *InPack >> mes.tag;
-    mes.who = sDB->Guid_to_name(mes.guid,true);
+    mes.who = m_database->Guid_to_name(mes.guid,true);
     
     convert_codepages(&mes.what, false);
 
@@ -330,7 +332,7 @@ void ChatModule::send_cmsg_messagechat(std::string data)
     convert_codepages(&data, true);
 
     if (lang == 0)
-        lang = sDB->ishordeplayer ? 1:7;
+        lang = m_database->ishordeplayer ? 1:7;
     
     if( activechannel <20)
     {

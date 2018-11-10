@@ -4,6 +4,9 @@ see README for copyright notice */
 #include "BaseSocket.h"
 #include "..\Util.h"
 
+#define WIN32_LEAN_AND_MEAN
+#include <ws2tcpip.h>
+#include <WinSock2.h>
 BaseSocket::BaseSocket()
 {
     IsConnected = false;

@@ -3,9 +3,13 @@ see README for copyright notice */
 
 #include "Session.h"
 
-Session::Session()
+Session::Session( Database* database )
+    : m_chbMain( database->GetCHBMain() )
+    , m_database( database )
+    , sSocialModule( database )
+    , sChatModule( database )
+    , sLoginModule( database )
 {
-    cinredirect = 2;
 }
 
 void Session::Update(inc_pack* InPack)
@@ -14,7 +18,7 @@ void Session::Update(inc_pack* InPack)
     switch(InPack->gc())
     {
     case 0:break;
-    case 0x003B: cinredirect = 1; //SMSG_CHAR_ENUM
+    case 0x003B:                  //SMSG_CHAR_ENUM
     case 0x01EE:                  //SMSG_AUTH_RESPONSE
         sLoginModule.Handle(InPack);break; 
     case 0x0236:                  //SMSG_LOGIN_VERIFY_WORLD
@@ -37,7 +41,7 @@ void Session::Update(inc_pack* InPack)
         sSocialModule.Handle(InPack); break;
 
     case 0x0051: //SMSG_NAME_QUERY_RESPONSE
-        sDB->Handle(InPack); break;
+        m_database->Handle(InPack); break;
     default:
         break;
     }

@@ -4,6 +4,8 @@ see README for copyright notice */
 #include "MainWindow.h"
 #include "LoginForm.h"
 #include "InputDialog.h"
+#include "../CHBMain.h"
+
 using namespace chb;
 
 void MainWindow::BackgroundThread()
@@ -14,20 +16,7 @@ void MainWindow::BackgroundThread()
     Thread::Sleep(500);// wait for everything to get ready
     while(1)
     {
-        //Load functions if nesescary
-        if (mainDllUpdateFunction == NULL)
-        {
-            HMODULE MainDll = LoadLibrary(TEXT("CHBMain.dll"));
-            if (!MainDll)
-            {
-                continue;// some error handling
-            }
-            mainDllUpdateFunction = (mainDllUpdateType)GetProcAddress(MainDll,"MainDllUpdate");
-            mainDllInputFunction = (mainDllInputType)GetProcAddress(MainDll,"MainDllInput");
-            continue;
-        }
-        //call function
-        mainDllUpdateFunction(&retstr,&commstr);
+        m_chbMain->Update( &retstr, &commstr );
 
         if (retstr.empty() && commstr.empty())
             Thread::Sleep(5);
@@ -39,8 +28,7 @@ void MainWindow::BackgroundThread()
 
 void MainWindow::LoginFormReturn(std::string username,std::string password)
 {
-    if (mainDllInputFunction != NULL)
-        mainDllInputFunction(std::string("/login ") + username + std::string(" ") + password);
+    m_chbMain->Input( std::string( "/login " ) + username + std::string( " " ) + password );
     this->inputtext->Focus();
 }
 
@@ -48,8 +36,8 @@ void MainWindow::InputDialogReturn(std::string value, String^ type)
 {
     if (type == "Add Friend")
     {
-        if (!value.empty() && mainDllInputFunction != NULL)
-            mainDllInputFunction(std::string("/friend ") + value);
+        if (!value.empty())
+            m_chbMain->Input( std::string( "/friend " ) + value );
     }
 }
 
@@ -79,6 +67,7 @@ void MainWindow::ProcessMethod(String^ print, String^ command)
         {
             Form^ form = gcnew LoginForm;
             form->Owner = this;
+            form->StartPosition = System::Windows::Forms::FormStartPosition::CenterScreen;
             form->Show();
         }
         else if (sub == "Cls")
@@ -126,4 +115,78 @@ System::Void MainWindow::FriendAddButton_Click(System::Object^  sender, System::
     dialog = gcnew InputDialog("Add Friend");
     dialog->Owner = this;
     dialog->Show();
+}
+
+MainWindow::MainWindow()
+{
+    m_chbMain = new CHBMain();
+
+    ExitingProgram = false;
+    InitializeComponent();
+    this->FriendsListbox->Items->Add( L"===Offline===" );
+
+    mPD = gcnew ProcessData( this, &MainWindow::ProcessMethod );
+    backThread = gcnew Thread( gcnew ThreadStart( this, &MainWindow::BackgroundThread ) );
+    backThread->Start();
+}
+
+System::Void MainWindow::FriendRemoveButton_Click( System::Object^ sender, System::EventArgs^ e )
+{
+    String^ s = FriendsListbox->SelectedItem->ToString();
+    if ( String::IsNullOrEmpty( s ) )
+        return;
+    m_chbMain->Input( "/unfriend " + msclr::interop::marshal_as<std::string>( s ) );
+    inputtext->Focus();
+}
+
+System::Void MainWindow::scrollingCheckbox_CheckedChanged( System::Object^ sender, System::EventArgs^ e )
+{
+    if ( scrollingCheckbox->Checked )
+    {
+        viewtext->SelectionStart = viewtext->Text->Length;
+        viewtext->ScrollToCaret();
+    }
+}
+
+System::Void MainWindow::GuildListbox_DoubleClick( System::Object^ sender, System::EventArgs^ e )
+{
+    m_chbMain->Input( "/w " + msclr::interop::marshal_as<std::string>( GuildListbox->SelectedItem->ToString() ) );
+    inputtext->Focus();
+}
+
+System::Void MainWindow::FriendsListbox_DoubleClick( System::Object^ sender, System::EventArgs^ e )
+{
+    String^ s = FriendsListbox->SelectedItem->ToString();
+    if ( s == L"===Offline===" )
+        return;
+    m_chbMain->Input( "/w " + msclr::interop::marshal_as<std::string>( s ) );
+    inputtext->Focus();
+}
+
+System::Void MainWindow::inputtext_KeyPress( System::Object^ sender, System::Windows::Forms::KeyPressEventArgs^ e )
+{
+    if ( e->KeyChar == ( char )Keys::Enter )
+    {
+        e->Handled = true;
+        m_chbMain->Input( msclr::interop::marshal_as<std::string>( inputtext->Text ) );
+        inputtext->Text = gcnew System::String( "" );
+    }
+}
+
+System::Void MainWindow::inputtext_PreviewKeyDown( System::Object^ sender, System::Windows::Forms::PreviewKeyDownEventArgs^ e )
+{
+    if ( e->KeyCode == Keys::Enter )
+        e->IsInputKey = true;
+}
+
+System::Void MainWindow::MainWindow_Activated( System::Object^ sender, System::EventArgs^ e )
+{
+    this->inputtext->Focus();
+}
+
+System::Void MainWindow::MainWindow_FormClosed( System::Object^ sender, System::Windows::Forms::FormClosedEventArgs^ e )
+{
+    ExitingProgram = true;
+    backThread->Abort();
+    Application::Exit();
 }

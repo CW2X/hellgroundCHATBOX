@@ -10,21 +10,22 @@ see README for copyright notice */
 #include "Modules/Database.h"
 
 class MainSocket;
+class CHBMain;
 
 class Session
 {
 public:
-    Session();
+    Session( Database * database );
     void Update(inc_pack* InPack);
     void ClUpdate(std::string clData);
 private:
     void handle_Cl(std::string clData);
 
-
-    uint8           cinredirect;
     out_pack        OuPack;
     std::string     username;
     
+    Database*       m_database;
+    CHBMain *       m_chbMain;
     LoginModule     sLoginModule;
     ChatModule      sChatModule;
     SocialModule    sSocialModule;

@@ -5,6 +5,14 @@ see README for copyright notice */
 #include "..\Util.h"
 #include "Database.h"
 
+
+SocialModule::SocialModule( Database* database )
+    : Module( database->GetCHBMain() )
+    , m_database( database )
+{
+
+}
+
 void SocialModule::Handle(inc_pack* InPack)
 {
     switch(InPack->gc())
@@ -34,7 +42,7 @@ void SocialModule::Command(std::string cmd,std::string args)
 
 void SocialModule::handle_smsg_contact_list(inc_pack* InPack)
 {
-    sDB->FriendInfoMap.clear();
+    m_database->FriendInfoMap.clear();
     uint32 size;
     uint32 guid;
     uint32 flag;
@@ -54,11 +62,11 @@ void SocialModule::handle_smsg_contact_list(inc_pack* InPack)
         if (flag == 0x01)
         {
             *InPack >> status;
-            sDB->FriendInfoMap[guid].note = note;
-            sDB->FriendInfoMap[guid].status = status;
+            m_database->FriendInfoMap[guid].note = note;
+            m_database->FriendInfoMap[guid].status = status;
             if (status)
                 InPack->skip(12);
-            name = sDB->Guid_to_name(guid,false);
+            name = m_database->Guid_to_name(guid,false);
             if (name[0] != '#')
                 i_comm(string_format("%s%s\n",status ? "FrAN" : "FrAF",name.c_str()));
         };
@@ -99,9 +107,9 @@ void SocialModule::handle_smsg_friend_status(inc_pack* InPack)
     case 6:
     case 7:
         if (note != "")
-            sDB->FriendInfoMap[guid].note = note;
-        sDB->FriendInfoMap[guid].status = status;
-        name = sDB->Guid_to_name(guid, false);
+            m_database->FriendInfoMap[guid].note = note;
+        m_database->FriendInfoMap[guid].status = status;
+        name = m_database->Guid_to_name(guid, false);
         if (name[0] != '#')
             i_comm(string_format("%s%s\n", status ? "FrAN" : "FrAF", name.c_str()));
         break;
@@ -109,8 +117,8 @@ void SocialModule::handle_smsg_friend_status(inc_pack* InPack)
         print("Friend not found\r\n");
         break;
     case 5:
-        i_comm(string_format("FrR%s\n", sDB->PlayersInfoMap[guid].name.c_str()));
-        sDB->FriendInfoMap.erase(guid);
+        i_comm(string_format("FrR%s\n", m_database->PlayersInfoMap[guid].name.c_str()));
+        m_database->FriendInfoMap.erase(guid);
         print("Friend removed\r\n");
         break;
     case 8:
@@ -172,9 +180,9 @@ void SocialModule::handle_smsg_guild_roster(inc_pack* InPack)
         if(online)
         {
             i_comm(string_format("GuA%s\n",name.c_str()));
-            sDB->OnlineGuildMembers.push_back(guid);
+            m_database->OnlineGuildMembers.push_back(guid);
         }
-        sDB->Guid_to_name(guid,false);
+        m_database->Guid_to_name(guid,false);
     }
 }
 
@@ -196,10 +204,10 @@ void SocialModule::handle_smsg_guild_event(inc_pack* InPack)
             *InPack >> guid;
             InPack->skip(4);
             
-            sDB->OnlineGuildMembers.push_back(guid);
+            m_database->OnlineGuildMembers.push_back(guid);
             i_comm(string_format("GuR%s\nGuA%s\n",name.c_str(),name.c_str()));
             print(string_format("[%s] has come online\r\n",name.c_str()));
-            sDB->Guid_to_name(guid,false);
+            m_database->Guid_to_name(guid,false);
             break;
         }
     case GE_SIGNED_OFF:
@@ -212,7 +220,7 @@ void SocialModule::handle_smsg_guild_event(inc_pack* InPack)
             *InPack >> guid;
             InPack->skip(4);
 
-            sDB->OnlineGuildMembers.remove(guid);
+            m_database->OnlineGuildMembers.remove(guid);
             i_comm(string_format("GuR%s\n",name.c_str()));
             print(string_format("[%s] has gone offline\r\n",name.c_str()));
             break;
@@ -241,7 +249,7 @@ void SocialModule::cmd_unfriend(std::string args)
     string_to_uppercase(args);
     std::string curentname;
     uint32 guid = 0;
-    for (std::map<uint32, PlayerInfo>::iterator itr = sDB->PlayersInfoMap.begin(); itr != sDB->PlayersInfoMap.end(); itr++)
+    for (std::map<uint32, PlayerInfo>::iterator itr = m_database->PlayersInfoMap.begin(); itr != m_database->PlayersInfoMap.end(); itr++)
     {
         curentname = itr->second.name;
         string_to_uppercase(curentname);
@@ -269,7 +277,7 @@ void SocialModule::cmd_unignore(std::string args)
     string_to_uppercase(args);
     std::string curentname;
     uint32 guid = 0;
-    for (std::map<uint32, PlayerInfo>::iterator itr = sDB->PlayersInfoMap.begin(); itr != sDB->PlayersInfoMap.end(); itr++)
+    for (std::map<uint32, PlayerInfo>::iterator itr = m_database->PlayersInfoMap.begin(); itr != m_database->PlayersInfoMap.end(); itr++)
     {
         curentname = itr->second.name;
         string_to_uppercase(curentname);

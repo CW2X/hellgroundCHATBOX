@@ -19,9 +19,13 @@ struct CharacterData
 static char* CharacterClasses[]     = {"","Warrior","Paladin","Hunter","Rogue","Priest","DeKacz","Shaman","Mage","Warlock","Monkacz?","Druid"};
 static char* CharacterRaces[]       = {"","Human","Orc","Dwarf","Night Elf","Undead","Tauren","Gnome","Troll","Goblin","Blood Elf","Draenei"};
 
+class Database;
+
 class LoginModule : public Module
 {
 public:
+    LoginModule( Database* chbMain );
+
     void Handle(inc_pack* InPack);
     void Command(std::string cmd,std::string args) {};
 
@@ -32,6 +36,7 @@ private:
     void handle_smsg_login_verify_world(inc_pack* InPack);
     void send_cmsg_char_enum();
 
+    Database*       m_database;
     CharacterData   characters[7];
 };
 

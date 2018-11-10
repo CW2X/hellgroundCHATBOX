@@ -10,16 +10,7 @@ void Session::ClUpdate(std::string clData)
         handle_Cl(clData);
     else
     {
-        switch (cinredirect)
-        {
-        case 0:
-            sChatModule.Command("msg",clData);
-            break;
-        case 1:
-            sLoginModule.send_cmsg_login((uint8)clData.c_str()[0]);
-            cinredirect = 0;
-            break;
-        }
+        sChatModule.Command("msg",clData);
     }
 }
 
@@ -50,7 +41,7 @@ void Session::handle_Cl(std::string clData)
             std::string password = args.substr(space+1,args.size() - space +1);
             string_to_uppercase(username);
             string_to_uppercase(password);
-            sCHBMain->Initialize(username,password);
+            m_chbMain->Initialize(username,password);
             return;
         }
         return;
@@ -83,7 +74,7 @@ void Session::handle_Cl(std::string clData)
 
     if (cmd == "cls")
     {
-        sCHBMain->i_comm("Cls\n");
+        m_chbMain->i_comm("Cls\n");
         return;
     }
 }

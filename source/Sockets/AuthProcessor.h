@@ -79,8 +79,8 @@ public:
     void Update(std::string* retstr);
     void Initialize(std::string username,std::string password);
     
-    PCSTR GetRealmAdress(uint8 i) {return realmdata[i].address.c_str();};
-    PCSTR GetRealmPort(uint8 i) {return realmdata[i].port.c_str();};
+    const char* GetRealmAdress(uint8 i) {return realmdata[i].address.c_str();};
+    const char* GetRealmPort(uint8 i) {return realmdata[i].port.c_str();};
     uint8* GetKey() { return K; };
 private:
     void MagicVoid();

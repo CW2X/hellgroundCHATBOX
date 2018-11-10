@@ -3,7 +3,13 @@ see README for copyright notice */
 
 #include "CHBMain.h"
 
+#define WIN32_LEAN_AND_MEAN
+#include <ws2tcpip.h>
+#include <WinSock2.h>
+
 CHBMain::CHBMain()
+    : m_database( this )
+    , m_session( &m_database )
 {
     firstTick = true;
     initialized = false;
@@ -12,10 +18,10 @@ CHBMain::CHBMain()
     m_comm = "";
 }
 
-void CHBMain::Update(std::string* retstr,std::string* commstr)
+bool CHBMain::Update(std::string* retstr,std::string* commstr)
 {
     if (stopWorking)
-        return;
+        return false;
 
     inc_pack InPacket;
 
@@ -35,33 +41,33 @@ void CHBMain::Update(std::string* retstr,std::string* commstr)
             {
                 *retstr += std::string("Unable to init winsock\r\n");
                 stopWorking = true;
-                return;
+                return false;
             }
         }
 
-        if(!sMainSocket.IsAuthed)
+        if(!m_socket.IsAuthed)
         {
             if (!initialized)
-                return;
+                return true;
 
-            if (!sAProcessor.IsAuthed)
+            if (!m_authProcessor.IsAuthed)
             {
-                sAProcessor.Update(retstr);
-                return;
+                m_authProcessor.Update(retstr);
+                return true;
             }
         
-            if(!sMainSocket.IsConnected)
+            if(!m_socket.IsConnected)
             {
-                sMainSocket.AddressString = sAProcessor.GetRealmAdress(0);
-                sMainSocket.PortString = sAProcessor.GetRealmPort(0);
-                sMainSocket.SetKey(sAProcessor.GetKey());
+                m_socket.AddressString = m_authProcessor.GetRealmAdress(0);
+                m_socket.PortString = m_authProcessor.GetRealmPort(0);
+                m_socket.SetKey(m_authProcessor.GetKey());
             }    
-            sMainSocket.Update(&InPacket,retstr);
+            m_socket.Update(&InPacket,retstr);
         }
         else
         {
-            sMainSocket.Update(&InPacket,retstr);
-            sSession.Update(&InPacket);
+            m_socket.Update(&InPacket,retstr);
+            m_session.Update(&InPacket);
         }
 
         *retstr += m_ret;
@@ -85,48 +91,23 @@ void CHBMain::Update(std::string* retstr,std::string* commstr)
         *retstr += "Unhandled error!";
         stopWorking = true;
     }
+
+    return !stopWorking;
 }
 
 void CHBMain::Input(std::string in)
 {
-    sSession.ClUpdate(in);
+    m_session.ClUpdate(in);
 }
 
 void CHBMain::Initialize(std::string username,std::string password)
 {
-    sMainSocket.m_username = username;
-    sAProcessor.Initialize(username,password);
+    m_socket.m_username = username;
+    m_authProcessor.Initialize(username,password);
     initialized = true;
 }
 
 void CHBMain::send_out_pack(out_pack* packet) 
 {
-    sMainSocket.send_out_pack(packet);
-}
-
-void Module::send_out_pack()
-{
-    sCHBMain->send_out_pack(&OuPack);
-}
-
-void Module::print(std::string s)
-{
-    sCHBMain->print(s);
-}
-
-void Module::i_comm(std::string s)
-{
-    sCHBMain->i_comm(s);
-}
-
-extern "C"
-{
-    _declspec(dllexport) void MainDllUpdate(std::string* retstr,std::string* commstr)
-    {
-        sCHBMain->Update(retstr,commstr);
-    };
-    _declspec(dllexport) void MainDllInput(std::string in)
-    {
-        sCHBMain->Input(in);
-    };
+    m_socket.send_out_pack(packet);
 }

@@ -19,11 +19,11 @@ struct ChatMessage
 };
 
 static char* ChatTagIdentifiers[]   = {"    ","AFK|","DND|","DND|","[GM]","[GM]","[GM]","[GM]"};
-
+class Database;
 class ChatModule : public Module
 {
 public:
-    ChatModule();
+    ChatModule( Database* database );
     void Handle(inc_pack* InPack);
     void Command(std::string cmd,std::string args);
 
@@ -43,6 +43,7 @@ private:
 
     char* ChatLanguages(uint32 lang);
 
+    Database*       m_database;
     std::string     channels[9];
     bool            channelson[9];
     uint8           activechannel;

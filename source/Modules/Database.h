@@ -25,14 +25,10 @@ struct FriendInfo
 class Database : public Module
 {
 public:
+    Database( CHBMain* chbMain );
+
     void Handle(inc_pack* InPack);
     void Command(std::string cmd,std::string args) {};
-
-    static Database* getInstance()
-    {
-        static Database instance;
-        return &instance;
-    }
 
     std::string Guid_to_name(uint32 guid,bool info);
     void handle_smsg_name_query_response(inc_pack* InPack);
@@ -43,9 +39,7 @@ public:
     std::list<uint32>           OnlineGuildMembers;
     bool ishordeplayer;
 private:
-    Database() {};
     void send_cmsg_name_query(uint32 guid);
 };
-#define sDB Database::getInstance()
 
 #endif

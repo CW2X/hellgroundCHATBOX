@@ -36,6 +36,7 @@
     <ClCompile Include="source\Modules\SocialModule.cpp">
       <Filter>modules</Filter>
     </ClCompile>
+    <ClCompile Include="source\Modules\Module.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="source\CHBMain.h" />

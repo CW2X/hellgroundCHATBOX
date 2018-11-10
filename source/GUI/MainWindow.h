@@ -4,6 +4,8 @@ see README for copyright notice */
 #pragma once
 #include <msclr\marshal_cppstd.h>
 
+class CHBMain;
+
 namespace chb {
 
 	using namespace System;
@@ -14,24 +16,10 @@ namespace chb {
 	using namespace System::Drawing;
     using namespace System::Threading;
 
-    typedef void (*mainDllUpdateType)(std::string*,std::string*);
-    typedef void (*mainDllInputType)(std::string);
-
 	public ref class MainWindow : public System::Windows::Forms::Form
 	{
 	public:
-		MainWindow()
-		{
-            ExitingProgram = false;
-			InitializeComponent();
-            this->FriendsListbox->Items->Add(L"===Offline===");
-
-            mainDllUpdateFunction = NULL;
-            mainDllInputFunction = NULL;
-            mPD = gcnew ProcessData(this, &MainWindow::ProcessMethod);
-			backThread = gcnew Thread(gcnew ThreadStart(this,&MainWindow::BackgroundThread));
-            backThread->Start();
-		}
+		MainWindow();
 
         void LoginFormReturn(std::string username,std::string password);
         void InputDialogReturn(std::string value,String^ type);
@@ -46,8 +34,7 @@ namespace chb {
 
 	    Thread^ backThread;
         bool ExitingProgram;
-        mainDllUpdateType mainDllUpdateFunction;
-        mainDllInputType mainDllInputFunction;
+        CHBMain* m_chbMain;
 
     private:
         void BackgroundThread();
@@ -265,73 +252,15 @@ namespace chb {
     private:
         System::Void FriendAddButton_Click(System::Object^ sender, System::EventArgs^  e);
 
-        System::Void MainWindow_FormClosed(System::Object^  sender, System::Windows::Forms::FormClosedEventArgs^  e)
-        {
-            ExitingProgram = true;
-            backThread->Abort();
-            Application::Exit();
-        }
+        System::Void MainWindow_FormClosed(System::Object^  sender, System::Windows::Forms::FormClosedEventArgs^  e);
 
-        System::Void MainWindow_Activated(System::Object^  sender, System::EventArgs^  e)
-        {
-            this->inputtext->Focus();
-        }
-
-        System::Void inputtext_PreviewKeyDown(System::Object^  sender, System::Windows::Forms::PreviewKeyDownEventArgs^  e)
-        {
-            if (e->KeyCode == Keys::Enter)
-                e->IsInputKey = true;
-        }
-        
-        System::Void inputtext_KeyPress(System::Object^  sender, System::Windows::Forms::KeyPressEventArgs^  e)
-        {
-            if (e->KeyChar == (char)Keys::Enter)
-            {
-                e->Handled = true;
-                if (mainDllInputFunction != NULL)
-                mainDllInputFunction(msclr::interop::marshal_as<std::string>(inputtext->Text));
-                inputtext->Text = gcnew System::String("");
-            }
-        }
-
-        System::Void FriendsListbox_DoubleClick(System::Object^  sender, System::EventArgs^  e)
-        {
-            String^ s = FriendsListbox->SelectedItem->ToString();
-            if (s == L"===Offline===")
-                return;
-            if (mainDllInputFunction != NULL)
-                mainDllInputFunction("/w " +
-                    msclr::interop::marshal_as<std::string>(s));
-            inputtext->Focus();
-        }
-        
-        System::Void GuildListbox_DoubleClick(System::Object^  sender, System::EventArgs^  e)
-        {
-            if (mainDllInputFunction != NULL)
-                mainDllInputFunction("/w " +
-                    msclr::interop::marshal_as<std::string>(GuildListbox->SelectedItem->ToString()));
-            inputtext->Focus();
-        }
-
-        System::Void scrollingCheckbox_CheckedChanged(System::Object^  sender, System::EventArgs^  e)
-        {
-            if (scrollingCheckbox->Checked)
-            {
-                viewtext->SelectionStart = viewtext->Text->Length;
-                viewtext->ScrollToCaret();
-            }
-        }
-
-        System::Void FriendRemoveButton_Click(System::Object^  sender, System::EventArgs^  e)
-        {
-            String^ s = FriendsListbox->SelectedItem->ToString();
-            if (String::IsNullOrEmpty(s))
-                return;
-            if (mainDllInputFunction != NULL)
-                mainDllInputFunction("/unfriend " +
-                msclr::interop::marshal_as<std::string>(s));
-            inputtext->Focus();
-        }
+        System::Void MainWindow_Activated(System::Object^  sender, System::EventArgs^  e);
+        System::Void inputtext_PreviewKeyDown(System::Object^  sender, System::Windows::Forms::PreviewKeyDownEventArgs^  e);
+        System::Void inputtext_KeyPress(System::Object^  sender, System::Windows::Forms::KeyPressEventArgs^  e);
+        System::Void FriendsListbox_DoubleClick(System::Object^  sender, System::EventArgs^  e);
+        System::Void GuildListbox_DoubleClick(System::Object^  sender, System::EventArgs^  e);
+        System::Void scrollingCheckbox_CheckedChanged(System::Object^  sender, System::EventArgs^  e);
+        System::Void FriendRemoveButton_Click(System::Object^  sender, System::EventArgs^  e);
 };
 
 }

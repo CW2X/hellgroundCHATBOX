@@ -23,9 +23,13 @@ enum GuildEvents
     GE_BANKTAB_PURCHASED= 0x0F,
 };
 
+class Database;
+
 class SocialModule : public Module
 {
 public:
+    SocialModule( Database* database );
+
     void Handle(inc_pack* InPack);
     void Command(std::string cmd,std::string args);
 private:
@@ -40,6 +44,8 @@ private:
     void cmd_unfriend(std::string args);
     void cmd_ignore(std::string args);
     void cmd_unignore(std::string args);
+
+    Database* m_database;
 };
 
 #endif
