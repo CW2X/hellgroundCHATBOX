@@ -10,6 +10,8 @@ class BaseSocket
 {
 public:
     BaseSocket();
+    ~BaseSocket();
+
     bool IsConnected;
     bool IsAuthed;
     std::string AddressString;

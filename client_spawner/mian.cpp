@@ -5,43 +5,60 @@
 #include "../source/CHBMain.h"
 #include <string>
 #include <iostream>
+#include <stdlib.h>
 
 int main()
 {
-    std::vector< std::thread > threads;
-    for ( auto idx = 1; idx < 50; ++idx )
+    while( true )
     {
-        threads.emplace_back( [idx]
+        bool shutdown = false;
+
+        std::vector< std::thread > threads;
+        threads.reserve( 1000 );
+
+        for ( auto batch = 0; batch < 5; ++batch )
         {
-            CHBMain session;
-
-            bool initialized = false;
-
-            std::string retstr, commstr;
-            while ( true )
+            for ( auto idx = 0; idx < 200; ++idx )
             {
-                if ( !session.Update( &retstr, &commstr ) )
-                    return;
-
-                if ( !initialized && commstr.find("Ln") == 0 )
+                std::string account = std::string( "TEST" ) + std::to_string( batch * 200 + idx );
+                threads.emplace_back( [&shutdown, batch, account]
                 {
-                    initialized = true;
-                    session.Initialize( std::string( "TEST" ) + std::to_string( idx ), std::string( "TEST" ) + std::to_string( idx ) );
-                }
+                    CHBMain session;
 
-                if ( retstr.empty() && commstr.empty() )
-                    std::this_thread::sleep_for( std::chrono::seconds( 5 ) );
+                    bool initialized = false;
 
-                if ( !retstr.empty() )
-                    std::cout << retstr << "\n";
+                    std::string retstr, commstr;
+                    while ( !shutdown )
+                    {
+                        if ( !session.Update( &retstr, &commstr ) )
+                            return;
 
-                std::this_thread::sleep_for( std::chrono::milliseconds( 200 ) );
+                        if ( !initialized && commstr.find( "Ln" ) == 0 )
+                        {
+                            std::this_thread::sleep_for( std::chrono::milliseconds( ( rand() % 1000 ) + 100 ) );
+
+                            initialized = true;
+                            std::cout << "Initializing client: " << account << "\n";
+                            session.Initialize( account, account );
+                        }
+
+                        if ( retstr.empty() && commstr.empty() )
+                            std::this_thread::sleep_for( std::chrono::seconds( 5 ) );
+
+                        std::this_thread::sleep_for( std::chrono::milliseconds( 200 ) );
+                    }
+                } );
             }
-        } );
-    }
 
-    for ( std::thread & thread : threads )
-        thread.join();
+            std::this_thread::sleep_for( std::chrono::seconds( 5 ) );
+        }
+
+        //std::this_thread::sleep_for( std::chrono::seconds( (rand() % 120) + 60 ) );
+        //shutdown = true;
+
+        for ( auto & t : threads )
+            t.join();
+    }
 
     return 0;
 }

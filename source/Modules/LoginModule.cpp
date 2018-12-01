@@ -59,7 +59,10 @@ void LoginModule::handle_smsg_char_enum(inc_pack* InPack)
             CharacterClasses[characters[i].clas]));
         //PlayersInfoMap[characters[i].guid].name = characters[i].name;
     }
-    send_cmsg_login( '1' );
+    if ( nofchars >= 1 )
+        send_cmsg_login( '1' );
+    else
+        throw "received empty characters list\r\n";
 }
 
 void LoginModule::handle_smsg_login_verify_world(inc_pack* InPack)

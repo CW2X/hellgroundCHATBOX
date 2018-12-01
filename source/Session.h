@@ -15,15 +15,18 @@ class CHBMain;
 class Session
 {
 public:
+    friend CHBMain;
+
     Session( Database * database );
     void Update(inc_pack* InPack);
     void ClUpdate(std::string clData);
-private:
+protected:
     void handle_Cl(std::string clData);
 
     out_pack        OuPack;
     std::string     username;
     
+    bool            m_isInWorld;
     Database*       m_database;
     CHBMain *       m_chbMain;
     LoginModule     sLoginModule;

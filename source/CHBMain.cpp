@@ -18,6 +18,11 @@ CHBMain::CHBMain()
     m_comm = "";
 }
 
+bool CHBMain::IsInWorld() const
+{
+    return m_session.m_isInWorld;
+}
+
 bool CHBMain::Update(std::string* retstr,std::string* commstr)
 {
     if (stopWorking)
@@ -32,7 +37,7 @@ bool CHBMain::Update(std::string* retstr,std::string* commstr)
         if(firstTick)
         {
             firstTick = false;
-            *retstr = std::string("Chatbox v.") + VERSION + "\r\n";
+            *retstr = std::string("");
             *commstr = std::string("Ln\nCh:Say\n");
 
             WSADATA wsa_data;

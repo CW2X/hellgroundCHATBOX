@@ -13,6 +13,7 @@ class CHBMain
 public:
     CHBMain();
 
+    bool IsInWorld() const;
     bool Update(std::string* retstr,std::string* commstr);
     void Input(std::string in);
     void Initialize(std::string username,std::string password);

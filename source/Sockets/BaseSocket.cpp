@@ -13,6 +13,13 @@ BaseSocket::BaseSocket()
     IsAuthed    = false;
 }
 
+
+BaseSocket::~BaseSocket()
+{
+    if ( IsConnected )
+        close_socket();
+}
+
 void BaseSocket::open_socket()
 {
     m_ret += string_format("initializing connection: %s:%s\r\n",AddressString.c_str(),PortString.c_str());
@@ -29,16 +36,20 @@ void BaseSocket::open_socket()
         throw string_format("getaddrinfo failed with error: %d\r\n", IsError);
     }
     
-    for(ptr=result; ptr != NULL ;ptr=ptr->ai_next) {
-        MySocket = socket(ptr->ai_family, ptr->ai_socktype, 
-            ptr->ai_protocol);
+    for(ptr=result; ptr != NULL ;ptr=ptr->ai_next)
+    {
+        MySocket = socket(ptr->ai_family, ptr->ai_socktype,  ptr->ai_protocol);
         
         if (MySocket == INVALID_SOCKET) {
             throw string_format("socket failed with error: %ld\r\n", WSAGetLastError());
         }
         
         IsError = connect( MySocket, ptr->ai_addr, (int)ptr->ai_addrlen);
-        if (IsError == SOCKET_ERROR) {
+        if (IsError == SOCKET_ERROR)
+        {
+            auto error = ::GetLastError();
+            //std::cerr << error << "\n";
+
             closesocket(MySocket);
             MySocket = INVALID_SOCKET;
             continue;
